@@ -1,29 +1,24 @@
 package app;
 
-import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.StateBasedGame;
 
-public class Game extends BasicGame {
+import State.MenuState;
+
+public class Game extends StateBasedGame {
+
+    public static final int MENU_STATE = 0;
+    public static final int GAME_STATE = 1;
 
     public Game(String title) {
         super(title);
     }
 
     @Override
-    public void render(GameContainer arg0, Graphics arg1) throws SlickException {
-
-    }
-
-    @Override
-    public void init(GameContainer arg0) throws SlickException {
-
-    }
-
-    @Override
-    public void update(GameContainer arg0, int arg1) throws SlickException {
-
+    public void initStatesList(GameContainer container) throws SlickException {
+        this.addState(new MenuState(Game.MENU_STATE));
+        this.addState(new MenuState(Game.GAME_STATE));
     }
 
 }
