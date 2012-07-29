@@ -1,4 +1,4 @@
-package State;
+package state;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -6,11 +6,11 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class EditorState extends BasicGameState {
+public class MenuState extends BasicGameState {
 
     private int stateId;
 
-    public EditorState(int stateId) {
+    public MenuState(int stateId) {
         this.stateId = stateId;
     }
 

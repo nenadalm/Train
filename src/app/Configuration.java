@@ -1,5 +1,7 @@
 package app;
 
+import helper.XmlHelper;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +10,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import Helper.XmlHelper;
 
 public class Configuration {
 

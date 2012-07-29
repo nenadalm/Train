@@ -5,7 +5,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import other.Translator;
-import State.MenuState;
+import state.MenuState;
 
 public class Game extends StateBasedGame {
 
