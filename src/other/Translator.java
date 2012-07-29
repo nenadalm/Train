@@ -20,14 +20,17 @@ public class Translator {
 
     private Translator() {
         this.languageCode = Configuration.getInstance().get("language");
+        this.init();
+    };
 
+    private void init() {
         this.translations = new HashMap<String, Map<String, String>>();
         try {
             this.loadTranslations("global");
         } catch (Exception e) {
             e.printStackTrace();
         }
-    };
+    }
 
     private void loadTranslations(String fileName) throws Exception {
         Map<String, String> translation = new HashMap<String, String>();
@@ -62,6 +65,7 @@ public class Translator {
 
     public void setLanguage(String code) {
         this.languageCode = code;
+        this.init();
     }
 
     public String translate(String text) {

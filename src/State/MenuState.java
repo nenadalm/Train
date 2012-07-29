@@ -6,8 +6,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import other.Translator;
-
 public class MenuState extends BasicGameState {
 
     private int stateId;
@@ -25,8 +23,7 @@ public class MenuState extends BasicGameState {
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-        Translator t = Translator.getInstance();
-        g.drawString(t.translate("name"), 100, 100);
+
     }
 
     @Override
