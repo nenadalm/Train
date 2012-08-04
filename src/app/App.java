@@ -12,7 +12,7 @@ public class App {
     public static void main(String[] args) {
         try {
             AppGameContainer app = new AppGameContainer(new Game("Train"));
-            app.setDisplayMode(800, 600, false);
+            app.setDisplayMode(800, 500, false);
             app.start();
         } catch (Exception e) {
             e.printStackTrace();
