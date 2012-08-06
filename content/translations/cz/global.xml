@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <translations>
-	<translation id="name">Jméno</translation>
+	<translation id="yes">ano</translation>
+	<translation id="no">ne</translation>
+	<translation id="save">uložit</translation>
+	<translation id="exit">ukončit</translation>
+	<translation id="options">nastavení</translation>
+	<translation id="Options">Nastavení</translation>
+	<translation id="level editor">editor levelů</translation>
+	<translation id="start game">zahájit hru</translation>
+	<translation id="Resolution">Rozlišení</translation>
+	<translation id="Fullscreen">Fullscreen</translation>
+	<translation id="return">zpět</translation>
+	<translation id="Language">Jazyk</translation>
+	<translation id="name">jméno</translation>
 </translations>

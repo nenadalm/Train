@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuraiton>
+<configuration>
 	<properties>
-		<property name="language">cz</property>
+		<property name="language">en</property>
 	</properties>
-</configuraiton>
+</configuration>

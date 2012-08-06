@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<translations>
+	<translation id="yes">yes</translation>
+	<translation id="no">no</translation>
+	<translation id="save">save</translation>
+	<translation id="exit">exit</translation>
+	<translation id="options">options</translation>
+	<translation id="Options">Options</translation>
+	<translation id="level editor">level editor</translation>
+	<translation id="start game">start game</translation>
+	<translation id="Resolution">Resolution</translation>
+	<translation id="Fullscreen">Fullscreen</translation>
+	<translation id="return">return</translation>
+	<translation id="Language">Language</translation>
+	<translation id="name">name</translation>
+</translations>
