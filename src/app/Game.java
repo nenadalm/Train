@@ -17,6 +17,7 @@ public class Game extends StateBasedGame {
 
     public Game(String title) {
         super(title);
+        Configuration.getInstance();
         Translator.getInstance();
     }
 

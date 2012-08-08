@@ -21,7 +21,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import other.Translator;
 
-import app.Configuration;
 import app.Game;
 
 public class MenuState extends BasicGameState {
@@ -356,13 +355,6 @@ public class MenuState extends BasicGameState {
 
 	private void saveOptions(GameContainer container, StateBasedGame game) {
 		try {
-			Configuration configuration = Configuration.getInstance();
-			configuration.set("width",
-					String.valueOf(displayModes[modeIndex].getWidth()));
-			configuration.set("height",
-					String.valueOf(displayModes[modeIndex].getHeight()));
-			configuration.set("language", languages[languageIndex]);
-			configuration.set("fullscreen", String.valueOf(isFullscreen));
 			((AppGameContainer) container).setDisplayMode(
 					displayModes[modeIndex].getWidth(),
 					displayModes[modeIndex].getHeight(), isFullscreen);
