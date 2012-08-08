@@ -17,12 +17,11 @@ public class Game extends StateBasedGame {
 
     public Game(String title) {
         super(title);
-        Configuration.getInstance();
         Translator.getInstance();
     }
 
     @Override
-    public void initStatesList(GameContainer container) throws SlickException {   	
+    public void initStatesList(GameContainer container) throws SlickException {
         this.addState(new MenuState(Game.MENU_STATE));
         this.addState(new GameState(Game.GAME_STATE));
         this.addState(new EditorState(Game.EDITOR_STATE));

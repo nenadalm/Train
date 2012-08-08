@@ -39,12 +39,14 @@ public class Configuration {
         }
     }
 
-    public void set(String configName, String configValue) throws Exception {
-        if (!this.properties.containsKey(configName)) {
-            throw new Exception("Config '" + configName + "' does not exist.");
-        }
+    public void set(String configName, String configValue) {
 
         try {
+            if (!this.properties.containsKey(configName)) {
+                throw new Exception("Config '" + configName
+                        + "' does not exist.");
+            }
+
             Document document = this.getDocument();
             NodeList nodeList = document.getElementsByTagName("property");
             int i = 0;

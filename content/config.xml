@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><configuration>
 	<properties>
-		<property name="language">en</property>
+		<property name="language">cz</property>
+		<property name="width">1280</property>
+		<property name="height">720</property>
+		<property name="fullscreen">false</property>
 	</properties>
 </configuration>
