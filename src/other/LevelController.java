@@ -9,32 +9,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.Game;
+import entity.Level;
+import entity.Level.Item;
 
 public class LevelController {
 
-    private static final String LEVELS_PATH = Game.CONTENT_PATH + "levels/";
-
-    public enum Item {
-        WALL('W'), GATE('G'), TREE('T'), TRAIN('V'), EMPTY('E');
-
-        char c;
-
-        private Item(char c) {
-            this.c = c;
-        }
-
-        public char getChar() {
-            return this.c;
-        }
-    }
-
     // loaded level
     int currentLevel = -1;
-    Item[][] level;
+    Level level;
 
     // list of levels
-    String[] levels;
+    private String[] levels;
 
     public LevelController() {
         this.loadLevels();
@@ -48,7 +33,7 @@ public class LevelController {
      * @return
      * @throws Exception
      */
-    public Item[][] getLevel(int number) throws Exception {
+    public Level getLevel(int number) throws Exception {
         number--;
 
         if (this.currentLevel == number) {
@@ -60,7 +45,7 @@ public class LevelController {
         }
 
         // read lines from file
-        File file = new File(LevelController.LEVELS_PATH + this.levels[number]);
+        File file = new File(Level.LEVELS_PATH + this.levels[number]);
         List<String> lines = null;
         try {
             lines = this.getLines(file);
@@ -74,10 +59,8 @@ public class LevelController {
                     + file.getAbsolutePath() + "'");
         }
 
-        Item level[][] = this.getArrayFromLines(lines);
-
         this.currentLevel = number;
-        this.level = level;
+        this.level.setArray(this.getArrayFromLines(lines));
 
         return this.level;
     }
@@ -99,7 +82,7 @@ public class LevelController {
     }
 
     private void loadLevels() {
-        File dir = new File(LevelController.LEVELS_PATH);
+        File dir = new File(Level.LEVELS_PATH);
         this.levels = dir.list();
     }
 
@@ -149,7 +132,7 @@ public class LevelController {
      *            Name of level
      */
     public void removeLevel(String levelName) {
-        File file = new File(LevelController.LEVELS_PATH);
+        File file = new File(Level.LEVELS_PATH);
         file.delete();
         this.loadLevels();
     }
@@ -175,7 +158,7 @@ public class LevelController {
 
         try {
             // save level into file
-            File file = new File(LevelController.LEVELS_PATH + levelName);
+            File file = new File(Level.LEVELS_PATH + levelName);
             file.createNewFile();
             FileWriter fw = new FileWriter(file);
             fw.write(buffer.toString());
