@@ -12,11 +12,10 @@ import org.xml.sax.SAXException;
 
 public class XmlHelper {
 
-    public static Document getDocument(File xml)
-            throws ParserConfigurationException, SAXException, IOException {
+    public static Document getDocument(File xml) throws ParserConfigurationException, SAXException,
+            IOException {
 
-        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder();
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(xml);
         document.normalizeDocument();
 

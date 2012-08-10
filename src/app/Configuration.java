@@ -29,8 +29,7 @@ public class Configuration {
             this.properties = new HashMap<String, String>(nodeList.getLength());
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
-                String key = node.getAttributes().getNamedItem("name")
-                        .getNodeValue();
+                String key = node.getAttributes().getNamedItem("name").getNodeValue();
                 String value = node.getTextContent();
                 this.properties.put(key, value);
             }
@@ -43,8 +42,7 @@ public class Configuration {
 
         try {
             if (!this.properties.containsKey(configName)) {
-                throw new Exception("Config '" + configName
-                        + "' does not exist.");
+                throw new Exception("Config '" + configName + "' does not exist.");
             }
 
             Document document = this.getDocument();
@@ -52,11 +50,10 @@ public class Configuration {
             int i = 0;
             while (i < nodeList.getLength()) {
                 if (nodeList.item(i).hasAttributes()
-                        && nodeList.item(i).getAttributes()
-                                .getNamedItem("name") != null) {
+                        && nodeList.item(i).getAttributes().getNamedItem("name") != null) {
 
-                    if (nodeList.item(i).getAttributes().getNamedItem("name")
-                            .getNodeValue().equals(configName)) {
+                    if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue()
+                            .equals(configName)) {
                         nodeList.item(i).setTextContent(configValue);
                         this.properties.put(configName, configValue);
                         break;
@@ -67,12 +64,10 @@ public class Configuration {
             StringWriter sw = new StringWriter();
             StreamResult sr = new StreamResult(sw);
             DOMSource dom = new DOMSource(document);
-            Transformer transformer = TransformerFactory.newInstance()
-                    .newTransformer();
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.transform(dom, sr);
             String string = sw.toString();
-            FileWriter fw = new FileWriter(new File(Game.CONTENT_PATH
-                    + "config.xml"));
+            FileWriter fw = new FileWriter(new File(Game.CONTENT_PATH + "config.xml"));
             fw.write(string);
             fw.close();
         } catch (Exception e) {
@@ -81,8 +76,7 @@ public class Configuration {
     }
 
     private Document getDocument() throws Exception {
-        return XmlHelper
-                .getDocument(new File(Game.CONTENT_PATH + "config.xml"));
+        return XmlHelper.getDocument(new File(Game.CONTENT_PATH + "config.xml"));
     }
 
     public String get(String configName) {

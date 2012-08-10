@@ -35,8 +35,8 @@ public class Translator {
 
     private void loadTranslations(String fileName) throws Exception {
         Map<String, String> translation = new HashMap<String, String>();
-        File file = new File(Game.CONTENT_PATH + "translations/"
-                + this.languageCode + "/" + fileName + ".xml");
+        File file = new File(Game.CONTENT_PATH + "translations/" + this.languageCode + "/"
+                + fileName + ".xml");
 
         Document document = XmlHelper.getDocument(file);
 

@@ -50,13 +50,12 @@ public class LevelController {
         try {
             lines = this.getLines(file);
         } catch (Exception e) {
-            throw new Exception("Cannot read from file '"
-                    + file.getAbsolutePath() + "'.");
+            throw new Exception("Cannot read from file '" + file.getAbsolutePath() + "'.");
         }
 
         if (this.levelIsValid(lines)) {
-            throw new Exception("Format of level is invalid. File: '"
-                    + file.getAbsolutePath() + "'");
+            throw new Exception("Format of level is invalid. File: '" + file.getAbsolutePath()
+                    + "'");
         }
 
         this.currentLevel = number;
@@ -104,8 +103,7 @@ public class LevelController {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private List<String> getLines(File file) throws FileNotFoundException,
-            IOException {
+    private List<String> getLines(File file) throws FileNotFoundException, IOException {
         List<String> lines = new ArrayList<String>();
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;

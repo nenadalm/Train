@@ -14,22 +14,19 @@ public class App {
     public static void main(String[] args) {
         try {
             Configuration configuration = Configuration.getInstance();
-            GraphicsEnvironment environment = GraphicsEnvironment
-                    .getLocalGraphicsEnvironment();
+            GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice gd = environment.getDefaultScreenDevice();
             DisplayMode actual = gd.getDisplayMode();
 
             int width = Integer.parseInt(configuration.get("width"));
             int height = Integer.parseInt(configuration.get("height"));
-            boolean isFullscreen = Boolean.parseBoolean(configuration
-                    .get("fullscreen"));
+            boolean isFullscreen = Boolean.parseBoolean(configuration.get("fullscreen"));
 
             boolean matchFound = false;
             if (width > 0 || height > 0) {
                 DisplayMode modes[] = gd.getDisplayModes();
                 for (DisplayMode displayMode : modes) {
-                    if (displayMode.getWidth() == width
-                            && displayMode.getHeight() == height) {
+                    if (displayMode.getWidth() == width && displayMode.getHeight() == height) {
                         matchFound = true;
                         break;
                     }
