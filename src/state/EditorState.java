@@ -35,18 +35,18 @@ public class EditorState extends BasicGameState {
     private Dimension fieldPosition;
     private Level level;
     // states
-    boolean wasLeftButtonDown = false;
+    private boolean wasLeftButtonDown = false;
+
+    private Dimension gatePosition = null;
+    private Dimension trainPosition = null;
 
     public EditorState(int stateId) {
         this.stateId = stateId;
     }
 
     @Override
-    public void init(GameContainer container, StateBasedGame game)
-            throws SlickException {
+    public void init(GameContainer container, StateBasedGame game) throws SlickException {
         String path = Game.CONTENT_PATH + "graphics/";
-
-        this.level = new Level(20, 20);
 
         this.fieldPosition = new Dimension();
 
@@ -54,10 +54,15 @@ public class EditorState extends BasicGameState {
         this.gate = new Image(path + "gate.png");
         this.tree = new Image(path + "tree.png");
         this.wall = new Image(path + "wall.png");
+
         this.itemMenu = new Image(path + "itemMenu.png");
         this.active = new Image(path + "active.png");
         this.activeItem = Item.WALL;
         this.itemSize = this.active.getWidth();
+
+        this.level = new Level(container.getWidth() / this.itemSize, container.getHeight()
+                / this.itemSize);
+        System.out.println(this.level.getWidth() + "; " + this.level.getHeight());
 
         this.menuItems = new Image[4];
 
@@ -74,12 +79,13 @@ public class EditorState extends BasicGameState {
         this.level.render(container, game, g);
 
         if (this.showMenu) {
-            this.itemMenu.draw(0, 0);
+            this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight());
             int width = this.menuItems[0].getWidth();
             for (int i = 0; i < this.menuItems.length; i++) {
                 this.menuItems[i].draw(width + i * width, 0);
             }
-
+        } else {
+            this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight());
         }
 
         this.active.draw(this.fieldPosition.width, this.fieldPosition.height);
@@ -93,15 +99,13 @@ public class EditorState extends BasicGameState {
         int mouseY = input.getMouseY();
         this.fieldPosition.setSize((mouseX / this.itemSize) * this.itemSize,
                 (mouseY / this.itemSize) * this.itemSize);
-        Dimension gridPosition = new Dimension(mouseX / this.itemSize, mouseY
-                / this.itemSize);
+        Dimension gridPosition = new Dimension(mouseX / this.itemSize, mouseY / this.itemSize);
 
         if (this.showMenu) {
-            if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)
-                    && this.wasLeftButtonDown) {
+            if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && this.wasLeftButtonDown) {
                 if (mouseY < this.itemSize) {
                     int index = this.fieldPosition.width / this.itemSize - 1;
-                    if (index > 0 && index < this.menuItems.length) {
+                    if (index >= 0 && index < this.menuItems.length) {
                         this.showMenu = false;
                         Image image = this.menuItems[index];
                         if (image == this.train) {
@@ -117,17 +121,47 @@ public class EditorState extends BasicGameState {
                 }
             }
         } else {
+            if (mouseY < 10) {
+                this.showMenu = !this.showMenu;
+            }
             if (input.isKeyPressed(Keyboard.KEY_E)) {
                 this.showMenu = !this.showMenu;
             }
-            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)
+                    && mouseY < this.itemSize * this.level.getHeight()) {
+                // remove position
+                Item item = this.level.toArray()[gridPosition.width][gridPosition.height];
+                switch (item) {
+                    case TRAIN:
+                        this.trainPosition = null;
+                        break;
+                    case GATE:
+                        this.gatePosition = null;
+                    default:
+                }
+                // load position
+                switch (this.activeItem) {
+                    case TRAIN:
+                        if (this.trainPosition != null) {
+                            this.level.setItem(this.trainPosition, Item.EMPTY);
+                        }
+                        this.trainPosition = gridPosition;
+                        break;
+                    case GATE:
+                        if (this.gatePosition != null) {
+                            this.level.setItem(this.gatePosition, Item.EMPTY);
+                        }
+                        this.gatePosition = gridPosition;
+                        break;
+                    default:
+                        break;
+                }
                 this.level.setItem(gridPosition, this.activeItem);
             } else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
                 this.level.setItem(gridPosition, Item.EMPTY);
             }
         }
-        this.wasLeftButtonDown = input
-                .isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+        this.wasLeftButtonDown = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
     }
 
     @Override

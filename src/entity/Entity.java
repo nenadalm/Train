@@ -1,10 +1,10 @@
 package entity;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import component.Component;
@@ -12,7 +12,7 @@ import component.RenderComponent;
 
 public class Entity {
 
-    private Vector2f position;
+    private Dimension position;
     private float scale;
     private float rotation;
 
@@ -21,7 +21,7 @@ public class Entity {
 
     public Entity() {
         this.components = new ArrayList<Component>();
-        this.position = new Vector2f();
+        this.position = new Dimension();
         this.scale = 1;
         this.rotation = 0;
     }
@@ -46,11 +46,11 @@ public class Entity {
         }
     }
 
-    public Vector2f getPosition() {
+    public Dimension getPosition() {
         return this.position;
     }
 
-    public void setPosition(Vector2f position) {
+    public void setPosition(Dimension position) {
         this.position = position;
     }
 

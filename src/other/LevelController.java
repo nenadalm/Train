@@ -15,8 +15,8 @@ import entity.Level.Item;
 public class LevelController {
 
     // loaded level
-    int currentLevel = -1;
-    Level level;
+    private int currentLevel = -1;
+    private Level level;
 
     // list of levels
     private String[] levels;
