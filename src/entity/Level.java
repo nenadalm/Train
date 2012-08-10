@@ -1,6 +1,6 @@
 package entity;
 
-import java.awt.Dimension;
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +46,8 @@ public class Level extends Entity {
         return this.level.length;
     }
 
-    public void setItem(Dimension dimension, Item item) {
-        this.level[dimension.width][dimension.height] = item;
+    public void setItem(Point position, Item item) {
+        this.level[position.x][position.y] = item;
     }
 
     public int getHeight() {
@@ -60,10 +60,8 @@ public class Level extends Entity {
             this.images.put(Item.WALL, new Image(Level.GRAPHICS + "wall.png"));
             this.images.put(Item.GATE, new Image(Level.GRAPHICS + "gate.png"));
             this.images.put(Item.TREE, new Image(Level.GRAPHICS + "tree.png"));
-            this.images
-                    .put(Item.TRAIN, new Image(Level.GRAPHICS + "train.png"));
-            this.images
-                    .put(Item.EMPTY, new Image(Level.GRAPHICS + "empty.png"));
+            this.images.put(Item.TRAIN, new Image(Level.GRAPHICS + "train.png"));
+            this.images.put(Item.EMPTY, new Image(Level.GRAPHICS + "empty.png"));
         } catch (SlickException e) {
             e.printStackTrace();
         }

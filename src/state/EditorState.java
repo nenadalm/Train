@@ -1,6 +1,6 @@
 package state;
 
-import java.awt.Dimension;
+import java.awt.Point;
 
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.GameContainer;
@@ -32,13 +32,13 @@ public class EditorState extends BasicGameState {
     // helping fields
     private int itemSize;
     private boolean showMenu = true;
-    private Dimension fieldPosition;
+    private Point fieldPosition;
     private Level level;
     // states
     private boolean wasLeftButtonDown = false;
 
-    private Dimension gatePosition = null;
-    private Dimension trainPosition = null;
+    private Point gatePosition = null;
+    private Point trainPosition = null;
 
     public EditorState(int stateId) {
         this.stateId = stateId;
@@ -48,7 +48,7 @@ public class EditorState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         String path = Game.CONTENT_PATH + "graphics/";
 
-        this.fieldPosition = new Dimension();
+        this.fieldPosition = new Point();
 
         this.train = new Image(path + "train.png");
         this.gate = new Image(path + "gate.png");
@@ -88,7 +88,7 @@ public class EditorState extends BasicGameState {
             this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight());
         }
 
-        this.active.draw(this.fieldPosition.width, this.fieldPosition.height);
+        this.active.draw(this.fieldPosition.x, this.fieldPosition.y);
     }
 
     @Override
@@ -97,14 +97,14 @@ public class EditorState extends BasicGameState {
         Input input = container.getInput();
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
-        this.fieldPosition.setSize((mouseX / this.itemSize) * this.itemSize,
+        this.fieldPosition.setLocation((mouseX / this.itemSize) * this.itemSize,
                 (mouseY / this.itemSize) * this.itemSize);
-        Dimension gridPosition = new Dimension(mouseX / this.itemSize, mouseY / this.itemSize);
+        Point gridPosition = new Point(mouseX / this.itemSize, mouseY / this.itemSize);
 
         if (this.showMenu) {
             if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && this.wasLeftButtonDown) {
                 if (mouseY < this.itemSize) {
-                    int index = this.fieldPosition.width / this.itemSize - 1;
+                    int index = this.fieldPosition.x / this.itemSize - 1;
                     if (index >= 0 && index < this.menuItems.length) {
                         this.showMenu = false;
                         Image image = this.menuItems[index];
@@ -128,9 +128,10 @@ public class EditorState extends BasicGameState {
                 this.showMenu = !this.showMenu;
             }
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)
-                    && mouseY < this.itemSize * this.level.getHeight()) {
+                    && mouseY < this.itemSize * this.level.getHeight()
+                    && mouseX < this.itemSize * this.level.getWidth()) {
                 // remove position
-                Item item = this.level.toArray()[gridPosition.width][gridPosition.height];
+                Item item = this.level.toArray()[gridPosition.x][gridPosition.y];
                 switch (item) {
                     case TRAIN:
                         this.trainPosition = null;

@@ -1,6 +1,6 @@
 package component;
 
-import java.awt.Dimension;
+import java.awt.Point;
 
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.GameContainer;
@@ -12,16 +12,16 @@ public class MoveComponent extends Component {
     @Override
     public void update(GameContainer gc, StateBasedGame sb, int delta) {
         Input input = gc.getInput();
-        Dimension position = this.owner.getPosition();
+        Point position = this.owner.getPosition();
 
         if (input.isKeyDown(Keyboard.KEY_UP)) {
-            position.height++;
+            position.y++;
         } else if (input.isKeyDown(Keyboard.KEY_DOWN)) {
-            position.height--;
+            position.y--;
         } else if (input.isKeyDown(Keyboard.KEY_LEFT)) {
-            position.width--;
+            position.x--;
         } else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
-            position.width++;
+            position.x++;
         }
     }
 }

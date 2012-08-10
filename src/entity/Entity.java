@@ -1,6 +1,6 @@
 package entity;
 
-import java.awt.Dimension;
+import java.awt.Point;
 import java.util.ArrayList;
 
 import org.newdawn.slick.GameContainer;
@@ -12,7 +12,7 @@ import component.RenderComponent;
 
 public class Entity {
 
-    private Dimension position;
+    private Point position;
     private float scale;
     private float rotation;
 
@@ -21,7 +21,7 @@ public class Entity {
 
     public Entity() {
         this.components = new ArrayList<Component>();
-        this.position = new Dimension();
+        this.position = new Point();
         this.scale = 1;
         this.rotation = 0;
     }
@@ -46,11 +46,11 @@ public class Entity {
         }
     }
 
-    public Dimension getPosition() {
+    public Point getPosition() {
         return this.position;
     }
 
-    public void setPosition(Dimension position) {
+    public void setPosition(Point position) {
         this.position = position;
     }
 
