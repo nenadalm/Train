@@ -15,6 +15,7 @@ public class Entity {
     private Point position;
     private float scale;
     private float rotation;
+    private Point direction;
 
     RenderComponent renderComponent;
     ArrayList<Component> components;
@@ -24,6 +25,7 @@ public class Entity {
         this.position = new Point();
         this.scale = 1;
         this.rotation = 0;
+        this.direction = new Point(0, 0);
     }
 
     public void addComponent(Component component) {
@@ -44,6 +46,14 @@ public class Entity {
         if (this.renderComponent != null) {
             this.renderComponent.render(gc, sb, gr);
         }
+    }
+
+    public Point getDirection() {
+        return this.direction;
+    }
+
+    public void setDirection(Point direction) {
+        this.direction = direction;
     }
 
     public Point getPosition() {

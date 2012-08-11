@@ -22,6 +22,7 @@ public class LevelController {
     private String[] levels;
 
     public LevelController() {
+        this.level = new Level(0, 0);
         this.loadLevels();
     }
 
@@ -53,7 +54,7 @@ public class LevelController {
             throw new Exception("Cannot read from file '" + file.getAbsolutePath() + "'.");
         }
 
-        if (this.levelIsValid(lines)) {
+        if (!this.levelIsValid(lines)) {
             throw new Exception("Format of level is invalid. File: '" + file.getAbsolutePath()
                     + "'");
         }
@@ -87,12 +88,13 @@ public class LevelController {
 
     private Item[][] getArrayFromLines(List<String> lines) {
         int width = lines.get(0).length();
-        Item level[][] = new Item[lines.size()][width];
+        Item level[][] = new Item[width][lines.size()];
         for (int i = 0; i < lines.size(); i++) {
             for (int j = 0; j < width; j++) {
-                level[i][j] = this.getItemFromLetter(lines.get(i).charAt(j));
+                level[j][i] = this.getItemFromLetter(lines.get(i).charAt(j));
             }
         }
+
         return level;
     }
 
