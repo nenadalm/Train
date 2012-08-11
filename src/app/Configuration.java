@@ -3,15 +3,8 @@ package app;
 import helper.XmlHelper;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -20,56 +13,67 @@ import org.w3c.dom.NodeList;
 public class Configuration {
 
     private static Configuration configuration;
-    private Map<String, String> properties;
+    private Map<String, Property> properties;
 
     private Configuration() {
         try {
             Document document = this.getDocument();
             NodeList nodeList = document.getElementsByTagName("property");
-            this.properties = new HashMap<String, String>(nodeList.getLength());
+            this.properties = new HashMap<String, Property>(nodeList.getLength());
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
                 String key = node.getAttributes().getNamedItem("name").getNodeValue();
-                String value = node.getTextContent();
-                this.properties.put(key, value);
+                Property property = new Property(node.getTextContent());
+                this.properties.put(key, property);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void set(String configName, String configValue) {
+    public void saveChanges() {
+        try {
+            Document document = this.getDocument();
+            NodeList nodeList = document.getElementsByTagName("property");
 
+            for (String key : this.properties.keySet()) {
+                Property property = this.properties.get(key);
+                if (property.isDirty) {
+                    this.putIntoNodeList(nodeList, key, property);
+                }
+            }
+
+            XmlHelper.saveDocument(document);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void putIntoNodeList(NodeList nodeList, String configName, Property property) {
+        int i = 0;
+        while (i < nodeList.getLength()) {
+            if (nodeList.item(i).hasAttributes()
+                    && nodeList.item(i).getAttributes().getNamedItem("name") != null) {
+
+                if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue()
+                        .equals(configName)) {
+                    nodeList.item(i).setTextContent(property.getValue());
+                    break;
+                }
+            }
+            i++;
+        }
+    }
+
+    public void set(String configName, String configValue) {
         try {
             if (!this.properties.containsKey(configName)) {
                 throw new Exception("Config '" + configName + "' does not exist.");
             }
 
-            Document document = this.getDocument();
-            NodeList nodeList = document.getElementsByTagName("property");
-            int i = 0;
-            while (i < nodeList.getLength()) {
-                if (nodeList.item(i).hasAttributes()
-                        && nodeList.item(i).getAttributes().getNamedItem("name") != null) {
+            this.properties.get(configName).setValue(configValue);
 
-                    if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue()
-                            .equals(configName)) {
-                        nodeList.item(i).setTextContent(configValue);
-                        this.properties.put(configName, configValue);
-                        break;
-                    }
-                }
-                i++;
-            }
-            StringWriter sw = new StringWriter();
-            StreamResult sr = new StreamResult(sw);
-            DOMSource dom = new DOMSource(document);
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.transform(dom, sr);
-            String string = sw.toString();
-            FileWriter fw = new FileWriter(new File(Game.CONTENT_PATH + "config.xml"));
-            fw.write(string);
-            fw.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,7 +84,7 @@ public class Configuration {
     }
 
     public String get(String configName) {
-        return this.properties.get(configName);
+        return this.properties.get(configName).getValue();
     }
 
     public static Configuration getInstance() {
@@ -89,5 +93,33 @@ public class Configuration {
         }
 
         return Configuration.configuration;
+    }
+
+    private class Property {
+
+        private String value;
+        private boolean isDirty = false;
+
+        public Property(String value) {
+            this.value = value;
+            this.isDirty = true;
+        }
+
+        public String getValue() {
+            return this.value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+            this.isDirty = true;
+        }
+
+        public boolean isDirty() {
+            return this.isDirty;
+        }
+
+        public void setDirty(boolean isDirty) {
+            this.isDirty = isDirty;
+        }
     }
 }
