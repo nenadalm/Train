@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <translations>
 	<translation id="yes">ano</translation>
+	<translation id="Yes">Ano</translation>
 	<translation id="no">ne</translation>
+	<translation id="No">Ne</translation>
 	<translation id="save">uložit</translation>
 	<translation id="exit">ukončit</translation>
 	<translation id="options">nastavení</translation>
@@ -9,8 +11,24 @@
 	<translation id="level editor">editor levelů</translation>
 	<translation id="start game">zahájit hru</translation>
 	<translation id="Resolution">Rozlišení</translation>
-	<translation id="Fullscreen">Fullscreen</translation>
+	<translation id="Fullscreen">Celá obrazovka</translation>
 	<translation id="return">zpět</translation>
 	<translation id="Language">Jazyk</translation>
 	<translation id="name">jméno</translation>
+	<translation id="Name">Jméno</translation>
+	<translation id="Packages">Balíčky</translation>
+	<translation id="Levels">Levely</translation>
+	<translation id="showing">zobrazuji</translation>
+	<translation id="of">z</translation>
+	<translation id="Create">Vytvořit</translation>
+	<translation id="Move Up">Nahoru</translation>
+	<translation id="Move Down">Dolu</translation>
+	<translation id="Rename">Přejmenovat</translation>
+	<translation id="delete">vymazat</translation>
+	<translation id="Delete">Vymazat</translation>
+	<translation id="Really">Opravdu</translation>
+	<translation id="Edit">Upravit</translation>
+	<translation id="Resize">Změnit velikost</translation>
+	<translation id="Width">Šířka</translation>
+	<translation id="Height">Výška</translation>
 </translations>

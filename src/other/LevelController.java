@@ -1,5 +1,6 @@
 package other;
 
+import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,33 +37,8 @@ public class LevelController {
      */
     public Level getLevel(int number) throws Exception {
         number--;
+        return null;
 
-        if (this.currentLevel == number) {
-            return this.level;
-        }
-
-        if (number >= this.levels.length || number < 0) {
-            throw new Exception("Level does not exist.");
-        }
-
-        // read lines from file
-        File file = new File(Level.LEVELS_PATH + this.levels[number]);
-        List<String> lines = null;
-        try {
-            lines = this.getLines(file);
-        } catch (Exception e) {
-            throw new Exception("Cannot read from file '" + file.getAbsolutePath() + "'.");
-        }
-
-        if (!this.levelIsValid(lines)) {
-            throw new Exception("Format of level is invalid. File: '" + file.getAbsolutePath()
-                    + "'");
-        }
-
-        this.currentLevel = number;
-        this.level.setArray(this.getArrayFromLines(lines));
-
-        return this.level;
     }
 
     /**
@@ -190,5 +166,17 @@ public class LevelController {
                 return Item.EMPTY;
         }
         return Item.EMPTY;
+    }
+
+    public void createNewLevel(int packageIndex, int levelIndex, int width, int height) {
+
+    }
+
+    public void resizeLevel(int packageIndex, int levelIndex, int width, int height) {
+
+    }
+
+    public Dimension getLevelSize(int packageIndex, int levelIndex) {
+        return new Dimension(7, 7);
     }
 }

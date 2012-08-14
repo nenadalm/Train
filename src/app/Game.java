@@ -5,9 +5,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import other.Translator;
-import state.EditorState;
-import state.GameState;
-import state.MenuState;
+import state.*;
 
 public class Game extends StateBasedGame {
 
@@ -16,6 +14,7 @@ public class Game extends StateBasedGame {
     public static final int MENU_STATE = 0;
     public static final int GAME_STATE = 1;
     public static final int EDITOR_STATE = 2;
+    public static final int MENU_FOR_EDITOR_STATE = 3;
 
     public Game(String title) {
         super(title);
@@ -27,6 +26,7 @@ public class Game extends StateBasedGame {
         this.addState(new MenuState(Game.MENU_STATE));
         this.addState(new GameState(Game.GAME_STATE));
         this.addState(new EditorState(Game.EDITOR_STATE));
+        this.addState(new MenuForEditorState(Game.MENU_FOR_EDITOR_STATE));
     }
 
 }
