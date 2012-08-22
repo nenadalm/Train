@@ -10,35 +10,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.Game;
 import entity.Level;
 import entity.Level.Item;
 
 public class LevelController {
 
     // loaded level
-    private int currentLevel = -1;
+    private int currentLevel, currentPackage;
     private Level level;
 
-    // list of levels
-    private String[] levels;
-
     public LevelController() {
-        this.level = new Level(0, 0);
-        this.loadLevels();
+
     }
 
     /**
      * Returns level
      * 
-     * @param number
-     *            Number of level
      * @return
      * @throws Exception
      */
-    public Level getLevel(int number) throws Exception {
-        number--;
-        return null;
-
+    public Level getLevel() throws Exception {
+        return this.level;
     }
 
     /**
@@ -57,9 +50,43 @@ public class LevelController {
         return true;
     }
 
-    private void loadLevels() {
-        File dir = new File(Level.LEVELS_PATH);
-        this.levels = dir.list();
+    public void loadLevel(int packageIndex, int levelIndex) {
+        File base = new File(Level.LEVELS_PATH);
+        File packageDirectory = base.listFiles()[packageIndex];
+        File levelFile = packageDirectory.listFiles()[levelIndex];
+
+        List<String> lines = null;
+        try {
+            lines = this.getLines(levelFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!this.levelIsValid(lines)) {
+            System.out.println("Invalid level");
+        }
+
+        this.level.setArray(this.getArrayFromLines(lines));
+        this.currentLevel = levelIndex;
+        this.currentPackage = packageIndex;
+    }
+
+    public ArrayList<LevelPackage> getLevels() {
+        ArrayList<LevelPackage> levelPackages = new ArrayList<LevelPackage>();
+        File root = new File(Game.CONTENT_PATH + "levels/");
+        for (File file : root.listFiles()) {
+            if (file.isDirectory()) {
+                String name = file.getName().substring(4);
+                ArrayList<String> levelNames = new ArrayList<String>();
+                for (File levelFile : file.listFiles()) {
+                    if (!levelFile.isDirectory()) {
+                        levelNames.add(levelFile.getName().substring(3));
+                    }
+                }
+                levelPackages.add(new LevelPackage(name, levelNames));
+            }
+        }
+        return levelPackages;
     }
 
     private Item[][] getArrayFromLines(List<String> lines) {
@@ -70,7 +97,6 @@ public class LevelController {
                 level[j][i] = this.getItemFromLetter(lines.get(i).charAt(j));
             }
         }
-
         return level;
     }
 
@@ -90,27 +116,6 @@ public class LevelController {
         }
         br.close();
         return lines;
-    }
-
-    /**
-     * Returns number of available levels.
-     * 
-     * @return
-     */
-    public int getNumberOfLevels() {
-        return this.levels.length;
-    }
-
-    /**
-     * Remove file with level
-     * 
-     * @param levelName
-     *            Name of level
-     */
-    public void removeLevel(String levelName) {
-        File file = new File(Level.LEVELS_PATH);
-        file.delete();
-        this.loadLevels();
     }
 
     /**
@@ -142,7 +147,6 @@ public class LevelController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.loadLevels();
     }
 
     /**
@@ -154,29 +158,31 @@ public class LevelController {
      */
     private Item getItemFromLetter(char letter) {
         switch (letter) {
-            case 'W':
-                return Item.WALL;
-            case 'G':
-                return Item.GATE;
-            case 'T':
-                return Item.TREE;
-            case 'V':
-                return Item.TRAIN;
-            case 'E':
-                return Item.EMPTY;
+        case 'W':
+            return Item.WALL;
+        case 'G':
+            return Item.GATE;
+        case 'T':
+            return Item.TREE;
+        case 'V':
+            return Item.TRAIN;
+        case 'E':
+            return Item.EMPTY;
         }
         return Item.EMPTY;
     }
 
     public void createNewLevel(int packageIndex, int levelIndex, int width, int height) {
-
+        // TODO fill newly created file with valid data. File already exist do
+        // NOT create it again!
     }
 
     public void resizeLevel(int packageIndex, int levelIndex, int width, int height) {
-
+        // TODO change level size
     }
 
     public Dimension getLevelSize(int packageIndex, int levelIndex) {
+        // TODO load level then get its width and height
         return new Dimension(7, 7);
     }
 }

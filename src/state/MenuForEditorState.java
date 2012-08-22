@@ -77,7 +77,7 @@ public class MenuForEditorState extends BasicGameState {
         ubuntuLarge.loadGlyphs();
 
         levelController = new LevelController();
-        loadLevels();
+        levelPackages = levelController.getLevels();
 
         arrowUp = new Image(Game.CONTENT_PATH + "graphics/arrow.png").getScaledCopy(width / 2000f);
         arrowDown = arrowUp.getFlippedCopy(false, true);
@@ -560,7 +560,8 @@ public class MenuForEditorState extends BasicGameState {
                         inputState = 0;
                     }
                     if (isMouseOverLevelActions[1] && !isLevelActionsDisabled[1]) { // EDIT
-
+                        levelController.loadLevel(packageIndex, levelIndex);
+                        game.enterState(Game.EDITOR_STATE);
                     }
                     if (isMouseOverLevelActions[2] && !isLevelActionsDisabled[2]) { // MOVEUP
                         LevelPackage levelPackage = levelPackages.get(packageIndex);
@@ -614,23 +615,6 @@ public class MenuForEditorState extends BasicGameState {
         int width = font.getWidth(text);
         int height = font.getHeight(text);
         g.drawString(text, x - width / 2, y - height / 2);
-    }
-
-    private void loadLevels() {
-        levelPackages = new ArrayList<LevelPackage>();
-        File root = new File(Game.CONTENT_PATH + "levels/");
-        for (File file : root.listFiles()) {
-            if (file.isDirectory()) {
-                String name = file.getName().substring(4);
-                ArrayList<String> levelNames = new ArrayList<String>();
-                for (File levelFile : file.listFiles()) {
-                    if (!levelFile.isDirectory()) {
-                        levelNames.add(levelFile.getName().substring(3));
-                    }
-                }
-                levelPackages.add(new LevelPackage(name, levelNames));
-            }
-        }
     }
 
     private void drawImage(Image image, float x, float y) {
