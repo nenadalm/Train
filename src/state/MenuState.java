@@ -88,8 +88,8 @@ public class MenuState extends BasicGameState {
         exitRectangle.x = width / 2 - exitRectangle.width / 2;
         exitRectangle.y = distanceBetweenMenuEntries * 5 - exitRectangle.height / 2;
 
-        trainTextWidth = ubuntuLarge.getWidth("Train 1.0");
-        trainTextHeight = ubuntuLarge.getHeight("Train 1.0");
+        trainTextWidth = ubuntuLarge.getWidth("Train " + version);
+        trainTextHeight = ubuntuLarge.getHeight("Train " + version);
     }
 
     @Override
@@ -189,6 +189,10 @@ public class MenuState extends BasicGameState {
         }
 
         if (input.isMousePressed(0)) {
+            if (isMouseOverStartGame) {
+                game.getState(Game.MENU_FOR_GAME_STATE).init(container, game);
+                game.enterState(Game.MENU_FOR_GAME_STATE);
+            }
             if (isMouseOverLevelEditor) {
                 game.getState(Game.MENU_FOR_EDITOR_STATE).init(container, game);
                 game.enterState(Game.MENU_FOR_EDITOR_STATE);
@@ -329,6 +333,7 @@ public class MenuState extends BasicGameState {
             configuration.set("fullscreen", String.valueOf(isFullscreen));
             ((AppGameContainer) container).setDisplayMode(displayModes[modeIndex].getWidth(),
                     displayModes[modeIndex].getHeight(), isFullscreen);
+            configuration.saveChanges();
             translator.setLanguage(languages[languageIndex]);
             init(container, game);
         } catch (SlickException e) {
