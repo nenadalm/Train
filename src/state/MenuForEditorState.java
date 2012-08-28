@@ -26,11 +26,11 @@ import app.Game;
 public class MenuForEditorState extends BasicGameState {
 
     private boolean isMouseOverPackageArrowUp, isMouseOverPackageArrowDown,
-            isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isLevelArrowDownDisabled,
-            isCreatingNewPackage, isRenamingPackage, isDeletingPackage, isCreatingNewLevel,
-            isRenamingLevel, isResizingLevel, isDeletingLevel, isMouseOverPackageNames[],
-            isMouseOverLevelNames[], isMouseOverPackageActions[], isPackageActionsDisabled[],
-            isMouseOverLevelActions[], isLevelActionsDisabled[];
+            isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isMouseOverReturn,
+            isLevelArrowDownDisabled, isCreatingNewPackage, isRenamingPackage, isDeletingPackage,
+            isCreatingNewLevel, isRenamingLevel, isResizingLevel, isDeletingLevel,
+            isMouseOverPackageNames[], isMouseOverLevelNames[], isMouseOverPackageActions[],
+            isPackageActionsDisabled[], isMouseOverLevelActions[], isLevelActionsDisabled[];
     private int stateId, width, height, packageIndex, levelIndex, packageBaseIndex, levelBaseIndex,
             inputState;
     private UnicodeFont ubuntuSmall, ubuntuMedium, ubuntuLarge;
@@ -39,8 +39,8 @@ public class MenuForEditorState extends BasicGameState {
     private Point mouse;
     private Translator translator;
     private Rectangle packageArrowUpRectangle, packageArrowDownRectangle, levelArrowUpRectangle,
-            levelArrowDownRectangle, packageNameRectangles[], levelNameRectangles[],
-            packageActionRectangles[], levelActionRectangles[];
+            levelArrowDownRectangle, returnRectangle, packageNameRectangles[],
+            levelNameRectangles[], packageActionRectangles[], levelActionRectangles[];
     private ArrayList<LevelPackage> levelPackages;
     private Image arrowUp, arrowDown, arrowMouseOverUp, arrowMouseOverDown, arrowDisabledUp,
             arrowDisabledDown;
@@ -112,6 +112,12 @@ public class MenuForEditorState extends BasicGameState {
         levelArrowDownRectangle.x = width * 7 / 12;
         levelArrowDownRectangle.y = height * 9 / 12;
 
+        returnRectangle = new Rectangle();
+        returnRectangle.width = ubuntuSmall.getWidth(translator.translate("return"));
+        returnRectangle.height = ubuntuSmall.getHeight(translator.translate("return"));
+        returnRectangle.x = width / 100;
+        returnRectangle.y = (int) (height - returnRectangle.height * 1.1f);
+
         packageActions = new String[5];
         packageActions[0] = translator.translate("Create");
         packageActions[1] = translator.translate("Move Up");
@@ -146,10 +152,11 @@ public class MenuForEditorState extends BasicGameState {
 
         isCreatingNewPackage = false;
         isRenamingPackage = false;
+
         textField = new TextField(container, ubuntuSmall, width / 3, height - width / 26,
                 width / 3, width / 30);
         textField.setBackgroundColor(Color.darkGray);
-        textField.setMaxLength(16);
+        textField.setMaxLength(15);
         textField.setTextColor(Color.white);
         textField.setText("");
     }
@@ -169,6 +176,9 @@ public class MenuForEditorState extends BasicGameState {
         g.drawString(text, 0, height / 6 - ubuntuMedium.getHeight(text) / 2);
         g.drawString(text2, width / 2, height / 6 - ubuntuMedium.getHeight(text) / 2);
         g.setFont(ubuntuSmall);
+        g.setColor((isMouseOverReturn) ? Color.red : Color.white);
+        g.drawString(translator.translate("return"), width / 100, height - returnRectangle.height
+                * 1.1f);
         for (int i = 0; i < levelPackages.size() && i < 5; i++) {
             g.setColor((packageIndex == packageBaseIndex + i) ? Color.blue
                     : ((isMouseOverPackageNames[i]) ? Color.red : Color.white));
@@ -213,20 +223,20 @@ public class MenuForEditorState extends BasicGameState {
                     / 2, height * (3 + i) / 13);
         }
 
-        Image imageToBeDrawn = (packageBaseIndex == 0) ? arrowDisabledUp
+        Image arrowImageToBeDrawn = (packageBaseIndex == 0) ? arrowDisabledUp
                 : ((isMouseOverPackageArrowUp) ? arrowMouseOverUp : arrowUp);
-        drawImage(imageToBeDrawn, width / 12, height * 3 / 12);
-        imageToBeDrawn = (packageBaseIndex + 5 == levelPackages.size()) ? arrowDisabledDown
+        drawImage(arrowImageToBeDrawn, width / 12, height * 3 / 12);
+        arrowImageToBeDrawn = (packageBaseIndex + 5 == levelPackages.size()) ? arrowDisabledDown
                 : ((isMouseOverPackageArrowDown) ? arrowMouseOverDown : arrowDown);
-        drawImage(imageToBeDrawn, width / 12, height * 9 / 12);
+        drawImage(arrowImageToBeDrawn, width / 12, height * 9 / 12);
 
-        imageToBeDrawn = (levelBaseIndex == 0) ? arrowDisabledUp
+        arrowImageToBeDrawn = (levelBaseIndex == 0) ? arrowDisabledUp
                 : ((isMouseOverLevelArrowUp) ? arrowMouseOverUp : arrowUp);
-        drawImage(imageToBeDrawn, width * 7 / 12, height * 3 / 12);
+        drawImage(arrowImageToBeDrawn, width * 7 / 12, height * 3 / 12);
 
-        imageToBeDrawn = (isLevelArrowDownDisabled) ? arrowDisabledDown
+        arrowImageToBeDrawn = (isLevelArrowDownDisabled) ? arrowDisabledDown
                 : ((isMouseOverLevelArrowDown) ? arrowMouseOverDown : arrowDown);
-        drawImage(imageToBeDrawn, width * 7 / 12, height * 9 / 12);
+        drawImage(arrowImageToBeDrawn, width * 7 / 12, height * 9 / 12);
 
         g.setColor(Color.white);
         if (isCreatingNewPackage || isRenamingPackage || isCreatingNewLevel || isRenamingLevel
@@ -273,6 +283,8 @@ public class MenuForEditorState extends BasicGameState {
         isMouseOverPackageArrowDown = packageArrowDownRectangle.contains(mouse);
         isMouseOverLevelArrowUp = levelArrowUpRectangle.contains(mouse);
         isMouseOverLevelArrowDown = levelArrowDownRectangle.contains(mouse);
+
+        isMouseOverReturn = returnRectangle.contains(mouse);
 
         for (int i = 0; i < packageNameRectangles.length && i < levelPackages.size(); i++) {
             isMouseOverPackageNames[i] = packageNameRectangles[i].contains(mouse);
@@ -504,7 +516,9 @@ public class MenuForEditorState extends BasicGameState {
                 levelBaseIndex++;
                 setLevelNameRectangles();
             }
-
+            if (isMouseOverReturn) {
+                game.enterState(Game.MENU_STATE);
+            }
             if (!isCreatingNewPackage && !isRenamingPackage && !isDeletingPackage
                     && !isCreatingNewLevel && !isRenamingLevel && !isResizingLevel
                     && !isDeletingLevel) {

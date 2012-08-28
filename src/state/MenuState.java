@@ -214,10 +214,10 @@ public class MenuState extends BasicGameState {
         isMouseOverSave = saveRectangle.contains(mouse);
         isMouseOverReturn = returnRectangle.contains(mouse);
 
-        if (input.isKeyDown(Input.KEY_ENTER)) {
+        if (input.isKeyPressed(Input.KEY_ENTER)) {
             saveOptions(container, game);
         }
-        if (input.isKeyDown(Input.KEY_ESCAPE)) {
+        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             isInOptions = false;
         }
         if (input.isMousePressed(0)) {

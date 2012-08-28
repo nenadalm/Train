@@ -20,6 +20,7 @@
 	<translation id="Levels">Levely</translation>
 	<translation id="showing">zobrazuji</translation>
 	<translation id="of">z</translation>
+	<translation id="of2">ze</translation>
 	<translation id="Create">Vytvořit</translation>
 	<translation id="Move Up">Nahoru</translation>
 	<translation id="Move Down">Dolu</translation>
@@ -31,4 +32,8 @@
 	<translation id="Resize">Změnit velikost</translation>
 	<translation id="Width">Šířka</translation>
 	<translation id="Height">Výška</translation>
+	<translation id="none">není</translation>
+	<translation id="completed">dokončeno</translation>
+	<translation id="locked">zamčený</translation>
+	<translation id="play">hrát</translation>
 </translations>
