@@ -22,7 +22,7 @@ public class GameState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         LevelController levelController = new LevelController();
         try {
-            this.level = levelController.getLevel();
+            this.level = levelController.getLevel(1);
         } catch (Exception e) {
             e.printStackTrace();
         }
