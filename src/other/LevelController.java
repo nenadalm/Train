@@ -27,12 +27,17 @@ public class LevelController {
         this.loadLevels();
     }
 
+    /**
+     * Returns currently loaded level
+     * 
+     * @return
+     */
     public Level getCurrentLevel() {
         return this.level;
     }
 
     /**
-     * Loads level level
+     * Loads level into this.currentLevel
      * 
      * @param number
      *            Number of level
@@ -84,6 +89,9 @@ public class LevelController {
         return true;
     }
 
+    /**
+     * Load all levels with packages into this.levels
+     */
     private void loadLevels() {
         File dir = new File(Level.LEVELS_PATH);
         String packageNames[] = dir.list();
@@ -102,6 +110,12 @@ public class LevelController {
         this.levels = levelPackages;
     }
 
+    /**
+     * Returns array of items from lines of file of level.
+     * 
+     * @param lines
+     * @return
+     */
     private Item[][] getArrayFromLines(List<String> lines) {
         int width = lines.get(0).length();
         Item level[][] = new Item[width][lines.size()];
@@ -115,8 +129,10 @@ public class LevelController {
     }
 
     /**
+     * Returns lines of file with level
      * 
      * @param file
+     *            File with level
      * @return Returns lines from file.
      * @throws FileNotFoundException
      * @throws IOException
@@ -130,15 +146,6 @@ public class LevelController {
         }
         br.close();
         return lines;
-    }
-
-    /**
-     * Returns number of available levels.
-     * 
-     * @return
-     */
-    public int getNumberOfLevels() {
-        return this.levels.length;
     }
 
     /**
@@ -208,6 +215,11 @@ public class LevelController {
         return Item.EMPTY;
     }
 
+    /**
+     * Returns packages of levels
+     * 
+     * @return
+     */
     public ArrayList<LevelPackage> getLevels() {
         ArrayList<LevelPackage> levels = new ArrayList<LevelPackage>(this.levels.length);
         for (int i = 0; i < this.levels.length; i++) {
@@ -216,12 +228,36 @@ public class LevelController {
         return levels;
     }
 
+    /**
+     * Creates new level
+     * 
+     * @param packageIndex
+     *            Index of folder
+     * @param levelIndex
+     *            Index of file in folder
+     * @param width
+     *            Width of new level
+     * @param height
+     *            Height of new level
+     */
     public void createNewLevel(int packageIndex, int levelIndex, int width, int height) {
         String levelName = String.format("%1$2td_level", levelIndex);
         Level level = new Level(width, height);
         this.saveLevel(level.toArray(), levelName, this.levels[levelIndex].getName());
     }
 
+    /**
+     * Resize level - if current level is bigger, it removes items from right
+     * and bottom - fi current level is smaller, it adds empty items to right
+     * and bottom
+     * 
+     * @param packageIndex
+     *            Index of foler
+     * @param levelIndex
+     *            Index of file in folder
+     * @param width
+     * @param height
+     */
     public void resizeLevel(int packageIndex, int levelIndex, int width, int height) {
         try {
             this.loadLevel(packageIndex, levelIndex);
@@ -245,6 +281,13 @@ public class LevelController {
         this.saveLevel(newArray, levelName, packageName);
     }
 
+    /**
+     * Returns dimension of level
+     * 
+     * @param packageIndex
+     * @param levelIndex
+     * @return
+     */
     public Dimension getLevelSize(int packageIndex, int levelIndex) {
         LevelPackage levelPackage = this.levels[packageIndex];
         String packageName = levelPackage.getName();
