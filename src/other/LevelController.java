@@ -95,11 +95,13 @@ public class LevelController {
     private void loadLevels() {
         File dir = new File(Level.LEVELS_PATH);
         String packageFileNames[] = dir.list();
+        this.sortArrayByStartingNumbers(packageFileNames);
         ArrayList<LevelPackage> packages = new ArrayList<LevelPackage>(packageFileNames.length);
         LevelPackage levelPackages[] = new LevelPackage[packageFileNames.length];
         for (int i = 0; i < packageFileNames.length; i++) {
             File levelPackage = new File(Level.LEVELS_PATH + packageFileNames[i]);
             String levelFileNames[] = levelPackage.list();
+            this.sortArrayByStartingNumbers(levelFileNames);
             ArrayList<String> levelNames = new ArrayList<String>(levelFileNames.length);
             for (String levelFileName : levelFileNames) {
                 String levelName = levelFileName.replaceFirst(".*?_", "");
@@ -110,6 +112,23 @@ public class LevelController {
             levelPackages[i] = new LevelPackage(packageName, levelNames);
         }
         this.levels = levelPackages;
+    }
+
+    private void sortArrayByStartingNumbers(String list[]) {
+        int index1;
+        int index2;
+        String tmp;
+        for (int i = 0; i < list.length - 1; i++) {
+            for (int j = 0; j < list.length - i - 1; j++) {
+                index1 = Integer.valueOf(list[j].replaceFirst("_.*", ""));
+                index2 = Integer.valueOf(list[j + 1].replaceFirst("_.*", ""));
+                if (index1 > index2) {
+                    tmp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = tmp;
+                }
+            }
+        }
     }
 
     /**
@@ -244,17 +263,10 @@ public class LevelController {
      */
     public void createLevel(int packageIndex, String packageName, int levelIndex, String levelName,
             int width, int height) {
-        String path = this.getLevelPath(packageIndex, packageName, levelIndex, levelName);
-        File newLevel = new File(path);
-        try {
-            newLevel.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        levelName = String.format("%1$02td_level", levelIndex);
+        String levelFileName = String.format("%1$02d_%2$s", levelIndex, levelName);
+        String packageFileName = String.format("%1$03d_%2$s", packageIndex, packageName);
         Level level = new Level(width, height);
-        this.saveLevel(level.toArray(), levelName, this.levels[levelIndex].getName());
+        this.saveLevel(level.toArray(), levelFileName, packageFileName);
     }
 
     private String getLevelPath(int packageIndex, String packageName, int levelIndex,
