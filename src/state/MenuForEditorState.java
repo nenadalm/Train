@@ -3,6 +3,7 @@ package state;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.File;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
@@ -334,8 +335,10 @@ public class MenuForEditorState extends BasicGameState {
                     isCreatingNewPackage = false;
                     LevelPackage levelPackage = new LevelPackage(name, new ArrayList<String>());
                     levelPackages.add(levelPackage);
-                    levelController.createPackage(levelPackages.size() - 1, textField.getText());
-
+                    String path = String.format("%1$slevels/%2$03d_%3$s", Game.CONTENT_PATH,
+                            levelPackages.size() - 1, textField.getText());
+                    File newPackage = new File(path);
+                    newPackage.mkdir();
                     textField.setText("");
                 }
             }
@@ -354,17 +357,26 @@ public class MenuForEditorState extends BasicGameState {
                 if (!isPackageAlreadyExist) {
                     levelPackages.get(packageIndex).setName(newName);
 
-                    levelController.renamePackage(packageIndex, oldName, packageIndex, newName);
+                    renamePackage(packageIndex, oldName, packageIndex, newName);
                     textField.setText("");
                 }
             }
             if (isDeletingPackage) {
                 isDeletingPackage = false;
-                levelController.deletePackage(packageIndex, levelPackages.get(packageIndex)
-                        .getName());
+                String path = String.format("%1$slevels/%2$03d_%3$s", Game.CONTENT_PATH,
+                        packageIndex, levelPackages.get(packageIndex).getName());
+                File beingDeletedPackage = new File(path);
+                for (File file : beingDeletedPackage.listFiles()) {
+                    file.delete();
+                }
+                beingDeletedPackage.delete();
                 levelPackages.remove(packageIndex);
                 if (packageBaseIndex > 0) {
                     packageBaseIndex--;
+                }
+                for (int i = packageIndex; i < levelPackages.size(); i++) {
+                    renamePackage(i + 1, levelPackages.get(i).getName(), i, levelPackages.get(i)
+                            .getName());
                 }
                 packageIndex--;
             }
@@ -379,10 +391,15 @@ public class MenuForEditorState extends BasicGameState {
 
                             LevelPackage levelPackage = levelPackages.get(packageIndex);
                             levelPackage.getLevelNames().add(newLevelName);
+                            String path = String.format("%1$slevels/%2$03d_%3$s/%4$02d_%5$s",
+                                    Game.CONTENT_PATH, packageIndex, levelPackage.getName(),
+                                    levelPackage.getLevelNames().size() - 1, newLevelName);
+                            File newLevel = new File(path);
 
-                            levelController.createLevel(packageIndex, levelPackage.getName(),
-                                    levelPackage.getLevelNames().size() - 1, newLevelName,
-                                    levelSize.width, levelSize.height);
+                            newLevel.createNewFile();
+
+                            levelController.createNewLevel(packageIndex, levelPackage
+                                    .getLevelNames().size() - 1, levelSize.width, levelSize.height);
                             textField.setText("");
                         }
                     } catch (Exception e) {
@@ -433,8 +450,7 @@ public class MenuForEditorState extends BasicGameState {
                 if (!isLevelAlreadyExist) {
                     levelPackage.getLevelNames().set(levelIndex, newName);
 
-                    levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                            .getName(), levelIndex, oldName, levelIndex, newName);
+                    renameLevel(packageIndex, levelIndex, oldName, levelIndex, newName);
                     textField.setText("");
                 }
             }
@@ -466,11 +482,17 @@ public class MenuForEditorState extends BasicGameState {
                 isDeletingLevel = false;
                 LevelPackage levelPackage = levelPackages.get(packageIndex);
                 ArrayList<String> names = levelPackage.getLevelNames();
-                levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex,
+                String path = String.format("%1$slevels/%2$03d_%3$s/%4$02d_%5$s",
+                        Game.CONTENT_PATH, packageIndex, levelPackage.getName(), levelIndex,
                         names.get(levelIndex));
+                File beingDeletedLevel = new File(path);
+                beingDeletedLevel.delete();
                 names.remove(levelIndex);
                 if (levelBaseIndex > 0) {
                     levelBaseIndex--;
+                }
+                for (int i = levelIndex; i < names.size(); i++) {
+                    renameLevel(packageIndex, i + 1, names.get(i), i, names.get(i));
                 }
                 levelIndex--;
             }
@@ -518,10 +540,8 @@ public class MenuForEditorState extends BasicGameState {
                     LevelPackage levelPackage = levelPackages.remove(packageIndex - 1);
                     levelPackages.add(packageIndex, levelPackage);
 
-                    levelController.renamePackage(packageIndex, firstName, packageIndex - 1,
-                            firstName);
-                    levelController.renamePackage(packageIndex - 1, secondName, packageIndex,
-                            secondName);
+                    renamePackage(packageIndex, firstName, packageIndex - 1, firstName);
+                    renamePackage(packageIndex - 1, secondName, packageIndex, secondName);
                     packageIndex--;
                 }
                 if (isMouseOverPackageActions[2] && !isPackageActionsDisabled[2]) { // MOVEDOWN
@@ -530,10 +550,8 @@ public class MenuForEditorState extends BasicGameState {
                     LevelPackage levelPackage = levelPackages.remove(packageIndex);
                     levelPackages.add(packageIndex + 1, levelPackage);
 
-                    levelController.renamePackage(packageIndex, firstName, packageIndex + 1,
-                            firstName);
-                    levelController.renamePackage(packageIndex + 1, secondName, packageIndex,
-                            secondName);
+                    renamePackage(packageIndex, firstName, packageIndex + 1, firstName);
+                    renamePackage(packageIndex + 1, secondName, packageIndex, secondName);
                     packageIndex++;
                 }
                 if (isMouseOverPackageActions[3] && !isPackageActionsDisabled[3]) { // RENAME
@@ -570,10 +588,9 @@ public class MenuForEditorState extends BasicGameState {
                         String level = levelPackage.getLevelNames().remove(levelIndex - 1);
                         levelPackage.getLevelNames().add(levelIndex, level);
 
-                        levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                                .getName(), levelIndex, firstName, levelIndex - 1, firstName);
-                        levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                                .getName(), levelIndex - 1, secondName, levelIndex, secondName);
+                        renameLevel(packageIndex, levelIndex, firstName, levelIndex - 1, firstName);
+                        renameLevel(packageIndex, levelIndex - 1, secondName, levelIndex,
+                                secondName);
                         levelIndex--;
                     }
                     if (isMouseOverLevelActions[3] && !isLevelActionsDisabled[3]) { // MOVEDOWN
@@ -583,10 +600,9 @@ public class MenuForEditorState extends BasicGameState {
                         String level = levelPackage.getLevelNames().remove(levelIndex);
                         levelPackage.getLevelNames().add(levelIndex + 1, level);
 
-                        levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                                .getName(), levelIndex, firstName, levelIndex + 1, firstName);
-                        levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                                .getName(), levelIndex + 1, secondName, levelIndex, secondName);
+                        renameLevel(packageIndex, levelIndex, firstName, levelIndex + 1, firstName);
+                        renameLevel(packageIndex, levelIndex + 1, secondName, levelIndex,
+                                secondName);
                         levelIndex++;
                     }
                     if (isMouseOverLevelActions[4] && !isLevelActionsDisabled[4]) { // RENAME
@@ -670,5 +686,25 @@ public class MenuForEditorState extends BasicGameState {
             levelActionRectangles[i].x = width - width / 9 - levelActionRectangles[i].width / 2;
             levelActionRectangles[i].y = height * (3 + i) / 13;
         }
+    }
+
+    private void renamePackage(int oldNumber, String oldName, int newNumber, String newName) {
+        String path = String
+                .format("%1$slevels/%2$03d_%3$s", Game.CONTENT_PATH, oldNumber, oldName);
+        File beingRenamedPackage = new File(path);
+        path = String.format("%1$slevels/%2$03d_%3$s", Game.CONTENT_PATH, newNumber, newName);
+        File renamedPackage = new File(path);
+        beingRenamedPackage.renameTo(renamedPackage);
+    }
+
+    private void renameLevel(int packageIndex, int oldNumber, String oldName, int newNumber,
+            String newName) {
+        String base = String.format("%1$slevels/%2$03d_%3$s/", Game.CONTENT_PATH, packageIndex,
+                levelPackages.get(packageIndex).getName());
+        String path = String.format("%1$02d_%2$s", oldNumber, oldName);
+        File level = new File(base + path);
+        path = String.format("%1$02d_%2$s", newNumber, newName);
+        File renamedLevel = new File(base + path);
+        level.renameTo(renamedLevel);
     }
 }
