@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.Game;
 import entity.Level;
 import entity.Level.Item;
 
@@ -240,8 +241,18 @@ public class LevelController {
      * @param height
      *            Height of new level
      */
-    public void createNewLevel(int packageIndex, int levelIndex, int width, int height) {
-        String levelName = String.format("%1$2td_level", levelIndex);
+    public void createLevel(int packageIndex, String packageName, int levelIndex, String levelName,
+            int width, int height) {
+        String path = String.format("%1$slevels/%2$03d_%3$s/%4$02d_%5$s", Game.CONTENT_PATH,
+                packageIndex, packageName, levelIndex, levelName);
+        File newLevel = new File(path);
+        try {
+            newLevel.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        levelName = String.format("%1$2td_level", levelIndex);
         Level level = new Level(width, height);
         this.saveLevel(level.toArray(), levelName, this.levels[levelIndex].getName());
     }
@@ -300,5 +311,56 @@ public class LevelController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void createPackage(int packageIndex, String packageName) {
+        String path = String.format("%1$slevels/%2$03d_%3$s", Game.CONTENT_PATH, packageIndex,
+                packageName);
+        File newPackage = new File(path);
+        newPackage.mkdir();
+    }
+
+    public void renamePackage(int oldNumber, String oldName, int newNumber, String newName) {
+        String path = String
+                .format("%1$slevels/%2$03d_%3$s", Game.CONTENT_PATH, oldNumber, oldName);
+        File beingRenamedPackage = new File(path);
+        path = String.format("%1$slevels/%2$03d_%3$s", Game.CONTENT_PATH, newNumber, newName);
+        File renamedPackage = new File(path);
+        beingRenamedPackage.renameTo(renamedPackage);
+    }
+
+    public void renameLevel(int packageIndex, String packageName, int oldNumber, String oldName,
+            int newNumber, String newName) {
+        String base = String.format("%1$slevels/%2$03d_%3$s/", Game.CONTENT_PATH, packageIndex,
+                packageName);
+        String path = String.format("%1$02d_%2$s", oldNumber, oldName);
+        File level = new File(base + path);
+        path = String.format("%1$02d_%2$s", newNumber, newName);
+        File renamedLevel = new File(base + path);
+        level.renameTo(renamedLevel);
+    }
+
+    public void deletePackage(int packageIndex, String packageName) {
+        String path = String.format("%1$slevels/%2$03d_%3$s", Game.CONTENT_PATH, packageIndex,
+                packageName);
+        File beingDeletedPackage = new File(path);
+        for (File file : beingDeletedPackage.listFiles()) {
+            file.delete();
+        }
+        beingDeletedPackage.delete();
+        for (int i = packageIndex; i < levels.length; i++) {
+            renamePackage(i + 1, levels[i].getName(), i, levels[i].getName());
+        }
+    }
+
+    public void deleteLevel(int packageIndex, String packageName, int levelIndex, String levelName) {
+        String path = String.format("%1$slevels/%2$03d_%3$s/%4$02d_%5$s", Game.CONTENT_PATH,
+                packageIndex, packageName, levelIndex, levelName);
+        File beingDeletedLevel = new File(path);
+        beingDeletedLevel.delete();
+        for (int i = levelIndex; i < levels[packageIndex].getLevelNames().size(); i++) {
+            renameLevel(packageIndex, levels[packageIndex].getName(), i + 1, levels[packageIndex]
+                    .getLevelNames().get(i), i, levels[packageIndex].getLevelNames().get(i));
+        }
     }
 }
