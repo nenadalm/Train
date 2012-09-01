@@ -88,15 +88,18 @@ public class LevelController {
         File dir = new File(Level.LEVELS_PATH);
         String packageNames[] = dir.list();
         ArrayList<LevelPackage> packages = new ArrayList<LevelPackage>(packageNames.length);
+        LevelPackage levelPackages[] = new LevelPackage[packageNames.length];
         for (int i = 0; i < packageNames.length; i++) {
-            File levelPackage = new File(Level.LEVELS_PATH + packages.get(i));
+            File levelPackage = new File(Level.LEVELS_PATH + packageNames[i]);
             String levels[] = levelPackage.list();
             ArrayList<String> levelNames = new ArrayList<String>(levels.length);
             for (String levelName : levels) {
                 levelNames.add(levelName);
             }
             packages.add(new LevelPackage(packageNames[i], levelNames));
+            levelPackages[i] = new LevelPackage(packageNames[i], levelNames);
         }
+        this.levels = levelPackages;
     }
 
     private Item[][] getArrayFromLines(List<String> lines) {
