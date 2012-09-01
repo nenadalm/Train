@@ -574,8 +574,12 @@ public class MenuForEditorState extends BasicGameState {
                         inputState = 0;
                     }
                     if (isMouseOverLevelActions[1] && !isLevelActionsDisabled[1]) { // EDIT
-                        levelController.loadLevel(packageIndex, levelIndex);
-                        game.enterState(Game.EDITOR_STATE);
+                        try {
+                            levelController.loadLevel(packageIndex, levelIndex);
+                            game.enterState(Game.EDITOR_STATE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     if (isMouseOverLevelActions[2] && !isLevelActionsDisabled[2]) { // MOVEUP
                         LevelPackage levelPackage = levelPackages.get(packageIndex);

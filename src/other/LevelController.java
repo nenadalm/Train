@@ -1,5 +1,6 @@
 package other;
 
+import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,34 +20,38 @@ public class LevelController {
     private Level level;
 
     // list of levels
-    private String[] levels;
+    private LevelPackage[] levels;
 
     public LevelController() {
         this.level = new Level(0, 0);
         this.loadLevels();
     }
 
+    public Level getCurrentLevel() {
+        return this.level;
+    }
+
     /**
-     * Returns level
+     * Loads level level
      * 
      * @param number
      *            Number of level
      * @return
      * @throws Exception
      */
-    public Level getLevel(int number) throws Exception {
-        number--;
+    public void loadLevel(int packageIndex, int levelIndex) throws Exception {
 
-        if (this.currentLevel == number) {
-            return this.level;
+        if (this.currentLevel == levelIndex) {
+            return;
         }
 
-        if (number >= this.levels.length || number < 0) {
+        if (levelIndex >= this.levels[packageIndex].getLevelNames().size() || levelIndex < 0) {
             throw new Exception("Level does not exist.");
         }
 
         // read lines from file
-        File file = new File(Level.LEVELS_PATH + this.levels[number]);
+        File file = new File(Level.LEVELS_PATH + this.levels[packageIndex].getName() + '/'
+                + this.levels[packageIndex].getLevelNames().get(levelIndex));
         List<String> lines = null;
         try {
             lines = this.getLines(file);
@@ -59,10 +64,8 @@ public class LevelController {
                     + "'");
         }
 
-        this.currentLevel = number;
+        this.currentLevel = levelIndex;
         this.level.setArray(this.getArrayFromLines(lines));
-
-        return this.level;
     }
 
     /**
@@ -83,7 +86,17 @@ public class LevelController {
 
     private void loadLevels() {
         File dir = new File(Level.LEVELS_PATH);
-        this.levels = dir.list();
+        String packageNames[] = dir.list();
+        ArrayList<LevelPackage> packages = new ArrayList<LevelPackage>(packageNames.length);
+        for (int i = 0; i < packageNames.length; i++) {
+            File levelPackage = new File(Level.LEVELS_PATH + packages.get(i));
+            String levels[] = levelPackage.list();
+            ArrayList<String> levelNames = new ArrayList<String>(levels.length);
+            for (String levelName : levels) {
+                levelNames.add(levelName);
+            }
+            packages.add(new LevelPackage(packageNames[i], levelNames));
+        }
     }
 
     private Item[][] getArrayFromLines(List<String> lines) {
@@ -145,7 +158,7 @@ public class LevelController {
      * @param levelName
      *            Name of file
      */
-    public void saveLevel(Item[][] level, String levelName) {
+    public void saveLevel(Item[][] level, String levelName, String packageName) {
 
         // load level into string buffer
         StringBuffer buffer = new StringBuffer();
@@ -158,7 +171,7 @@ public class LevelController {
 
         try {
             // save level into file
-            File file = new File(Level.LEVELS_PATH + levelName);
+            File file = new File(Level.LEVELS_PATH + packageName + '/' + levelName);
             file.createNewFile();
             FileWriter fw = new FileWriter(file);
             fw.write(buffer.toString());
@@ -190,5 +203,56 @@ public class LevelController {
                 return Item.EMPTY;
         }
         return Item.EMPTY;
+    }
+
+    public ArrayList<LevelPackage> getLevels() {
+        ArrayList<LevelPackage> levels = new ArrayList<LevelPackage>(this.levels.length);
+        for (int i = 0; i < this.levels.length; i++) {
+            levels.add(this.levels[i]);
+        }
+        return levels;
+    }
+
+    public void createNewLevel(int packageIndex, int levelIndex, int width, int height) {
+        String levelName = String.format("%1$2td_level", levelIndex);
+        Level level = new Level(width, height);
+        this.saveLevel(level.toArray(), levelName, this.levels[levelIndex].getName());
+    }
+
+    public void resizeLevel(int packageIndex, int levelIndex, int width, int height) {
+        try {
+            this.loadLevel(packageIndex, levelIndex);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Item levelArray[][] = this.level.toArray();
+        Item newArray[][] = new Item[width][height];
+        for (int i = 0; i < newArray.length; i++) {
+            for (int j = 0; j < newArray[0].length; j++) {
+                if (levelArray.length >= i && levelArray[0].length >= j) {
+                    newArray[i][j] = levelArray[i][j];
+                } else {
+                    newArray[i][j] = Item.EMPTY;
+                }
+            }
+        }
+        LevelPackage levelPackage = this.levels[packageIndex];
+        String packageName = levelPackage.getName();
+        String levelName = levelPackage.getLevelNames().get(levelIndex);
+        this.saveLevel(newArray, levelName, packageName);
+    }
+
+    public Dimension getLevelSize(int packageIndex, int levelIndex) {
+        LevelPackage levelPackage = this.levels[packageIndex];
+        String packageName = levelPackage.getName();
+        String levelName = levelPackage.getLevelNames().get(levelIndex);
+        File level = new File(Level.LEVELS_PATH + packageName + '/' + levelName);
+        try {
+            List<String> lines = this.getLines(level);
+            return new Dimension(lines.get(0).length(), lines.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
