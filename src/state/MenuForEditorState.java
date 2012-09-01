@@ -337,6 +337,7 @@ public class MenuForEditorState extends BasicGameState {
                     levelController.createPackage(levelPackages.size() - 1, textField.getText());
 
                     textField.setText("");
+                    setPackageNameRectangles();
                 }
             }
             if (isRenamingPackage) {
@@ -356,6 +357,7 @@ public class MenuForEditorState extends BasicGameState {
 
                     levelController.renamePackage(packageIndex, oldName, packageIndex, newName);
                     textField.setText("");
+                    setPackageNameRectangles();
                 }
             }
             if (isDeletingPackage) {
@@ -367,6 +369,7 @@ public class MenuForEditorState extends BasicGameState {
                     packageBaseIndex--;
                 }
                 packageIndex--;
+                setPackageNameRectangles();
             }
 
             if (isCreatingNewLevel) {
@@ -384,6 +387,7 @@ public class MenuForEditorState extends BasicGameState {
                                     levelPackage.getLevelNames().size() - 1, newLevelName,
                                     levelSize.width, levelSize.height);
                             textField.setText("");
+                            setLevelNameRectangles();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -436,6 +440,7 @@ public class MenuForEditorState extends BasicGameState {
                     levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
                             .getName(), levelIndex, oldName, levelIndex, newName);
                     textField.setText("");
+                    setLevelNameRectangles();
                 }
             }
             if (isResizingLevel) {
@@ -473,6 +478,7 @@ public class MenuForEditorState extends BasicGameState {
                     levelBaseIndex--;
                 }
                 levelIndex--;
+                setLevelNameRectangles();
             }
         }
 
