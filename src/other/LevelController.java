@@ -15,16 +15,23 @@ import entity.Level.Item;
 
 public class LevelController {
 
+    private static LevelController levelController = null;
+
     // loaded level
-    private static String currentLevelFileName;
-    private static String currentLevelPackageName;
-    private static Level level;
+    private String currentLevelFileName;
+    private String currentLevelPackageName;
+    private Level level;
 
     // list of levels
     private LevelPackage[] levels;
 
-    public LevelController() {
-        LevelController.level = new Level(0, 0);
+    public static LevelController getInstance() {
+        LevelController.levelController = new LevelController();
+        return LevelController.levelController;
+    }
+
+    private LevelController() {
+        LevelController.levelController.level = new Level(0, 0);
         this.loadLevels();
     }
 
@@ -34,7 +41,7 @@ public class LevelController {
      * @return
      */
     public Level getCurrentLevel() {
-        return LevelController.level;
+        return LevelController.levelController.level;
     }
 
     /**
@@ -69,10 +76,11 @@ public class LevelController {
                     + "'");
         }
 
-        LevelController.currentLevelFileName = String.format("%1$02d_%2$s", levelIndex, levelName);
-        LevelController.currentLevelPackageName = String.format("%1$03d_%2$s", packageIndex,
-                packageName);
-        LevelController.level.setArray(this.getArrayFromLines(lines));
+        LevelController.levelController.currentLevelFileName = String.format("%1$02d_%2$s",
+                levelIndex, levelName);
+        LevelController.levelController.currentLevelPackageName = String.format("%1$03d_%2$s",
+                packageIndex, packageName);
+        LevelController.levelController.level.setArray(this.getArrayFromLines(lines));
     }
 
     /**
@@ -216,9 +224,9 @@ public class LevelController {
     }
 
     public void saveCurrentLevel() {
-        Item level[][] = LevelController.level.toArray();
-        this.saveLevel(level, LevelController.currentLevelFileName,
-                LevelController.currentLevelPackageName);
+        Item level[][] = LevelController.levelController.level.toArray();
+        this.saveLevel(level, LevelController.levelController.currentLevelFileName,
+                LevelController.levelController.currentLevelPackageName);
     }
 
     /**
@@ -305,7 +313,7 @@ public class LevelController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Item levelArray[][] = LevelController.level.toArray();
+        Item levelArray[][] = LevelController.levelController.level.toArray();
         Item newArray[][] = new Item[width][height];
         for (int i = 0; i < newArray.length; i++) {
             for (int j = 0; j < newArray[0].length; j++) {

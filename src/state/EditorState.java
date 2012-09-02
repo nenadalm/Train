@@ -66,7 +66,7 @@ public class EditorState extends BasicGameState {
         this.activeItem = Item.WALL;
         this.itemSize = this.active.getWidth();
 
-        this.levelController = new LevelController();
+        this.levelController = LevelController.getInstance();
 
         this.menuItems = new Image[5];
 
