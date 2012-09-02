@@ -17,13 +17,13 @@ public class LevelController {
 
     // loaded level
     private int currentLevel = -1;
-    private Level level;
+    private static Level level;
 
     // list of levels
     private LevelPackage[] levels;
 
     public LevelController() {
-        this.level = new Level(0, 0);
+        LevelController.level = new Level(0, 0);
         this.loadLevels();
     }
 
@@ -33,7 +33,7 @@ public class LevelController {
      * @return
      */
     public Level getCurrentLevel() {
-        return this.level;
+        return LevelController.level;
     }
 
     /**
@@ -55,8 +55,11 @@ public class LevelController {
         }
 
         // read lines from file
-        File file = new File(Level.LEVELS_PATH + this.levels[packageIndex].getName() + '/'
-                + this.levels[packageIndex].getLevelNames().get(levelIndex));
+        LevelPackage levelPackage = this.levels[packageIndex];
+        String packageName = levelPackage.getName();
+        String levelName = levelPackage.getLevelNames().get(levelIndex);
+        String levelPath = this.getLevelPath(packageIndex, packageName, levelIndex, levelName);
+        File file = new File(levelPath);
         List<String> lines = null;
         try {
             lines = this.getLines(file);
@@ -70,7 +73,7 @@ public class LevelController {
         }
 
         this.currentLevel = levelIndex;
-        this.level.setArray(this.getArrayFromLines(lines));
+        LevelController.level.setArray(this.getArrayFromLines(lines));
     }
 
     /**
@@ -297,7 +300,7 @@ public class LevelController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Item levelArray[][] = this.level.toArray();
+        Item levelArray[][] = LevelController.level.toArray();
         Item newArray[][] = new Item[width][height];
         for (int i = 0; i < newArray.length; i++) {
             for (int j = 0; j < newArray[0].length; j++) {

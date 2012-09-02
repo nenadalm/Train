@@ -30,6 +30,7 @@ public class Level extends Entity {
     private boolean isGameWon = false;
     private List<Truck> trucks;
     private int itemsToWin = 0;
+    private int imageSize;
 
     public Level(int width, int height) {
         this.levelInit(width, height);
@@ -64,6 +65,12 @@ public class Level extends Entity {
         return this.level[0].length;
     }
 
+    @Override
+    public void setScale(float scale) {
+        super.setScale(scale);
+        this.imageSize *= scale;
+    }
+
     private void loadImages() {
         this.images = new HashMap<Item, Image>(5);
         try {
@@ -73,6 +80,7 @@ public class Level extends Entity {
             this.images.put(Item.TRAIN, new Image(Level.GRAPHICS + "train.png"));
             this.images.put(Item.EMPTY, new Image(Level.GRAPHICS + "empty.png"));
             this.images.put(Item.TRUCK, new Image(Level.GRAPHICS + "treeTruck.png"));
+            this.imageSize = this.images.get(Item.WALL).getWidth();
         } catch (SlickException e) {
             e.printStackTrace();
         }
@@ -128,7 +136,7 @@ public class Level extends Entity {
                     }
                     image.setRotation(truck.getRotation());
                 }
-                gr.drawImage(image, i * image.getWidth(), j * image.getHeight());
+                image.draw(i * this.imageSize, j * this.imageSize, this.getScale());
             }
         }
     }
@@ -269,16 +277,23 @@ public class Level extends Entity {
         return counter;
     }
 
-    public Point findTrainPosition() throws Exception {
+    public Point findTrainPosition() {
+        return this.findItemPosition(Item.TRAIN);
+    }
+
+    public Point findGatePosition() {
+        return this.findItemPosition(Item.GATE);
+    }
+
+    private Point findItemPosition(Item item) {
         for (int i = 0; i < this.level.length; i++) {
             for (int j = 0; j < this.level[0].length; j++) {
-                if (this.level[i][j] == Item.TRAIN) {
+                if (this.level[i][j] == item) {
                     return new Point(i, j);
                 }
             }
         }
-
-        throw new Exception("Train not found.");
+        return null;
     }
 
     private class Truck {

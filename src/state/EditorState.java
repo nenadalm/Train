@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import other.LevelController;
 import app.Game;
 import entity.Level;
 import entity.Level.Item;
@@ -33,9 +34,12 @@ public class EditorState extends BasicGameState {
     private int itemSize;
     private boolean showMenu = true;
     private Point fieldPosition;
-    private Level level;
+    private Level level = null;
     // states
     private boolean wasLeftButtonDown = false;
+
+    private LevelController levelController;
+    float scale = 1;
 
     private Point gatePosition = null;
     private Point trainPosition = null;
@@ -60,9 +64,7 @@ public class EditorState extends BasicGameState {
         this.activeItem = Item.WALL;
         this.itemSize = this.active.getWidth();
 
-        this.level = new Level(container.getWidth() / this.itemSize, container.getHeight()
-                / this.itemSize);
-        System.out.println(this.level.getWidth() + "; " + this.level.getHeight());
+        this.levelController = new LevelController();
 
         this.menuItems = new Image[4];
 
@@ -79,21 +81,41 @@ public class EditorState extends BasicGameState {
         this.level.render(container, game, g);
 
         if (this.showMenu) {
-            this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight());
-            int width = this.menuItems[0].getWidth();
+            this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight() * this.scale);
+            int width = (int) (this.menuItems[0].getWidth() * this.scale);
             for (int i = 0; i < this.menuItems.length; i++) {
-                this.menuItems[i].draw(width + i * width, 0);
+                this.menuItems[i].draw(width + i * width, 0, this.scale);
             }
         } else {
-            this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight());
+            this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight()
+                    * this.scale);
         }
-
-        this.active.draw(this.fieldPosition.x, this.fieldPosition.y);
+        this.active.draw(this.fieldPosition.x, this.fieldPosition.y, this.active.getWidth()
+                * this.scale, this.active.getHeight() * this.scale);
     }
 
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
+        // load level + scale
+        if (this.level == null) {
+            this.level = this.levelController.getCurrentLevel();
+            this.trainPosition = this.level.findTrainPosition();
+            this.gatePosition = this.level.findGatePosition();
+            float scale = 1;
+            float scaleWidth = container.getWidth()
+                    / ((float) this.level.getWidth() * this.itemSize);
+            float scaleHeight = container.getHeight()
+                    / ((float) this.itemSize * this.level.getHeight());
+            if (scaleWidth < 1 && scaleHeight < 1) {
+                scale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
+            } else if (scaleWidth < 1 || scaleHeight < 1) {
+                scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
+            }
+            this.level.setScale(scale);
+            this.itemSize *= scale;
+            this.scale = scale;
+        }
         Input input = container.getInput();
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
