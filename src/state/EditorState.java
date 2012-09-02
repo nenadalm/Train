@@ -24,6 +24,7 @@ public class EditorState extends BasicGameState {
     private Image gate;
     private Image tree;
     private Image wall;
+    private Image save;
     // menu images
     private Image itemMenu;
     private Image menuItems[] = null;
@@ -58,6 +59,7 @@ public class EditorState extends BasicGameState {
         this.gate = new Image(path + "gate.png");
         this.tree = new Image(path + "tree.png");
         this.wall = new Image(path + "wall.png");
+        this.save = new Image(path + "save.png");
 
         this.itemMenu = new Image(path + "itemMenu.png");
         this.active = new Image(path + "active.png");
@@ -66,12 +68,13 @@ public class EditorState extends BasicGameState {
 
         this.levelController = new LevelController();
 
-        this.menuItems = new Image[4];
+        this.menuItems = new Image[5];
 
         this.menuItems[0] = this.train;
         this.menuItems[1] = this.gate;
         this.menuItems[2] = this.tree;
         this.menuItems[3] = this.wall;
+        this.menuItems[4] = this.save;
     }
 
     @Override
@@ -138,6 +141,9 @@ public class EditorState extends BasicGameState {
                             this.activeItem = Item.GATE;
                         } else if (image == this.tree) {
                             this.activeItem = Item.TREE;
+                        } else if (image == this.save) {
+                            this.levelController.saveCurrentLevel();
+                            game.enterState(Game.MENU_STATE);
                         }
                     }
                 }

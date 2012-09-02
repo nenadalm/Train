@@ -16,7 +16,8 @@ import entity.Level.Item;
 public class LevelController {
 
     // loaded level
-    private int currentLevel = -1;
+    private static String currentLevelFileName;
+    private static String currentLevelPackageName;
     private static Level level;
 
     // list of levels
@@ -46,10 +47,6 @@ public class LevelController {
      */
     public void loadLevel(int packageIndex, int levelIndex) throws Exception {
 
-        if (this.currentLevel == levelIndex) {
-            return;
-        }
-
         if (levelIndex >= this.levels[packageIndex].getLevelNames().size() || levelIndex < 0) {
             throw new Exception("Level does not exist.");
         }
@@ -72,7 +69,9 @@ public class LevelController {
                     + "'");
         }
 
-        this.currentLevel = levelIndex;
+        LevelController.currentLevelFileName = String.format("%1$02d_%2$s", levelIndex, levelName);
+        LevelController.currentLevelPackageName = String.format("%1$03d_%2$s", packageIndex,
+                packageName);
         LevelController.level.setArray(this.getArrayFromLines(lines));
     }
 
@@ -196,9 +195,9 @@ public class LevelController {
 
         // load level into string buffer
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < level.length; i++) {
-            for (int j = 0; j < level[0].length; j++) {
-                buffer.append(level[i][j].getChar());
+        for (int i = 0; i < level[0].length; i++) {
+            for (int j = 0; j < level.length; j++) {
+                buffer.append(level[j][i].getChar());
             }
             buffer.append("\n");
         }
@@ -214,6 +213,12 @@ public class LevelController {
             e.printStackTrace();
         }
         this.loadLevels();
+    }
+
+    public void saveCurrentLevel() {
+        Item level[][] = LevelController.level.toArray();
+        this.saveLevel(level, LevelController.currentLevelFileName,
+                LevelController.currentLevelPackageName);
     }
 
     /**
