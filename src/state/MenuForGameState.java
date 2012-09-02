@@ -71,7 +71,7 @@ public class MenuForGameState extends BasicGameState {
                 new GradientEffect(java.awt.Color.WHITE, java.awt.Color.GRAY, 0.5f));
         ubuntuLarge.loadGlyphs();
 
-        levelController = new LevelController();
+        levelController = LevelController.getInstance();
         levelPackages = levelController.getLevels();
 
         File saveFile = new File(Game.CONTENT_PATH + "save");
@@ -82,6 +82,7 @@ public class MenuForGameState extends BasicGameState {
             FileInputStream in = new FileInputStream(saveFile);
             progresses = new byte[levelPackages.size()];
             in.read(progresses);
+            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -213,6 +214,7 @@ public class MenuForGameState extends BasicGameState {
                 }
                 FileOutputStream out = new FileOutputStream(saveFile);
                 out.write(progresses);
+                out.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -242,7 +244,9 @@ public class MenuForGameState extends BasicGameState {
                 game.enterState(Game.MENU_STATE);
             }
             if (isMouseOverPlay && !isPlayDisabled) {
-                // TODO start game
+                levelController.loadLevel(packageIndex, levelIndex);
+                game.getState(Game.GAME_STATE).init(container, game);
+                game.enterState(Game.GAME_STATE);
             }
         }
     }

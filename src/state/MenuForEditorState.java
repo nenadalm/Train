@@ -75,7 +75,7 @@ public class MenuForEditorState extends BasicGameState {
         ubuntuLarge.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
         ubuntuLarge.loadGlyphs();
 
-        levelController = new LevelController();
+        levelController = LevelController.getInstance();
         levelPackages = levelController.getLevels();
 
         arrowUp = new Image(Game.CONTENT_PATH + "graphics/arrow.png").getScaledCopy(width / 2000f);
@@ -564,6 +564,7 @@ public class MenuForEditorState extends BasicGameState {
                     if (isMouseOverLevelActions[1] && !isLevelActionsDisabled[1]) { // EDIT
                         try {
                             levelController.loadLevel(packageIndex, levelIndex);
+                            game.getState(Game.EDITOR_STATE).init(container, game);
                             game.enterState(Game.EDITOR_STATE);
                         } catch (Exception e) {
                             e.printStackTrace();
