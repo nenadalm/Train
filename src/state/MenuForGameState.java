@@ -244,7 +244,11 @@ public class MenuForGameState extends BasicGameState {
                 game.enterState(Game.MENU_STATE);
             }
             if (isMouseOverPlay && !isPlayDisabled) {
-                levelController.loadLevel(packageIndex, levelIndex);
+                try {
+                    levelController.loadLevel(packageIndex, levelIndex);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 game.getState(Game.GAME_STATE).init(container, game);
                 game.enterState(Game.GAME_STATE);
             }
