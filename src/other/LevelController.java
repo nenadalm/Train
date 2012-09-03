@@ -26,13 +26,15 @@ public class LevelController {
     private LevelPackage[] levels;
 
     public static LevelController getInstance() {
-        LevelController.levelController = new LevelController();
+        if (LevelController.levelController == null) {
+            LevelController.levelController = new LevelController();
+        }
         return LevelController.levelController;
     }
 
     private LevelController() {
-        LevelController.levelController.level = new Level(0, 0);
         this.loadLevels();
+        this.level = new Level(0, 0);
     }
 
     /**
@@ -41,7 +43,7 @@ public class LevelController {
      * @return
      */
     public Level getCurrentLevel() {
-        return LevelController.levelController.level;
+        return this.level;
     }
 
     /**
@@ -76,11 +78,9 @@ public class LevelController {
                     + "'");
         }
 
-        LevelController.levelController.currentLevelFileName = String.format("%1$02d_%2$s",
-                levelIndex, levelName);
-        LevelController.levelController.currentLevelPackageName = String.format("%1$03d_%2$s",
-                packageIndex, packageName);
-        LevelController.levelController.level.setArray(this.getArrayFromLines(lines));
+        this.currentLevelFileName = String.format("%1$02d_%2$s", levelIndex, levelName);
+        this.currentLevelPackageName = String.format("%1$03d_%2$s", packageIndex, packageName);
+        this.level.setArray(this.getArrayFromLines(lines));
     }
 
     /**
@@ -224,9 +224,8 @@ public class LevelController {
     }
 
     public void saveCurrentLevel() {
-        Item level[][] = LevelController.levelController.level.toArray();
-        this.saveLevel(level, LevelController.levelController.currentLevelFileName,
-                LevelController.levelController.currentLevelPackageName);
+        Item level[][] = this.level.toArray();
+        this.saveLevel(level, this.currentLevelFileName, this.currentLevelPackageName);
     }
 
     /**
@@ -313,7 +312,7 @@ public class LevelController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Item levelArray[][] = LevelController.levelController.level.toArray();
+        Item levelArray[][] = this.level.toArray();
         Item newArray[][] = new Item[width][height];
         for (int i = 0; i < newArray.length; i++) {
             for (int j = 0; j < newArray[0].length; j++) {
