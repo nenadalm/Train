@@ -190,11 +190,9 @@ public class MenuState extends BasicGameState {
 
         if (input.isMousePressed(0)) {
             if (isMouseOverStartGame) {
-                game.getState(Game.MENU_FOR_GAME_STATE).init(container, game);
                 game.enterState(Game.MENU_FOR_GAME_STATE);
             }
             if (isMouseOverLevelEditor) {
-                game.getState(Game.MENU_FOR_EDITOR_STATE).init(container, game);
                 game.enterState(Game.MENU_FOR_EDITOR_STATE);
             }
             if (isMouseOverOptions) {
@@ -335,7 +333,11 @@ public class MenuState extends BasicGameState {
                     displayModes[modeIndex].getHeight(), isFullscreen);
             configuration.saveChanges();
             translator.setLanguage(languages[languageIndex]);
-            init(container, game);
+            if (width != displayModes[modeIndex].getWidth()
+                    || height != displayModes[modeIndex].getHeight()) {
+                Game.isReinitializationRequried = true;
+                init(container, game);
+            }
         } catch (SlickException e) {
             e.printStackTrace();
         }

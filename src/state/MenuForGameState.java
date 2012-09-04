@@ -249,7 +249,6 @@ public class MenuForGameState extends BasicGameState {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                game.getState(Game.GAME_STATE).init(container, game);
                 game.enterState(Game.GAME_STATE);
             }
         }

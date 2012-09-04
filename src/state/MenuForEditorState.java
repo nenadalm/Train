@@ -564,7 +564,6 @@ public class MenuForEditorState extends BasicGameState {
                     if (isMouseOverLevelActions[1] && !isLevelActionsDisabled[1]) { // EDIT
                         try {
                             levelController.loadLevel(packageIndex, levelIndex);
-                            game.getState(Game.EDITOR_STATE).init(container, game);
                             game.enterState(Game.EDITOR_STATE);
                         } catch (Exception e) {
                             e.printStackTrace();
