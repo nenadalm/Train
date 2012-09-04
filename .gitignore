@@ -1,5 +1,18 @@
+#################
+## Eclipse
+#################
+
 /bin/*
 .classpath
 .project
 .settings
-/content/graphics/Thumbs.db
+
+############
+## Windows
+############
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
