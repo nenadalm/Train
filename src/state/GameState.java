@@ -22,7 +22,17 @@ public class GameState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         LevelController levelController = LevelController.getInstance();
         try {
+            int itemSize = 50;
             this.level = levelController.getCurrentLevel();
+            float scale = 1;
+            float scaleWidth = container.getWidth() / ((float) this.level.getWidth() * itemSize);
+            float scaleHeight = container.getHeight() / ((float) itemSize * this.level.getHeight());
+            if (scaleWidth < 1 && scaleHeight < 1) {
+                scale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
+            } else if (scaleWidth < 1 || scaleHeight < 1) {
+                scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
+            }
+            this.level.setScale(scale);
         } catch (Exception e) {
             e.printStackTrace();
         }

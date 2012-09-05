@@ -121,6 +121,8 @@ public class Level extends Entity {
                             image = image.getFlippedCopy(false, true);
                             break;
                     }
+                    int origin = this.imageSize / 2;
+                    image.setCenterOfRotation(origin, origin);
                     image.setRotation(this.train.getRotation());
                 } else if (this.level[i][j] == Item.TRUCK) {
                     Truck truck = null;
@@ -134,6 +136,8 @@ public class Level extends Entity {
                             image = image.getFlippedCopy(false, true);
                             break;
                     }
+                    int origin = this.imageSize / 2;
+                    image.setCenterOfRotation(origin, origin);
                     image.setRotation(truck.getRotation());
                 }
                 image.draw(i * this.imageSize, j * this.imageSize, this.getScale());
