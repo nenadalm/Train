@@ -146,29 +146,29 @@ public class MenuState extends BasicGameState {
         g.setFont(ubuntuLarge);
         g.setColor(Color.white);
         drawString(g, ubuntuLarge, translator.translate("Options"), width / 2,
-                (int) (ubuntuLarge.getHeight(translator.translate("Options")) / 1.75));
+                (ubuntuLarge.getHeight(translator.translate("Options")) / 2.25f));
         g.setFont(ubuntuMedium);
         drawString(g, ubuntuMedium, translator.translate("Resolution") + ":", width / 6 * 2,
-                height / 8 * 2);
+                height * 2 / 10);
         drawString(g, ubuntuMedium, translator.translate("Fullscreen") + ":", width / 6 * 2,
-                height / 8 * 3);
+                height * 3 / 10);
         drawString(g, ubuntuMedium, translator.translate("Language") + ":", width / 6 * 2,
-                height / 8 * 4);
+                height * 4 / 10);
         g.setColor((isMouseOverResolution) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, resolutionText, width / 6 * 4, height / 8 * 2);
+        drawString(g, ubuntuMedium, resolutionText, width / 6 * 4, height * 2 / 10);
         g.setColor((isMouseOverFullscreen) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium,
                 isFullscreen ? translator.translate("yes") : translator.translate("no"),
-                width / 6 * 4, height / 8 * 3);
+                width / 6 * 4, height * 3 / 10);
         g.setColor((isMouseOverLanguage) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, languages[languageIndex], width / 6 * 4, height / 8 * 4);
+        drawString(g, ubuntuMedium, languages[languageIndex], width / 6 * 4, height * 4 / 10);
 
         g.setColor((isMouseOverSave) ? Color.red : Color.white);
         drawString(g, ubuntuMedium, translator.translate("save"), width / 3,
-                (height - ubuntuMedium.getHeight(translator.translate("save"))));
+                (height - saveRectangle.height * 3 / 4));
         g.setColor((isMouseOverReturn) ? Color.red : Color.white);
         drawString(g, ubuntuMedium, translator.translate("return"), (int) (width / 1.5),
-                (height - ubuntuMedium.getHeight(translator.translate("save"))));
+                (height - returnRectangle.height * 3 / 4));
     }
 
     private void drawString(Graphics g, UnicodeFont font, String text, float x, float y) {
@@ -313,13 +313,13 @@ public class MenuState extends BasicGameState {
         saveRectangle.width = ubuntuMedium.getWidth(translator.translate("save"));
         saveRectangle.height = ubuntuMedium.getHeight(translator.translate("save"));
         saveRectangle.x = (width / 3) - saveRectangle.width / 2;
-        saveRectangle.y = (height - saveRectangle.height) - saveRectangle.height / 2;
+        saveRectangle.y = (height - saveRectangle.height) - saveRectangle.height / 6;
 
         returnRectangle = new Rectangle();
         returnRectangle.width = ubuntuMedium.getWidth(translator.translate("return"));
-        returnRectangle.height = ubuntuMedium.getHeight(translator.translate("return"));
+        returnRectangle.height = ubuntuMedium.getHeight(translator.translate("save"));
         returnRectangle.x = (int) (width / 1.5) - returnRectangle.width / 2;
-        returnRectangle.y = (height - returnRectangle.height) - returnRectangle.height / 2;
+        returnRectangle.y = (height - returnRectangle.height) - returnRectangle.height / 6;
     }
 
     private void saveOptions(GameContainer container, StateBasedGame game) {
@@ -349,8 +349,8 @@ public class MenuState extends BasicGameState {
                 displayModes[modeIndex].getHeight());
         resolutionRectangle.width = ubuntuMedium.getWidth(resolutionText);
         resolutionRectangle.height = ubuntuMedium.getHeight(resolutionText);
-        resolutionRectangle.x = width / 6 * 4 - resolutionRectangle.width / 2;
-        resolutionRectangle.y = height / 8 * 2 - resolutionRectangle.height / 2;
+        resolutionRectangle.x = width * 4 / 6 - resolutionRectangle.width / 2;
+        resolutionRectangle.y = height * 2 / 10 - resolutionRectangle.height / 2;
     }
 
     private void setFullscreenRectangle() {
@@ -358,14 +358,14 @@ public class MenuState extends BasicGameState {
                 .translate("yes") : translator.translate("no"));
         fullscreenRectangle.height = ubuntuMedium.getHeight(isFullscreen ? translator
                 .translate("yes") : translator.translate("no"));
-        fullscreenRectangle.x = width / 6 * 4 - fullscreenRectangle.width / 2;
-        fullscreenRectangle.y = height / 8 * 3 - fullscreenRectangle.height / 2;
+        fullscreenRectangle.x = width * 4 / 6 - fullscreenRectangle.width / 2;
+        fullscreenRectangle.y = height * 3 / 10 - fullscreenRectangle.height / 2;
     }
 
     private void setLanguageRectangle() {
         languageRectangle.width = ubuntuMedium.getWidth(languages[languageIndex]);
         languageRectangle.height = ubuntuMedium.getHeight(languages[languageIndex]);
-        languageRectangle.x = width / 6 * 4 - languageRectangle.width / 2;
-        languageRectangle.y = height / 8 * 4 - languageRectangle.height / 2;
+        languageRectangle.x = width * 4 / 6 - languageRectangle.width / 2;
+        languageRectangle.y = height * 4 / 10 - languageRectangle.height / 2;
     }
 }

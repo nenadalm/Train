@@ -2,8 +2,10 @@
 	<properties>
 		<property name="version">0.1</property>
 		<property name="language">cz</property>
-		<property name="width">800</property>
-		<property name="height">600</property>
+		<property name="width">1280</property>
+		<property name="height">720</property>
 		<property name="fullscreen">false</property>
+		<property name="autoscale">false</property>
+		<property name="scale">1</property>
 	</properties>
 </configuration>
