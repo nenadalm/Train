@@ -46,6 +46,11 @@ public class LevelController {
         return this.level;
     }
 
+    public Dimension getOptimalLevelDimension(int screenWidth, int screenHeight, float scale) {
+        int imageSize = (int) (50 * scale);
+        return new Dimension(screenWidth / imageSize, screenHeight / imageSize);
+    }
+
     /**
      * Loads level into this.currentLevel
      * 
