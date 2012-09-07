@@ -31,6 +31,7 @@ public class Level extends Entity {
     private List<Truck> trucks;
     private int itemsToWin = 0;
     private int imageSize;
+    private Point trainDirectionPrepared = new Point();
 
     public Level(int width, int height) {
         this.levelInit(width, height);
@@ -151,17 +152,18 @@ public class Level extends Entity {
 
         if (!this.isGameOver && !this.isGameWon) {
             if (input.isKeyDown(Keyboard.KEY_UP)) {
-                this.train.setDirection(new Point(0, -1));
+                this.trainDirectionPrepared = new Point(0, -1);
             } else if (input.isKeyDown(Keyboard.KEY_DOWN)) {
-                this.train.setDirection(new Point(0, 1));
+                this.trainDirectionPrepared = new Point(0, 1);
             } else if (input.isKeyDown(Keyboard.KEY_LEFT)) {
-                this.train.setDirection(new Point(-1, 0));
+                this.trainDirectionPrepared = new Point(-1, 0);
             } else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
-                this.train.setDirection(new Point(1, 0));
+                this.trainDirectionPrepared = new Point(1, 0);
             }
 
             this.time += delta;
             if (this.time >= this.interval) {
+                this.train.setDirection(this.trainDirectionPrepared);
                 Point lastPoint = (Point) this.train.getPosition().clone();
                 this.train.update(gc, sb, delta);
                 Point newPoint = this.train.getPosition();
