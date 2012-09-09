@@ -32,6 +32,7 @@ public class Level extends Entity {
     private int itemsToWin = 0;
     private int imageSize;
     private Point trainDirectionPrepared = new Point();
+    private Point margin = new Point();
 
     public Level(int width, int height) {
         this.levelInit(width, height);
@@ -110,6 +111,14 @@ public class Level extends Entity {
         }
     }
 
+    public void setMargin(Point margin) {
+        this.margin = margin;
+    }
+
+    public Point getMargin() {
+        return this.margin;
+    }
+
     @Override
     public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
         Image image = null;
@@ -141,7 +150,8 @@ public class Level extends Entity {
                     image.setCenterOfRotation(origin, origin);
                     image.setRotation(truck.getRotation());
                 }
-                image.draw(i * this.imageSize, j * this.imageSize, this.getScale());
+                image.draw(this.margin.x + i * this.imageSize, this.margin.y + j * this.imageSize,
+                        this.getScale());
             }
         }
     }

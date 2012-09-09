@@ -34,6 +34,7 @@ public class EditorState extends BasicGameState {
     // helping fields
     private int itemSize;
     private boolean showMenu = true;
+    private boolean showActive = true;
     private Point fieldPosition;
     private Level level = null;
     // states
@@ -93,8 +94,22 @@ public class EditorState extends BasicGameState {
             this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight()
                     * this.scale);
         }
-        this.active.draw(this.fieldPosition.x, this.fieldPosition.y, this.active.getWidth()
-                * this.scale, this.active.getHeight() * this.scale);
+        if (this.showActive) {
+            this.active.draw(this.fieldPosition.x, this.fieldPosition.y, this.active.getWidth()
+                    * this.scale, this.active.getHeight() * this.scale);
+        }
+    }
+
+    public boolean isCursorInLevelArea(int mouseX, int mouseY) {
+        int offsetX = this.level.getMargin().x;
+        int offsetY = this.level.getMargin().y;
+        int levelWidth = this.level.getWidth();
+        int levelHeight = this.level.getHeight();
+        if (mouseX > offsetX && mouseY > offsetY && mouseX < offsetX + this.itemSize * levelWidth
+                && mouseY < offsetY + this.itemSize * levelHeight) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -118,18 +133,42 @@ public class EditorState extends BasicGameState {
             this.level.setScale(scale);
             this.itemSize *= scale;
             this.scale = scale;
+            int width = this.level.getWidth() * (this.itemSize);
+            int height = this.level.getHeight() * (this.itemSize);
+            Point margin = new Point((container.getWidth() - width) / 2,
+                    (container.getHeight() - height) / 2);
+            this.level.setMargin(margin);
         }
         Input input = container.getInput();
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
-        this.fieldPosition.setLocation((mouseX / this.itemSize) * this.itemSize,
-                (mouseY / this.itemSize) * this.itemSize);
-        Point gridPosition = new Point(mouseX / this.itemSize, mouseY / this.itemSize);
+        int offsetX = this.level.getMargin().x;
+        int offsetY = this.level.getMargin().y;
+        int indexX;
+        int indexY;
+        if (this.showMenu) {
+            indexX = mouseX / this.itemSize;
+            indexY = mouseY / this.itemSize;
+            offsetX = 0;
+            offsetY = 0;
+        } else {
+            indexX = (mouseX - offsetX) / this.itemSize;
+            indexY = (mouseY - offsetY) / this.itemSize;
+        }
+        int width = indexX * this.itemSize;
+        int height = indexY * this.itemSize;
+        this.fieldPosition.setLocation(offsetX + width, offsetY + height);
+        Point gridPosition = new Point(indexX, indexY);
 
         if (this.showMenu) {
+            int index = this.fieldPosition.x / this.itemSize - 1;
+            if (mouseY < this.itemSize && index >= 0 && index < this.menuItems.length) {
+                this.showActive = true;
+            } else {
+                this.showActive = false;
+            }
             if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && this.wasLeftButtonDown) {
                 if (mouseY < this.itemSize) {
-                    int index = this.fieldPosition.x / this.itemSize - 1;
                     if (index >= 0 && index < this.menuItems.length) {
                         this.showMenu = false;
                         Image image = this.menuItems[index];
@@ -155,9 +194,13 @@ public class EditorState extends BasicGameState {
             if (input.isKeyPressed(Keyboard.KEY_E)) {
                 this.showMenu = !this.showMenu;
             }
+            if (this.isCursorInLevelArea(mouseX, mouseY)) {
+                this.showActive = true;
+            } else {
+                this.showActive = false;
+            }
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)
-                    && mouseY < this.itemSize * this.level.getHeight()
-                    && mouseX < this.itemSize * this.level.getWidth()) {
+                    && this.isCursorInLevelArea(mouseX, mouseY)) {
                 // remove position
                 Item item = this.level.toArray()[gridPosition.x][gridPosition.y];
                 switch (item) {

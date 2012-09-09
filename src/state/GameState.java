@@ -1,5 +1,7 @@
 package state;
 
+import java.awt.Point;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -33,6 +35,11 @@ public class GameState extends BasicGameState {
                 scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
             }
             this.level.setScale(scale);
+            int width = this.level.getWidth() * (int) (itemSize * scale);
+            int height = this.level.getHeight() * (int) (itemSize * scale);
+            Point margin = new Point((container.getWidth() - width) / 2,
+                    (container.getHeight() - height) / 2);
+            this.level.setMargin(margin);
         } catch (Exception e) {
             e.printStackTrace();
         }
