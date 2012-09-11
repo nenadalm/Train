@@ -27,18 +27,20 @@ public class MenuState extends BasicGameState {
 
     private boolean isMouseOverStartGame, isMouseOverLevelEditor, isMouseOverOptions,
             isMouseOverExit, isMouseOverReturn, isMouseOverSave, isMouseOverResolution,
-            isMouseOverFullscreen, isMouseOverLanguage, isInOptions, isFullscreen;
+            isMouseOverFullscreen, isMouseOverLanguage, isMouseOverAutoscale, isInOptions,
+            isFullscreen, isAutoscale;
     private int stateId, languageIndex, width, height, distanceBetweenMenuEntries, modeIndex,
             trainTextWidth, trainTextHeight;
     private UnicodeFont ubuntuMedium, ubuntuLarge;
     private Rectangle startGameRectangle, levelEditorRectangle, optionsRectangle, exitRectangle,
             saveRectangle, returnRectangle, resolutionRectangle, fullscreenRectangle,
-            languageRectangle;
+            languageRectangle, autoscaleRectangle;
     private DisplayMode displayModes[];
     private Input input;
     private Point mouse;
     private String resolutionText, version, languages[];
     private Translator translator;
+    private Configuration configuration;
 
     public MenuState(int stateId) {
         this.stateId = stateId;
@@ -48,6 +50,7 @@ public class MenuState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         translator = Translator.getInstance();
+        configuration = Configuration.getInstance();
         width = container.getWidth();
         height = container.getHeight();
         version = Configuration.getInstance().get("version");
@@ -148,12 +151,16 @@ public class MenuState extends BasicGameState {
         drawString(g, ubuntuLarge, translator.translate("Options"), width / 2,
                 (ubuntuLarge.getHeight(translator.translate("Options")) / 2.25f));
         g.setFont(ubuntuMedium);
+
         drawString(g, ubuntuMedium, translator.translate("Resolution") + ":", width / 6 * 2,
                 height * 2 / 10);
         drawString(g, ubuntuMedium, translator.translate("Fullscreen") + ":", width / 6 * 2,
                 height * 3 / 10);
         drawString(g, ubuntuMedium, translator.translate("Language") + ":", width / 6 * 2,
                 height * 4 / 10);
+        drawString(g, ubuntuMedium, translator.translate("Autoscale") + ":", width / 6 * 2,
+                height * 5 / 10);
+
         g.setColor((isMouseOverResolution) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, resolutionText, width / 6 * 4, height * 2 / 10);
         g.setColor((isMouseOverFullscreen) ? Color.blue : Color.red);
@@ -162,6 +169,10 @@ public class MenuState extends BasicGameState {
                 width / 6 * 4, height * 3 / 10);
         g.setColor((isMouseOverLanguage) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, languages[languageIndex], width / 6 * 4, height * 4 / 10);
+        g.setColor((isMouseOverAutoscale) ? Color.blue : Color.red);
+        drawString(g, ubuntuMedium,
+                isAutoscale ? translator.translate("yes") : translator.translate("no"),
+                width / 6 * 4, height * 5 / 10);
 
         g.setColor((isMouseOverSave) ? Color.red : Color.white);
         drawString(g, ubuntuMedium, translator.translate("save"), width / 3,
@@ -209,6 +220,7 @@ public class MenuState extends BasicGameState {
         isMouseOverResolution = resolutionRectangle.contains(mouse);
         isMouseOverFullscreen = fullscreenRectangle.contains(mouse);
         isMouseOverLanguage = languageRectangle.contains(mouse);
+        isMouseOverAutoscale = autoscaleRectangle.contains(mouse);
         isMouseOverSave = saveRectangle.contains(mouse);
         isMouseOverReturn = returnRectangle.contains(mouse);
 
@@ -237,8 +249,9 @@ public class MenuState extends BasicGameState {
                 }
                 setLanguageRectangle();
             }
-            if (isMouseOverLanguage) {
-                setLanguageRectangle();
+            if (isMouseOverAutoscale) {
+                isAutoscale = !isAutoscale;
+                setAutoscaleRectangle();
             }
             if (isMouseOverSave) {
                 saveOptions(container, game);
@@ -299,6 +312,7 @@ public class MenuState extends BasicGameState {
         names.toArray(languages);
 
         isFullscreen = container.isFullscreen();
+        isAutoscale = Boolean.parseBoolean(configuration.get("autoscale"));
 
         resolutionRectangle = new Rectangle();
         setResolutionRectangle();
@@ -308,6 +322,9 @@ public class MenuState extends BasicGameState {
 
         languageRectangle = new Rectangle();
         setLanguageRectangle();
+
+        autoscaleRectangle = new Rectangle();
+        setAutoscaleRectangle();
 
         saveRectangle = new Rectangle();
         saveRectangle.width = ubuntuMedium.getWidth(translator.translate("save"));
@@ -324,14 +341,15 @@ public class MenuState extends BasicGameState {
 
     private void saveOptions(GameContainer container, StateBasedGame game) {
         try {
-            Configuration configuration = Configuration.getInstance();
             configuration.set("width", String.valueOf(displayModes[modeIndex].getWidth()));
             configuration.set("height", String.valueOf(displayModes[modeIndex].getHeight()));
             configuration.set("language", languages[languageIndex]);
             configuration.set("fullscreen", String.valueOf(isFullscreen));
+            configuration.set("autoscale", String.valueOf(isAutoscale));
+            configuration.saveChanges();
+
             ((AppGameContainer) container).setDisplayMode(displayModes[modeIndex].getWidth(),
                     displayModes[modeIndex].getHeight(), isFullscreen);
-            configuration.saveChanges();
             translator.setLanguage(languages[languageIndex]);
             if (width != displayModes[modeIndex].getWidth()
                     || height != displayModes[modeIndex].getHeight()) {
@@ -347,25 +365,28 @@ public class MenuState extends BasicGameState {
     private void setResolutionRectangle() {
         resolutionText = String.format("%1$dx%2$d", displayModes[modeIndex].getWidth(),
                 displayModes[modeIndex].getHeight());
-        resolutionRectangle.width = ubuntuMedium.getWidth(resolutionText);
-        resolutionRectangle.height = ubuntuMedium.getHeight(resolutionText);
-        resolutionRectangle.x = width * 4 / 6 - resolutionRectangle.width / 2;
-        resolutionRectangle.y = height * 2 / 10 - resolutionRectangle.height / 2;
+        setRectangle(resolutionRectangle, resolutionText, width * 4 / 6, height * 2 / 10);
     }
 
     private void setFullscreenRectangle() {
-        fullscreenRectangle.width = ubuntuMedium.getWidth(isFullscreen ? translator
-                .translate("yes") : translator.translate("no"));
-        fullscreenRectangle.height = ubuntuMedium.getHeight(isFullscreen ? translator
-                .translate("yes") : translator.translate("no"));
-        fullscreenRectangle.x = width * 4 / 6 - fullscreenRectangle.width / 2;
-        fullscreenRectangle.y = height * 3 / 10 - fullscreenRectangle.height / 2;
+        String text = isFullscreen ? translator.translate("yes") : translator.translate("no");
+        setRectangle(fullscreenRectangle, text, width * 4 / 6, height * 3 / 10);
     }
 
     private void setLanguageRectangle() {
-        languageRectangle.width = ubuntuMedium.getWidth(languages[languageIndex]);
-        languageRectangle.height = ubuntuMedium.getHeight(languages[languageIndex]);
-        languageRectangle.x = width * 4 / 6 - languageRectangle.width / 2;
-        languageRectangle.y = height * 4 / 10 - languageRectangle.height / 2;
+        String text = languages[languageIndex];
+        setRectangle(languageRectangle, text, width * 4 / 6, height * 4 / 10);
+    }
+
+    private void setAutoscaleRectangle() {
+        String text = isAutoscale ? translator.translate("yes") : translator.translate("no");
+        setRectangle(autoscaleRectangle, text, width * 4 / 6, height * 5 / 10);
+    }
+
+    private void setRectangle(Rectangle rectangle, String text, int x, int y) {
+        rectangle.width = ubuntuMedium.getWidth(text);
+        rectangle.height = ubuntuMedium.getHeight(text);
+        rectangle.x = x - rectangle.width / 2;
+        rectangle.y = y - rectangle.height / 2;
     }
 }
