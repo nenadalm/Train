@@ -1,27 +1,66 @@
 package state;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import other.LevelController;
+import other.Translator;
+import app.Game;
 import entity.Level;
+import entity.Menu;
+import entity.MenuItem;
 
 public class GameState extends BasicGameState {
 
     private int stateId;
     private Level level = null;
+    private boolean showMenu = false;
+    private Menu menu = null;
+    private Translator translator;
 
     public GameState(int stateId) {
         this.stateId = stateId;
+        this.translator = Translator.getInstance();
     }
 
     @Override
-    public void init(GameContainer container, StateBasedGame game) throws SlickException {
+    public void init(GameContainer container, final StateBasedGame game) throws SlickException {
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
+        menuItems.add(new MenuItem(this.translator.translate("Continue"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                GameState.this.showMenu = false;
+            }
+        }));
+        menuItems.add(new MenuItem(this.translator.translate("Repeat level"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                throw new RuntimeException("not implemented");
+            }
+        }));
+        menuItems.add(new MenuItem(this.translator.translate("Next level"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                throw new RuntimeException("not implemented");
+            }
+        }));
+        menuItems.add(new MenuItem(this.translator.translate("Main menu"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.enterState(Game.MENU_STATE);
+            }
+        }));
+        this.menu = new Menu(menuItems, container);
         LevelController levelController = LevelController.getInstance();
         try {
             int itemSize = 50;
@@ -49,12 +88,23 @@ public class GameState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         this.level.render(container, game, g);
+        if (this.showMenu) {
+            this.menu.render(container, game, g);
+        }
     }
 
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        this.level.update(container, game, delta);
+        Input input = container.getInput();
+        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            this.showMenu = true;
+        }
+        if (!this.showMenu) {
+            this.level.update(container, game, delta);
+        } else {
+            this.menu.update(container, game, delta);
+        }
     }
 
     @Override

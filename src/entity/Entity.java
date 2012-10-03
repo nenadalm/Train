@@ -17,8 +17,8 @@ public class Entity {
     private float rotation;
     private Point direction;
 
-    RenderComponent renderComponent;
-    ArrayList<Component> components;
+    private RenderComponent renderComponent;
+    private ArrayList<Component> components;
 
     public Entity() {
         this.components = new ArrayList<Component>();
