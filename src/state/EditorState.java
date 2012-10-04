@@ -115,29 +115,9 @@ public class EditorState extends BasicGameState {
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        // load level + scale
+
         if (this.level == null) {
-            this.level = this.levelController.getCurrentLevel();
-            this.trainPosition = this.level.findTrainPosition();
-            this.gatePosition = this.level.findGatePosition();
-            float scale = 1;
-            float scaleWidth = container.getWidth()
-                    / ((float) this.level.getWidth() * this.itemSize);
-            float scaleHeight = container.getHeight()
-                    / ((float) this.itemSize * this.level.getHeight());
-            if (scaleWidth < 1 && scaleHeight < 1) {
-                scale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
-            } else if (scaleWidth < 1 || scaleHeight < 1) {
-                scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
-            }
-            this.level.setScale(scale);
-            this.itemSize *= scale;
-            this.scale = scale;
-            int width = this.level.getWidth() * (this.itemSize);
-            int height = this.level.getHeight() * (this.itemSize);
-            Point margin = new Point((container.getWidth() - width) / 2,
-                    (container.getHeight() - height) / 2);
-            this.level.setMargin(margin);
+            this.loadLevel(container);
         }
         Input input = container.getInput();
         int mouseX = input.getMouseX();
@@ -161,79 +141,118 @@ public class EditorState extends BasicGameState {
         Point gridPosition = new Point(indexX, indexY);
 
         if (this.showMenu) {
-            int index = this.fieldPosition.x / this.itemSize - 1;
-            if (mouseY < this.itemSize && index >= 0 && index < this.menuItems.length) {
-                this.showActive = true;
-            } else {
-                this.showActive = false;
-            }
-            if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && this.wasLeftButtonDown) {
-                if (mouseY < this.itemSize) {
-                    if (index >= 0 && index < this.menuItems.length) {
-                        this.showMenu = false;
-                        Image image = this.menuItems[index];
-                        if (image == this.train) {
-                            this.activeItem = Item.TRAIN;
-                        } else if (image == this.wall) {
-                            this.activeItem = Item.WALL;
-                        } else if (image == this.gate) {
-                            this.activeItem = Item.GATE;
-                        } else if (image == this.tree) {
-                            this.activeItem = Item.TREE;
-                        } else if (image == this.save) {
-                            this.levelController.saveCurrentLevel();
-                            game.enterState(Game.MENU_STATE);
-                        }
-                    }
-                }
-            }
+            this.updateMenu(game, input);
         } else {
-            if (mouseY < 10) {
-                this.showMenu = !this.showMenu;
-            }
-            if (input.isKeyPressed(Keyboard.KEY_E)) {
-                this.showMenu = !this.showMenu;
-            }
-            if (this.isCursorInLevelArea(mouseX, mouseY)) {
-                this.showActive = true;
-            } else {
-                this.showActive = false;
-            }
-            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)
-                    && this.isCursorInLevelArea(mouseX, mouseY)) {
-                // remove position
-                Item item = this.level.toArray()[gridPosition.x][gridPosition.y];
-                switch (item) {
-                    case TRAIN:
-                        this.trainPosition = null;
-                        break;
-                    case GATE:
-                        this.gatePosition = null;
-                    default:
+            this.updateEditor(gridPosition, input);
+        }
+        this.wasLeftButtonDown = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+    }
+
+    private void loadLevel(GameContainer container) {
+        this.level = this.levelController.getCurrentLevel();
+        this.trainPosition = this.level.findTrainPosition();
+        this.gatePosition = this.level.findGatePosition();
+        float scale = 1;
+        float scaleWidth = container.getWidth() / ((float) this.level.getWidth() * this.itemSize);
+        float scaleHeight = container.getHeight()
+                / ((float) this.itemSize * this.level.getHeight());
+        if (scaleWidth < 1 && scaleHeight < 1) {
+            scale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
+        } else if (scaleWidth < 1 || scaleHeight < 1) {
+            scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
+        }
+        this.level.setScale(scale);
+        this.itemSize *= scale;
+        this.scale = scale;
+        int width = this.level.getWidth() * (this.itemSize);
+        int height = this.level.getHeight() * (this.itemSize);
+        Point margin = new Point((container.getWidth() - width) / 2,
+                (container.getHeight() - height) / 2);
+        this.level.setMargin(margin);
+    }
+
+    private void setItemPosition(Point gridPosition) {
+        // remove position
+        Item item = this.level.toArray()[gridPosition.x][gridPosition.y];
+        switch (item) {
+            case TRAIN:
+                this.trainPosition = null;
+                break;
+            case GATE:
+                this.gatePosition = null;
+            default:
+        }
+        // load position
+        switch (this.activeItem) {
+            case TRAIN:
+                if (this.trainPosition != null) {
+                    this.level.setItem(this.trainPosition, Item.EMPTY);
                 }
-                // load position
-                switch (this.activeItem) {
-                    case TRAIN:
-                        if (this.trainPosition != null) {
-                            this.level.setItem(this.trainPosition, Item.EMPTY);
-                        }
-                        this.trainPosition = gridPosition;
-                        break;
-                    case GATE:
-                        if (this.gatePosition != null) {
-                            this.level.setItem(this.gatePosition, Item.EMPTY);
-                        }
-                        this.gatePosition = gridPosition;
-                        break;
-                    default:
-                        break;
+                this.trainPosition = gridPosition;
+                break;
+            case GATE:
+                if (this.gatePosition != null) {
+                    this.level.setItem(this.gatePosition, Item.EMPTY);
                 }
-                this.level.setItem(gridPosition, this.activeItem);
+                this.gatePosition = gridPosition;
+                break;
+            default:
+                break;
+        }
+        this.level.setItem(gridPosition, this.activeItem);
+    }
+
+    private void updateEditor(Point gridPosition, Input input) {
+        int mouseX = input.getMouseX();
+        int mouseY = input.getMouseY();
+        if (mouseY < 10) {
+            this.showMenu = !this.showMenu;
+        }
+        if (input.isKeyPressed(Keyboard.KEY_E)) {
+            this.showMenu = !this.showMenu;
+        }
+        if (this.isCursorInLevelArea(mouseX, mouseY)) {
+            this.showActive = true;
+        } else {
+            this.showActive = false;
+        }
+        if (this.isCursorInLevelArea(mouseX, mouseY)) {
+            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+                this.setItemPosition(gridPosition);
             } else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
                 this.level.setItem(gridPosition, Item.EMPTY);
             }
         }
-        this.wasLeftButtonDown = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+    }
+
+    private void updateMenu(StateBasedGame game, Input input) {
+        int mouseY = input.getMouseY();
+        int index = this.fieldPosition.x / this.itemSize - 1;
+        if (mouseY < this.itemSize && index >= 0 && index < this.menuItems.length) {
+            this.showActive = true;
+        } else {
+            this.showActive = false;
+        }
+        if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && this.wasLeftButtonDown) {
+            if (mouseY < this.itemSize) {
+                if (index >= 0 && index < this.menuItems.length) {
+                    this.showMenu = false;
+                    Image image = this.menuItems[index];
+                    if (image == this.train) {
+                        this.activeItem = Item.TRAIN;
+                    } else if (image == this.wall) {
+                        this.activeItem = Item.WALL;
+                    } else if (image == this.gate) {
+                        this.activeItem = Item.GATE;
+                    } else if (image == this.tree) {
+                        this.activeItem = Item.TREE;
+                    } else if (image == this.save) {
+                        this.levelController.saveCurrentLevel();
+                        game.enterState(Game.MENU_STATE);
+                    }
+                }
+            }
+        }
     }
 
     @Override
