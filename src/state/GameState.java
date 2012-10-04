@@ -57,22 +57,16 @@ public class GameState extends BasicGameState {
         menuItems.add(new MenuItem(this.translator.translate("Main menu"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                GameState.this.showMenu = false;
                 game.enterState(Game.MENU_STATE);
             }
         }));
         this.menu = new Menu(menuItems, container);
         LevelController levelController = LevelController.getInstance();
         try {
-            int itemSize = 50;
             this.level = levelController.getCurrentLevel();
-            float scale = 1;
-            float scaleWidth = container.getWidth() / ((float) this.level.getWidth() * itemSize);
-            float scaleHeight = container.getHeight() / ((float) itemSize * this.level.getHeight());
-            if (scaleWidth < 1 && scaleHeight < 1) {
-                scale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
-            } else if (scaleWidth < 1 || scaleHeight < 1) {
-                scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
-            }
+            int itemSize = this.level.getOriginalImageSize();
+            float scale = this.computeScale(container);
             this.level.setScale(scale);
             int width = this.level.getWidth() * (int) (itemSize * scale);
             int height = this.level.getHeight() * (int) (itemSize * scale);
@@ -82,6 +76,19 @@ public class GameState extends BasicGameState {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public float computeScale(GameContainer container) {
+        int itemSize = this.level.getOriginalImageSize();
+        float scale = 1;
+        float scaleWidth = container.getWidth() / ((float) this.level.getWidth() * itemSize);
+        float scaleHeight = container.getHeight() / ((float) itemSize * this.level.getHeight());
+        if (scaleWidth < 1 && scaleHeight < 1) {
+            scale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
+        } else if (scaleWidth < 1 || scaleHeight < 1) {
+            scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
+        }
+        return scale;
     }
 
     @Override

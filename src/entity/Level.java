@@ -30,6 +30,7 @@ public class Level extends Entity {
     private boolean isGameWon = false;
     private List<Truck> trucks;
     private int itemsToWin = 0;
+    private int originalImageSize;
     private int imageSize;
     private Point trainDirectionPrepared = new Point();
     private Point margin = new Point();
@@ -43,6 +44,10 @@ public class Level extends Entity {
 
     public Map<Item, Image> getImages() {
         return this.images;
+    }
+
+    public int getImageSize() {
+        return this.imageSize;
     }
 
     public Item[] getItems() {
@@ -67,10 +72,18 @@ public class Level extends Entity {
         return this.level[0].length;
     }
 
+    public int getOriginalImageSize() {
+        return this.originalImageSize;
+    }
+
+    public void setOriginalImageSize(int originalImageSize) {
+        this.originalImageSize = originalImageSize;
+    }
+
     @Override
     public void setScale(float scale) {
         super.setScale(scale);
-        this.imageSize *= scale;
+        this.imageSize = (int) (this.originalImageSize * scale);
     }
 
     private void loadImages() {
@@ -83,6 +96,7 @@ public class Level extends Entity {
             this.images.put(Item.EMPTY, new Image(Level.GRAPHICS + "empty.png"));
             this.images.put(Item.TRUCK, new Image(Level.GRAPHICS + "treeTruck.png"));
             this.imageSize = this.images.get(Item.WALL).getWidth();
+            this.originalImageSize = this.imageSize;
         } catch (SlickException e) {
             e.printStackTrace();
         }
