@@ -1,5 +1,7 @@
 package entity;
 
+import helper.MathHelper;
+
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import app.Game;
 
-public class Menu {
+public class Menu extends Entity {
     private ArrayList<Rectangle> rectangles;
     int active = -1;
     private UnicodeFont font;
@@ -61,6 +63,7 @@ public class Menu {
                 container.getHeight() / 2 - menuHeight / 2, maxWidth + 2 * this.margin, menuHeight);
     }
 
+    @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
         g.setColor(Color.lightGray);
         g.fillRect(this.menu.getX(), this.menu.getY(), this.menu.getWidth(), this.menu.getHeight());
@@ -81,6 +84,7 @@ public class Menu {
         }
     }
 
+    @Override
     public void update(GameContainer container, StateBasedGame game, int delta) {
         Input input = container.getInput();
         int mouseX = input.getMouseX();
@@ -89,7 +93,7 @@ public class Menu {
         int counter = 0;
         boolean over = false;
         for (Rectangle r : this.rectangles) {
-            if (this.rectangleContainsPoint(r, mouse)) {
+            if (MathHelper.rectangleContainsPoint(r, mouse)) {
                 this.active = counter;
                 over = true;
             }
@@ -102,13 +106,5 @@ public class Menu {
             ActionListener listener = this.items.get(this.active).getListener();
             listener.actionPerformed(null);
         }
-    }
-
-    private boolean rectangleContainsPoint(Rectangle r, Point p) {
-        if (r.getX() < p.getX() && r.getX() + r.getWidth() > p.getX() && r.getY() < p.getY()
-                && r.getY() + r.getHeight() > p.getY()) {
-            return true;
-        }
-        return false;
     }
 }

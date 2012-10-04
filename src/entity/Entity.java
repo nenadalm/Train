@@ -36,15 +36,15 @@ public class Entity {
         this.components.add(component);
     }
 
-    public void update(GameContainer gc, StateBasedGame sb, int delta) {
+    public void update(GameContainer container, StateBasedGame game, int delta) {
         for (Component component : this.components) {
-            component.update(gc, sb, delta);
+            component.update(container, game, delta);
         }
     }
 
-    public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         if (this.renderComponent != null) {
-            this.renderComponent.render(gc, sb, gr);
+            this.renderComponent.render(container, game, g);
         }
     }
 
