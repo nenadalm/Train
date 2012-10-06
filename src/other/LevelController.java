@@ -43,7 +43,7 @@ public class LevelController {
      * @return
      */
     public Level getCurrentLevel() {
-        return this.level;
+        return this.level.clone();
     }
 
     public Dimension getOptimalLevelDimension(int screenWidth, int screenHeight, float scale) {

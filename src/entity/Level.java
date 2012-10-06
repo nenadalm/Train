@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Point;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import app.Game;
 
-public class Level extends Entity {
+public class Level extends Entity implements Cloneable {
 
     public static final String LEVELS_PATH = Game.CONTENT_PATH + "levels/";
     private static final String GRAPHICS = Game.CONTENT_PATH + "graphics/";
@@ -84,6 +85,20 @@ public class Level extends Entity {
     public void setScale(float scale) {
         super.setScale(scale);
         this.imageSize = (int) (this.originalImageSize * scale);
+    }
+
+    @Override
+    public Level clone() {
+        Level level = new Level(this.getWidth(), this.getHeight());
+        // Item[][] items = this.level.clone();
+        Item[][] items = new Item[this.getWidth()][];
+        for (int i = 0; i < this.getWidth(); i++) {
+            items[i] = (Item[]) Array.newInstance(this.level[i].getClass().getComponentType(),
+                    this.level[i].length);
+            System.arraycopy(this.level[i], 0, items[i], 0, this.level[i].length);
+        }
+        level.setArray(items);
+        return level;
     }
 
     private void loadImages() {
@@ -168,6 +183,14 @@ public class Level extends Entity {
                         this.getScale());
             }
         }
+    }
+
+    public boolean isFinished() {
+        return this.isGameWon;
+    }
+
+    public boolean isOver() {
+        return this.isGameOver;
     }
 
     @Override

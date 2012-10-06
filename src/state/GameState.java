@@ -27,14 +27,17 @@ public class GameState extends BasicGameState {
     private boolean showMenu = false;
     private Menu menu = null;
     private Translator translator;
+    private LevelController levelController;
 
     public GameState(int stateId) {
         this.stateId = stateId;
         this.translator = Translator.getInstance();
+        this.levelController = LevelController.getInstance();
     }
 
     @Override
-    public void init(GameContainer container, final StateBasedGame game) throws SlickException {
+    public void init(final GameContainer container, final StateBasedGame game)
+            throws SlickException {
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
         menuItems.add(new MenuItem(this.translator.translate("Continue"), new ActionListener() {
             @Override
@@ -45,7 +48,8 @@ public class GameState extends BasicGameState {
         menuItems.add(new MenuItem(this.translator.translate("Repeat level"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new RuntimeException("not implemented");
+                GameState.this.initLevel(container);
+                GameState.this.showMenu = false;
             }
         }));
         menuItems.add(new MenuItem(this.translator.translate("Next level"), new ActionListener() {
@@ -62,9 +66,12 @@ public class GameState extends BasicGameState {
             }
         }));
         this.menu = new Menu(menuItems, container);
-        LevelController levelController = LevelController.getInstance();
+        this.initLevel(container);
+    }
+
+    private void initLevel(GameContainer container) {
         try {
-            this.level = levelController.getCurrentLevel();
+            this.level = this.levelController.getCurrentLevel();
             int itemSize = this.level.getOriginalImageSize();
             float scale = this.computeScale(container);
             this.level.setScale(scale);
@@ -105,6 +112,9 @@ public class GameState extends BasicGameState {
             throws SlickException {
         Input input = container.getInput();
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            this.showMenu = true;
+        }
+        if (this.level.isFinished() || this.level.isOver()) {
             this.showMenu = true;
         }
         if (!this.showMenu) {
