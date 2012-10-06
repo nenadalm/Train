@@ -7,16 +7,16 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
+import other.ResourceManager;
 import other.Translator;
-import app.Game;
 
 public class MessageBox extends Entity {
     private String text;
@@ -24,12 +24,13 @@ public class MessageBox extends Entity {
     private String buttonsText[];
     private Rectangle box;
     private boolean show = false;
-    private UnicodeFont font;
+    private Font font;
     private int active = -1;
     private ActionListener yesListener;
     private ActionListener noListener;
 
     public MessageBox(GameContainer container) {
+        ResourceManager resourceManager = ResourceManager.getInstance();
         Translator translator = Translator.getInstance();
         this.buttons = new Rectangle[2];
         this.buttonsText = new String[2];
@@ -37,11 +38,8 @@ public class MessageBox extends Entity {
         this.buttonsText[1] = translator.translate("no");
         int fontWidth = container.getWidth() / 20;
         try {
-            this.font = new UnicodeFont(Game.CONTENT_PATH + "fonts/ubuntu.ttf", fontWidth, false,
-                    false);
-            this.font.addGlyphs(32, 800);
-            this.font.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-            this.font.loadGlyphs();
+            this.font = resourceManager.getFont("ubuntu", fontWidth, new ColorEffect(
+                    java.awt.Color.WHITE));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,7 +123,6 @@ public class MessageBox extends Entity {
             if (MathHelper.rectangleContainsPoint(this.buttons[i], new Point(mouseX, mouseY))) {
                 this.active = i;
             }
-            i++;
         }
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
             if (this.active == 1) {

@@ -8,35 +8,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
-import app.Game;
+import other.ResourceManager;
 
 public class Menu extends Entity {
     private ArrayList<Rectangle> rectangles;
     int active = -1;
-    private UnicodeFont font;
+    private Font font;
     private int margin = 0;
     private Rectangle menu;
     private List<MenuItem> items;
 
     public Menu(List<MenuItem> items, GameContainer container) {
+        ResourceManager resourceManager = ResourceManager.getInstance();
         this.items = items;
 
         int fontWidth = container.getWidth() / 20;
         this.margin = 100;
         try {
-            this.font = new UnicodeFont(Game.CONTENT_PATH + "fonts/ubuntu.ttf", fontWidth, false,
-                    false);
-            this.font.addGlyphs(32, 800);
-            this.font.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-            this.font.loadGlyphs();
+            this.font = resourceManager.getFont("ubuntu", fontWidth, new ColorEffect(
+                    java.awt.Color.WHITE));
         } catch (Exception e) {
             e.printStackTrace();
         }
