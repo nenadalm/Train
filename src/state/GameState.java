@@ -19,6 +19,7 @@ import app.Game;
 import entity.Level;
 import entity.Menu;
 import entity.MenuItem;
+import entity.MessageBox;
 
 public class GameState extends BasicGameState {
 
@@ -28,6 +29,7 @@ public class GameState extends BasicGameState {
     private Menu menu = null;
     private Translator translator;
     private LevelController levelController;
+    private MessageBox messageBox;
 
     public GameState(int stateId) {
         this.stateId = stateId;
@@ -38,6 +40,7 @@ public class GameState extends BasicGameState {
     @Override
     public void init(final GameContainer container, final StateBasedGame game)
             throws SlickException {
+        this.messageBox = new MessageBox(container);
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
         menuItems.add(new MenuItem(this.translator.translate("Continue"), new ActionListener() {
             @Override
@@ -50,12 +53,6 @@ public class GameState extends BasicGameState {
             public void actionPerformed(ActionEvent e) {
                 GameState.this.initLevel(container);
                 GameState.this.showMenu = false;
-            }
-        }));
-        menuItems.add(new MenuItem(this.translator.translate("Next level"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                throw new RuntimeException("not implemented");
             }
         }));
         menuItems.add(new MenuItem(this.translator.translate("Main menu"), new ActionListener() {
@@ -105,23 +102,42 @@ public class GameState extends BasicGameState {
         if (this.showMenu) {
             this.menu.render(container, game, g);
         }
+        this.messageBox.render(container, game, g);
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta)
+    public void update(final GameContainer container, final StateBasedGame game, int delta)
             throws SlickException {
         Input input = container.getInput();
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             this.showMenu = true;
         }
-        if (this.level.isFinished() || this.level.isOver()) {
+        if (this.level.isOver()) {
             this.showMenu = true;
+        }
+        if (this.level.isFinished()) {
+            this.messageBox.showConfirm("Level was finished. do you wanna continue to next level?",
+                    new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GameState.this.levelController.loadNextLevel();
+                            GameState.this.initLevel(container);
+                        }
+                    }, new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            game.enterState(Game.MENU_STATE);
+                        }
+                    });
         }
         if (!this.showMenu) {
             this.level.update(container, game, delta);
         } else {
             this.menu.update(container, game, delta);
         }
+        this.messageBox.update(container, game, delta);
     }
 
     @Override

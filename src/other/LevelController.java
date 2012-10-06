@@ -88,6 +88,16 @@ public class LevelController {
         this.level.setArray(this.getArrayFromLines(lines));
     }
 
+    public void loadNextLevel() {
+        int packageIndex = Integer.valueOf(this.currentLevelPackageName.replaceFirst("_.*", ""));
+        int levelIndex = Integer.valueOf(this.currentLevelFileName.replaceFirst("_.*", "")) + 1;
+        try {
+            this.loadLevel(packageIndex, levelIndex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     /**
      * Check, if all lines have same length.
      * 
