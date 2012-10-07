@@ -18,11 +18,12 @@ import org.newdawn.slick.state.StateBasedGame;
 import other.ResourceManager;
 import other.Translator;
 
+import component.RectangleComponent;
+
 public class MessageBox extends Entity {
     private String text;
     private Rectangle buttons[];
     private String buttonsText[];
-    private Rectangle box;
     private boolean show = false;
     private Font font;
     private int active = -1;
@@ -30,6 +31,7 @@ public class MessageBox extends Entity {
     private ActionListener noListener;
 
     public MessageBox(GameContainer container) {
+        this.addComponent(new RectangleComponent());
         ResourceManager resourceManager = ResourceManager.getInstance();
         Translator translator = Translator.getInstance();
         this.buttons = new Rectangle[2];
@@ -45,14 +47,16 @@ public class MessageBox extends Entity {
         }
         int width = 400;
         int height = 200;
-        this.box = new Rectangle(container.getWidth() / 2 - width / 2, container.getHeight() / 2
-                - height / 2, width, height);
+        this.setPosition(new Point(container.getWidth() / 2 - width / 2, container.getHeight() / 2
+                - height / 2));
+        this.setWidth(width);
+        this.setHeight(height);
         int buttonsWidth = this.font.getWidth(this.buttonsText[0] + this.buttonsText[1]);
         int buttonsHeight = this.font.getHeight(this.buttonsText[0] + this.buttonsText[1]);
-        this.buttons[0] = new Rectangle(this.box.getCenterX() - buttonsWidth, this.box.getMaxY()
+        this.buttons[0] = new Rectangle(this.getCenterX() - buttonsWidth, this.getMaxY()
                 - buttonsHeight, this.font.getWidth(this.buttonsText[0]),
                 this.font.getHeight(this.buttonsText[0]));
-        this.buttons[1] = new Rectangle(this.box.getCenterX() + buttonsWidth, this.box.getMaxY()
+        this.buttons[1] = new Rectangle(this.getCenterX() + buttonsWidth, this.getMaxY()
                 - buttonsHeight, this.font.getWidth(this.buttonsText[1]),
                 this.font.getHeight(this.buttonsText[1]));
     }
@@ -66,12 +70,11 @@ public class MessageBox extends Entity {
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
-        super.render(container, game, g);
         if (!this.show) {
             return;
         }
         g.setColor(Color.lightGray);
-        g.fillRect(this.box.getX(), this.box.getY(), this.box.getWidth(), this.box.getHeight());
+        super.render(container, game, g);
         container.getWidth();
         g.setFont(this.font);
         g.setColor(Color.red);
@@ -80,7 +83,7 @@ public class MessageBox extends Entity {
         String line = "";
         int last = 0;
         for (int j = 0; j < text.length; j++) {
-            if (this.font.getWidth(line + " " + text[j]) + 20 > this.box.getWidth()) {
+            if (this.font.getWidth(line + " " + text[j]) + 20 > this.getWidth()) {
                 if (last == j) {
                     line += text[j];
                 }
@@ -94,7 +97,7 @@ public class MessageBox extends Entity {
         lines.add(line);
         int lineHeight = this.font.getHeight("A");
         for (int j = 0; j < lines.size(); j++) {
-            g.drawString(lines.get(j), this.box.getMinX() + 10, this.box.getMinY() + 10 + j
+            g.drawString(lines.get(j), this.getPosition().x + 10, this.getPosition().y + 10 + j
                     * lineHeight);
         }
         g.setColor(Color.blue);

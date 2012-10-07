@@ -16,6 +16,8 @@ public class Entity {
     private float scale;
     private float rotation;
     private Point direction;
+    private int width;
+    private int height;
 
     private RenderComponent renderComponent;
     private ArrayList<Component> components;
@@ -78,5 +80,37 @@ public class Entity {
 
     public void setRotation(float rotation) {
         this.rotation = rotation;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getCenterX() {
+        return this.position.x + this.width / 2;
+    }
+
+    public int getCenterY() {
+        return this.position.y + this.height / 2;
+    }
+
+    public int getMaxX() {
+        return this.getPosition().x + this.width;
+    }
+
+    public int getMaxY() {
+        return this.getPosition().y + this.getHeight();
     }
 }

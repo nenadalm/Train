@@ -18,15 +18,17 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import other.ResourceManager;
 
+import component.RectangleComponent;
+
 public class Menu extends Entity {
     private ArrayList<Rectangle> rectangles;
     int active = -1;
     private Font font;
     private int margin = 0;
-    private Rectangle menu;
     private List<MenuItem> items;
 
     public Menu(List<MenuItem> items, GameContainer container) {
+        this.addComponent(new RectangleComponent());
         ResourceManager resourceManager = ResourceManager.getInstance();
         this.items = items;
 
@@ -57,14 +59,16 @@ public class Menu extends Entity {
             this.rectangles.add(new Rectangle(x, y, width, this.font.getHeight(item.getText())));
             counter++;
         }
-        this.menu = new Rectangle(container.getWidth() / 2 - maxWidth / 2 - this.margin,
-                container.getHeight() / 2 - menuHeight / 2, maxWidth + 2 * this.margin, menuHeight);
+        this.setPosition(new Point(container.getWidth() / 2 - maxWidth / 2 - this.margin, container
+                .getHeight() / 2 - menuHeight / 2));
+        this.setWidth(maxWidth + 2 * this.margin);
+        this.setHeight(menuHeight);
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
         g.setColor(Color.lightGray);
-        g.fillRect(this.menu.getX(), this.menu.getY(), this.menu.getWidth(), this.menu.getHeight());
+        super.render(container, game, g);
         container.getWidth();
         g.setFont(this.font);
         g.setColor(Color.red);

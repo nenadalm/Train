@@ -13,5 +13,5 @@ public abstract class Component {
         this.owner = owner;
     }
 
-    public abstract void update(GameContainer gc, StateBasedGame sb, int delta);
+    public abstract void update(GameContainer container, StateBasedGame game, int delta);
 }
