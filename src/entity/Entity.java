@@ -3,6 +3,7 @@ package entity;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
@@ -20,6 +21,7 @@ public class Entity extends MarginPadding {
     private Point direction;
     private int width;
     private int height;
+    private Color backgroundColor = Color.black;
 
     private RenderComponent renderComponent;
     private ArrayList<Component> components;
@@ -114,5 +116,13 @@ public class Entity extends MarginPadding {
 
     public int getMaxY() {
         return this.getPosition().y + this.getHeight();
+    }
+
+    public void setBackgroundColor(Color c) {
+        this.backgroundColor = c;
+    }
+
+    public Color getBackgroundColor() {
+        return this.backgroundColor;
     }
 }

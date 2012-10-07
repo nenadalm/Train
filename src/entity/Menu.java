@@ -43,7 +43,6 @@ public class Menu extends Entity {
 
     private void calculateRectangles(GameContainer container) {
         this.rectangles = new ArrayList<Rectangle>(this.items.size());
-        int counter = 0;
         int menuHeight = 0;
         for (MenuItem item : this.items) {
             menuHeight += this.font.getHeight(item.getText()) + item.getPaddingTop()
@@ -63,7 +62,6 @@ public class Menu extends Entity {
                     + item.getMarginBottom() + item.getMarginTop();
             this.rectangles.add(new Rectangle(x, y, width, this.font.getHeight(item.getText())));
             lastOffsetY += height + item.getMarginTop() + item.getMarginBottom();
-            counter++;
         }
         this.setPosition(new Point(container.getWidth() / 2 - maxWidth / 2, container.getHeight()
                 / 2 - menuHeight / 2));

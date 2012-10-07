@@ -11,6 +11,7 @@ public class RectangleComponent extends RenderComponent {
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
         Entity owner = this.owner;
+        g.setColor(owner.getBackgroundColor());
         g.fillRect(owner.getPosition().x - owner.getPaddingLeft(),
                 owner.getPosition().y - owner.getPaddingTop(),
                 owner.getWidth() + owner.getPaddingRight(),

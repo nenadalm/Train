@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -41,6 +42,7 @@ public class GameState extends BasicGameState {
     public void init(final GameContainer container, final StateBasedGame game)
             throws SlickException {
         this.messageBox = new MessageBox(container);
+        this.messageBox.setBackgroundColor(Color.lightGray);
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
         menuItems.add(new MenuItem(this.translator.translate("Continue"), new ActionListener() {
             @Override
@@ -63,6 +65,7 @@ public class GameState extends BasicGameState {
             }
         }));
         this.menu = new Menu(menuItems, container);
+        this.menu.setBackgroundColor(Color.lightGray);
         this.initLevel(container);
     }
 
