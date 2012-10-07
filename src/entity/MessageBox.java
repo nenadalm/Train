@@ -29,6 +29,7 @@ public class MessageBox extends Entity {
     private int active = -1;
     private ActionListener yesListener;
     private ActionListener noListener;
+    private boolean wasPressed = false;
 
     public MessageBox(GameContainer container) {
         this.addComponent(new RectangleComponent());
@@ -112,6 +113,14 @@ public class MessageBox extends Entity {
         }
     }
 
+    public void close() {
+        this.show = false;
+    }
+
+    public boolean isShowed() {
+        return this.show;
+    }
+
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) {
         super.update(container, game, delta);
@@ -127,7 +136,8 @@ public class MessageBox extends Entity {
                 this.active = i;
             }
         }
-        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+        if (this.wasPressed && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+            this.wasPressed = false;
             if (this.active == 1) {
                 this.show = false;
                 this.noListener.actionPerformed(null);
@@ -135,6 +145,9 @@ public class MessageBox extends Entity {
                 this.show = false;
                 this.yesListener.actionPerformed(null);
             }
+        }
+        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+            this.wasPressed = true;
         }
     }
 }

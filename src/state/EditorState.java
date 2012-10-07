@@ -1,8 +1,11 @@
 package state;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -12,9 +15,11 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import other.LevelController;
+import other.Translator;
 import app.Game;
 import entity.Level;
 import entity.Level.Item;
+import entity.MessageBox;
 
 public class EditorState extends BasicGameState {
 
@@ -42,6 +47,8 @@ public class EditorState extends BasicGameState {
 
     private LevelController levelController;
     float scale = 1;
+    private MessageBox messageBox;
+    private Translator translator;
 
     private Point gatePosition = null;
     private Point trainPosition = null;
@@ -53,7 +60,9 @@ public class EditorState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         String path = Game.CONTENT_PATH + "graphics/";
-
+        this.translator = Translator.getInstance();
+        this.messageBox = new MessageBox(container);
+        this.messageBox.setBackgroundColor(Color.lightGray);
         this.fieldPosition = new Point();
 
         this.train = new Image(path + "train.png");
@@ -81,7 +90,9 @@ public class EditorState extends BasicGameState {
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-
+        if (this.level == null) {
+            return;
+        }
         this.level.render(container, game, g);
 
         if (this.showMenu) {
@@ -98,11 +109,12 @@ public class EditorState extends BasicGameState {
             this.active.draw(this.fieldPosition.x, this.fieldPosition.y, this.active.getWidth()
                     * this.scale, this.active.getHeight() * this.scale);
         }
+        this.messageBox.render(container, game, g);
     }
 
     public boolean isCursorInLevelArea(int mouseX, int mouseY) {
-        int offsetX = this.level.getMargin().x;
-        int offsetY = this.level.getMargin().y;
+        int offsetX = this.level.getMarginLeft();
+        int offsetY = this.level.getMarginTop();
         int levelWidth = this.level.getWidth();
         int levelHeight = this.level.getHeight();
         if (mouseX > offsetX && mouseY > offsetY && mouseX < offsetX + this.itemSize * levelWidth
@@ -113,39 +125,63 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta)
+    public void update(GameContainer container, final StateBasedGame game, int delta)
             throws SlickException {
 
         if (this.level == null) {
             this.loadLevel(container);
         }
+
         Input input = container.getInput();
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
-        int offsetX = this.level.getMargin().x;
-        int offsetY = this.level.getMargin().y;
+        int offsetX = this.level.getMarginLeft();
+        int offsetY = this.level.getMarginTop();
         int indexX;
         int indexY;
-        if (this.showMenu) {
-            indexX = mouseX / this.itemSize;
-            indexY = mouseY / this.itemSize;
-            offsetX = 0;
-            offsetY = 0;
-        } else {
-            indexX = (mouseX - offsetX) / this.itemSize;
-            indexY = (mouseY - offsetY) / this.itemSize;
-        }
-        int width = indexX * this.itemSize;
-        int height = indexY * this.itemSize;
-        this.fieldPosition.setLocation(offsetX + width, offsetY + height);
-        Point gridPosition = new Point(indexX, indexY);
 
-        if (this.showMenu) {
-            this.updateMenu(game, input);
-        } else {
-            this.updateEditor(gridPosition, input);
+        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            this.messageBox.showConfirm(this.translator.translate("Exit to menu without saving?"),
+                    new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            EditorState.this.level = null;
+                            game.enterState(Game.MENU_STATE);
+                        }
+                    }, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            EditorState.this.messageBox.close();
+                        }
+                    });
         }
-        this.wasLeftButtonDown = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+
+        if (!this.messageBox.isShowed()) {
+            if (this.messageBox.isShowed()) {
+                return;
+            }
+            if (this.showMenu) {
+                indexX = mouseX / this.itemSize;
+                indexY = mouseY / this.itemSize;
+                offsetX = 0;
+                offsetY = 0;
+            } else {
+                indexX = (mouseX - offsetX) / this.itemSize;
+                indexY = (mouseY - offsetY) / this.itemSize;
+            }
+            int width = indexX * this.itemSize;
+            int height = indexY * this.itemSize;
+            this.fieldPosition.setLocation(offsetX + width, offsetY + height);
+            Point gridPosition = new Point(indexX, indexY);
+
+            if (this.showMenu) {
+                this.updateMenu(game, input);
+            } else {
+                this.updateEditor(gridPosition, input);
+            }
+            this.wasLeftButtonDown = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+        }
+        this.messageBox.update(container, game, delta);
     }
 
     private void loadLevel(GameContainer container) {
@@ -166,9 +202,8 @@ public class EditorState extends BasicGameState {
         this.scale = scale;
         int width = this.level.getWidth() * (this.itemSize);
         int height = this.level.getHeight() * (this.itemSize);
-        Point margin = new Point((container.getWidth() - width) / 2,
-                (container.getHeight() - height) / 2);
-        this.level.setMargin(margin);
+        this.level.setMarginLeft((container.getWidth() - width) / 2);
+        this.level.setMarginTop((container.getHeight() - height) / 2);
     }
 
     private void setItemPosition(Point gridPosition) {

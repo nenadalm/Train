@@ -1,6 +1,5 @@
 package state;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -77,9 +76,8 @@ public class GameState extends BasicGameState {
             this.level.setScale(scale);
             int width = this.level.getWidth() * (int) (itemSize * scale);
             int height = this.level.getHeight() * (int) (itemSize * scale);
-            Point margin = new Point((container.getWidth() - width) / 2,
-                    (container.getHeight() - height) / 2);
-            this.level.setMargin(margin);
+            this.level.setMarginLeft((container.getWidth() - width) / 2);
+            this.level.setMarginTop((container.getHeight() - height) / 2);
         } catch (Exception e) {
             e.printStackTrace();
         }

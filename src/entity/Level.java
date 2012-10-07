@@ -34,7 +34,6 @@ public class Level extends Entity implements Cloneable {
     private int originalImageSize;
     private int imageSize;
     private Point trainDirectionPrepared = new Point();
-    private Point margin = new Point();
 
     public Level(int width, int height) {
         this.levelInit(width, height);
@@ -61,6 +60,7 @@ public class Level extends Entity implements Cloneable {
         return items;
     }
 
+    @Override
     public int getWidth() {
         return this.level.length;
     }
@@ -69,6 +69,7 @@ public class Level extends Entity implements Cloneable {
         this.level[position.x][position.y] = item;
     }
 
+    @Override
     public int getHeight() {
         return this.level[0].length;
     }
@@ -90,7 +91,6 @@ public class Level extends Entity implements Cloneable {
     @Override
     public Level clone() {
         Level level = new Level(this.getWidth(), this.getHeight());
-        // Item[][] items = this.level.clone();
         Item[][] items = new Item[this.getWidth()][];
         for (int i = 0; i < this.getWidth(); i++) {
             items[i] = (Item[]) Array.newInstance(this.level[i].getClass().getComponentType(),
@@ -140,14 +140,6 @@ public class Level extends Entity implements Cloneable {
         }
     }
 
-    public void setMargin(Point margin) {
-        this.margin = margin;
-    }
-
-    public Point getMargin() {
-        return this.margin;
-    }
-
     @Override
     public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
         Image image = null;
@@ -179,8 +171,8 @@ public class Level extends Entity implements Cloneable {
                     image.setCenterOfRotation(origin, origin);
                     image.setRotation(truck.getRotation());
                 }
-                image.draw(this.margin.x + i * this.imageSize, this.margin.y + j * this.imageSize,
-                        this.getScale());
+                image.draw(this.getMarginLeft() + i * this.imageSize, this.getMarginTop() + j
+                        * this.imageSize, this.getScale());
             }
         }
     }
