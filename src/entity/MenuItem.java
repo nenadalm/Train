@@ -2,7 +2,9 @@ package entity;
 
 import java.awt.event.ActionListener;
 
-public class MenuItem {
+import other.Margin;
+
+public class MenuItem implements Margin {
 
     private String text;
     private ActionListener listener;

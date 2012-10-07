@@ -16,6 +16,8 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
+import other.Margin;
+import other.Padding;
 import other.ResourceManager;
 
 import component.RectangleComponent;
@@ -24,7 +26,6 @@ public class Menu extends Entity {
     private ArrayList<Rectangle> rectangles;
     int active = -1;
     private Font font;
-    private int margin = 0;
     private List<MenuItem> items;
 
     public Menu(List<MenuItem> items, GameContainer container) {
@@ -33,7 +34,6 @@ public class Menu extends Entity {
         this.items = items;
 
         int fontWidth = container.getWidth() / 20;
-        this.margin = 100;
         try {
             this.font = resourceManager.getFont("ubuntu", fontWidth, new ColorEffect(
                     java.awt.Color.WHITE));
@@ -46,22 +46,30 @@ public class Menu extends Entity {
     private void calculateRectangles(GameContainer container) {
         this.rectangles = new ArrayList<Rectangle>(this.items.size());
         int counter = 0;
-        int menuHeight = (this.font.getHeight("A") + this.margin) * this.items.size();
+        int menuHeight = 0;
+        for (MenuItem item : this.items) {
+            menuHeight += this.font.getHeight(item.getText()) + Padding.paddingBottom
+                    + Padding.paddingTop;
+        }
         int maxWidth = 0;
+        int lastOffsetY = 0;
         for (MenuItem item : this.items) {
             int width = this.font.getWidth(item.getText());
-            int height = this.font.getHeight(item.getText()) + this.margin;
+            int height = this.font.getHeight(item.getText()) + Padding.paddingBottom
+                    + Padding.paddingTop;
             if (width > maxWidth) {
                 maxWidth = width;
             }
             int x = container.getWidth() / 2 - width / 2;
-            int y = container.getHeight() / 2 - menuHeight / 2 + counter * height + this.margin / 2;
+            int y = container.getHeight() / 2 - menuHeight / 2 + lastOffsetY + Margin.marginBottom
+                    + Margin.marginTop;
             this.rectangles.add(new Rectangle(x, y, width, this.font.getHeight(item.getText())));
+            lastOffsetY += height + Margin.marginTop + Margin.marginBottom;
             counter++;
         }
-        this.setPosition(new Point(container.getWidth() / 2 - maxWidth / 2 - this.margin, container
-                .getHeight() / 2 - menuHeight / 2));
-        this.setWidth(maxWidth + 2 * this.margin);
+        this.setPosition(new Point(container.getWidth() / 2 - maxWidth / 2, container.getHeight()
+                / 2 - menuHeight / 2));
+        this.setWidth(maxWidth);
         this.setHeight(menuHeight);
     }
 
