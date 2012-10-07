@@ -7,12 +7,12 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
-import other.Padding;
+import other.MarginPadding;
 
 import component.Component;
 import component.RenderComponent;
 
-public class Entity implements Padding {
+public class Entity extends MarginPadding {
 
     private Point position;
     private float scale;

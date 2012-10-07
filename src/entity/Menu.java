@@ -16,8 +16,6 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
-import other.Margin;
-import other.Padding;
 import other.ResourceManager;
 
 import component.RectangleComponent;
@@ -48,23 +46,23 @@ public class Menu extends Entity {
         int counter = 0;
         int menuHeight = 0;
         for (MenuItem item : this.items) {
-            menuHeight += this.font.getHeight(item.getText()) + Padding.paddingBottom
-                    + Padding.paddingTop;
+            menuHeight += this.font.getHeight(item.getText()) + item.getPaddingTop()
+                    + item.getPaddingBottom();
         }
         int maxWidth = 0;
         int lastOffsetY = 0;
         for (MenuItem item : this.items) {
             int width = this.font.getWidth(item.getText());
-            int height = this.font.getHeight(item.getText()) + Padding.paddingBottom
-                    + Padding.paddingTop;
+            int height = this.font.getHeight(item.getText()) + item.getPaddingBottom()
+                    + item.getPaddingTop();
             if (width > maxWidth) {
                 maxWidth = width;
             }
             int x = container.getWidth() / 2 - width / 2;
-            int y = container.getHeight() / 2 - menuHeight / 2 + lastOffsetY + Margin.marginBottom
-                    + Margin.marginTop;
+            int y = container.getHeight() / 2 - menuHeight / 2 + lastOffsetY
+                    + item.getMarginBottom() + item.getMarginTop();
             this.rectangles.add(new Rectangle(x, y, width, this.font.getHeight(item.getText())));
-            lastOffsetY += height + Margin.marginTop + Margin.marginBottom;
+            lastOffsetY += height + item.getMarginTop() + item.getMarginBottom();
             counter++;
         }
         this.setPosition(new Point(container.getWidth() / 2 - maxWidth / 2, container.getHeight()
