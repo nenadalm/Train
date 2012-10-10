@@ -14,8 +14,8 @@ public class RectangleComponent extends RenderComponent {
         g.setColor(owner.getBackgroundColor());
         g.fillRect(owner.getPosition().x - owner.getPaddingLeft(),
                 owner.getPosition().y - owner.getPaddingTop(),
-                owner.getWidth() + owner.getPaddingRight(),
-                owner.getHeight() + owner.getPaddingBottom());
+                owner.getWidth() + owner.getPaddingRight() + owner.getPaddingLeft(),
+                owner.getHeight() + owner.getPaddingBottom() + owner.getPaddingTop());
     }
 
     @Override
