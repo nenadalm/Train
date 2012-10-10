@@ -21,7 +21,7 @@ public class LevelController {
     private String currentLevelFileName;
     private String currentLevelPackageName;
     private Level level;
-
+    private Level levelClone;
     // list of levels
     private LevelPackage[] levels;
 
@@ -43,7 +43,8 @@ public class LevelController {
      * @return
      */
     public Level getCurrentLevel() {
-        return this.level.clone();
+        this.levelClone = this.level.clone();
+        return this.levelClone;
     }
 
     public Dimension getOptimalLevelDimension(int screenWidth, int screenHeight, float scale) {
@@ -239,7 +240,7 @@ public class LevelController {
     }
 
     public void saveCurrentLevel() {
-        Item level[][] = this.level.toArray();
+        Item level[][] = this.levelClone.toArray();
         this.saveLevel(level, this.currentLevelFileName, this.currentLevelPackageName);
     }
 
