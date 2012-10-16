@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.GradientEffect;
 import org.newdawn.slick.state.BasicGameState;
@@ -23,6 +23,7 @@ import other.LevelController;
 import other.LevelPackage;
 import other.Translator;
 import app.Game;
+import factory.FontFactory;
 
 public class MenuForGameState extends BasicGameState {
 
@@ -31,7 +32,7 @@ public class MenuForGameState extends BasicGameState {
             isPackageArrowRightDisabled, isLevelArrowLeftDisabled, isLevelArrowRightDisabled,
             isMouseOverReturn, isMouseOverPlay, isPlayDisabled;
     private int stateId, width, height, packageIndex, levelIndex;
-    private UnicodeFont ubuntuMedium, ubuntuLarge, ubuntuSmall;
+    private Font ubuntuMedium, ubuntuLarge;
     private String progressText, showingText;
 
     private Input input;
@@ -47,29 +48,18 @@ public class MenuForGameState extends BasicGameState {
         this.stateId = stateId;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
+        FontFactory fonts = FontFactory.getInstance();
+        ColorEffect whiteEffect = new ColorEffect(java.awt.Color.WHITE);
+        GradientEffect gradientEffect = new GradientEffect(java.awt.Color.WHITE,
+                java.awt.Color.GRAY, 0.5f);
         translator = Translator.getInstance();
         width = container.getWidth();
         height = container.getHeight();
-        String fontPath = Game.CONTENT_PATH + "fonts/ubuntu.ttf";
 
-        ubuntuSmall = new UnicodeFont(fontPath, width / 20, false, false);
-        ubuntuSmall.addGlyphs(32, 800);
-        ubuntuSmall.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-        ubuntuSmall.loadGlyphs();
-
-        ubuntuMedium = new UnicodeFont(fontPath, width / 26, false, false);
-        ubuntuMedium.addGlyphs(32, 800);
-        ubuntuMedium.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-        ubuntuMedium.loadGlyphs();
-
-        ubuntuLarge = new UnicodeFont(fontPath, width / 16, false, false);
-        ubuntuLarge.addGlyphs(32, 800);
-        ubuntuLarge.getEffects().add(
-                new GradientEffect(java.awt.Color.WHITE, java.awt.Color.GRAY, 0.5f));
-        ubuntuLarge.loadGlyphs();
+        ubuntuMedium = fonts.getFont("ubuntu", width / 26, whiteEffect);
+        ubuntuLarge = fonts.getFont("ubuntu", width / 16, gradientEffect);
 
         levelController = LevelController.getInstance();
         levelPackages = levelController.getLevels();
@@ -262,14 +252,13 @@ public class MenuForGameState extends BasicGameState {
     private void setProgressText() {
         int size = levelPackages.get(packageIndex).getLevelNames().size();
         progressText = String.format("%4$s %1$d %3$s %2$d", progresses[packageIndex], size,
-                translator.translate((size > 1 && size < 5) ? "of2" : "of"),
-                translator.translate("completed"));
+                translator.translate((size > 1 && size < 5) ? "of2" : "of"), translator
+                        .translate("completed"));
     }
 
     private void setShowingText() {
         int size = levelPackages.get(packageIndex).getLevelNames().size();
-        showingText = String.format("%4$s %1$d %3$s %2$d", levelIndex + 1, size,
-                translator.translate((size > 1 && size < 5) ? "of2" : "of"),
-                translator.translate("showing"));
+        showingText = String.format("%4$s %1$d %3$s %2$d", levelIndex + 1, size, translator
+                .translate((size > 1 && size < 5) ? "of2" : "of"), translator.translate("showing"));
     }
 }

@@ -6,12 +6,12 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
@@ -21,6 +21,7 @@ import other.LevelController;
 import other.LevelPackage;
 import other.Translator;
 import app.Game;
+import factory.FontFactory;
 
 public class MenuForEditorState extends BasicGameState {
 
@@ -32,7 +33,7 @@ public class MenuForEditorState extends BasicGameState {
             isPackageActionsDisabled[], isMouseOverLevelActions[], isLevelActionsDisabled[];
     private int stateId, width, height, packageIndex, levelIndex, packageBaseIndex, levelBaseIndex,
             inputState;
-    private UnicodeFont ubuntuSmall, ubuntuMedium, ubuntuLarge;
+    private Font ubuntuSmall, ubuntuMedium;
 
     private Input input;
     private Point mouse;
@@ -52,28 +53,16 @@ public class MenuForEditorState extends BasicGameState {
         this.stateId = stateId;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
+        FontFactory fonts = FontFactory.getInstance();
+        ColorEffect whiteEffect = new ColorEffect(java.awt.Color.WHITE);
         translator = Translator.getInstance();
         width = container.getWidth();
         height = container.getHeight();
-        String fontPath = Game.CONTENT_PATH + "fonts/ubuntu.ttf";
 
-        ubuntuSmall = new UnicodeFont(fontPath, width / 36, false, false);
-        ubuntuSmall.addGlyphs(32, 800);
-        ubuntuSmall.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-        ubuntuSmall.loadGlyphs();
-
-        ubuntuMedium = new UnicodeFont(fontPath, width / 20, false, false);
-        ubuntuMedium.addGlyphs(32, 800);
-        ubuntuMedium.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-        ubuntuMedium.loadGlyphs();
-
-        ubuntuLarge = new UnicodeFont(fontPath, width / 16, false, false);
-        ubuntuLarge.addGlyphs(32, 800);
-        ubuntuLarge.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-        ubuntuLarge.loadGlyphs();
+        ubuntuSmall = fonts.getFont("ubuntu", width / 36, whiteEffect);
+        ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
 
         levelController = LevelController.getInstance();
         levelPackages = levelController.getLevels();
@@ -204,10 +193,10 @@ public class MenuForEditorState extends BasicGameState {
                 translator.translate("showing"), translator.translate("of"));
         g.drawString(text, width / 2 + width / 200, height * 9 / 11);
         if (isDeletingPackage || isDeletingLevel) {
-            drawString(g, ubuntuSmall,
-                    translator.translate("Really") + " " + translator.translate("delete") + "? "
-                            + translator.translate("Yes") + "(Enter)/" + translator.translate("No")
-                            + "(Escape)", width / 2, height - height / 24);
+            drawString(g, ubuntuSmall, translator.translate("Really") + " "
+                    + translator.translate("delete") + "? " + translator.translate("Yes")
+                    + "(Enter)/" + translator.translate("No") + "(Escape)", width / 2, height
+                    - height / 24);
         }
         for (int i = 0; i < packageActions.length; i++) {
             g.setColor((isPackageActionsDisabled[i]) ? Color.darkGray
@@ -471,8 +460,8 @@ public class MenuForEditorState extends BasicGameState {
                 isDeletingLevel = false;
                 LevelPackage levelPackage = levelPackages.get(packageIndex);
                 ArrayList<String> names = levelPackage.getLevelNames();
-                levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex,
-                        names.get(levelIndex));
+                levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex, names
+                        .get(levelIndex));
                 names.remove(levelIndex);
                 if (levelBaseIndex > 0) {
                     levelBaseIndex--;
@@ -597,8 +586,8 @@ public class MenuForEditorState extends BasicGameState {
                     }
                     if (isMouseOverLevelActions[4] && !isLevelActionsDisabled[4]) { // RENAME
                         isRenamingLevel = true;
-                        textField.setText(levelPackages.get(packageIndex).getLevelNames()
-                                .get(levelIndex));
+                        textField.setText(levelPackages.get(packageIndex).getLevelNames().get(
+                                levelIndex));
                     }
                     if (isMouseOverLevelActions[5] && !isLevelActionsDisabled[5]) { // RESIZE
                         isResizingLevel = true;
@@ -619,7 +608,7 @@ public class MenuForEditorState extends BasicGameState {
         return this.stateId;
     }
 
-    private void drawString(Graphics g, UnicodeFont font, String text, float x, float y) {
+    private void drawString(Graphics g, Font font, String text, float x, float y) {
         int width = font.getWidth(text);
         int height = font.getHeight(text);
         g.drawString(text, x - width / 2, y - height / 2);

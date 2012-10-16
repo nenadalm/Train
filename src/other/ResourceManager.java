@@ -53,6 +53,6 @@ public class ResourceManager {
     }
 
     public Font getFont(String type, int size, Effect effect) throws SlickException {
-        return this.fontFactory.getFont(this.fonts.get(type), type, size, effect);
+        return this.fontFactory.getFont(type, size, effect);
     }
 }
