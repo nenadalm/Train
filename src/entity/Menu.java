@@ -58,15 +58,43 @@ public class Menu extends Entity {
                 maxWidth = width;
             }
             int x = container.getWidth() / 2 - width / 2;
-            int y = container.getHeight() / 2 - menuHeight / 2 + lastOffsetY
-                    + item.getMarginBottom() + item.getMarginTop();
+            int y = container.getHeight() / 2 - menuHeight / 2 + lastOffsetY;
             this.rectangles.add(new Rectangle(x, y, width, this.font.getHeight(item.getText())));
-            lastOffsetY += height + item.getMarginTop() + item.getMarginBottom();
+            lastOffsetY += height;
         }
         this.setPosition(new Point(container.getWidth() / 2 - maxWidth / 2, container.getHeight()
                 / 2 - menuHeight / 2));
         this.setWidth(maxWidth);
         this.setHeight(menuHeight);
+        this.applyItemMargin();
+    }
+
+    private void applyItemMargin() {
+        int marginHeight = 0;
+        int marginWidth = 0;
+        int counter = 0;
+        int offsetY = 0;
+        for (MenuItem item : this.items) {
+            Rectangle addition = new Rectangle(item.getMarginLeft(), item.getMarginTop(),
+                    item.getMarginRight(), item.getMarginBottom());
+            Rectangle r = this.rectangles.get(counter);
+            r.setX(r.getX() + addition.getX());
+            r.setY(r.getY() + addition.getY() + offsetY);
+            marginHeight += item.getMarginTop();
+            marginHeight += item.getMarginBottom();
+            marginWidth += item.getMarginLeft();
+            marginWidth += item.getMarginRight();
+            offsetY += addition.getY();
+            counter++;
+        }
+        for (Rectangle r : this.rectangles) {
+            r.setX(r.getX() - marginWidth / 2);
+            r.setY(r.getY() - marginHeight / 2);
+        }
+        this.setWidth(this.getWidth() + marginWidth);
+        this.setHeight(this.getHeight() + marginHeight);
+        this.setPosition(new Point(this.getPosition().x - marginWidth / 2, this.getPosition().y
+                - marginHeight / 2));
     }
 
     @Override
