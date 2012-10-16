@@ -284,7 +284,8 @@ public class MenuState extends BasicGameState {
         GraphicsDevice graphicsDevice = environment.getDefaultScreenDevice();
         int index = 0;
         for (DisplayMode mode : graphicsDevice.getDisplayModes()) {
-            if (mode.getRefreshRate() == 60 && mode.getBitDepth() == 32) {
+            if (mode.getRefreshRate() == 60
+                    && (mode.getBitDepth() == 32 || mode.getBitDepth() == -1)) {
                 modes.add(mode);
                 if (mode.getWidth() == width && mode.getHeight() == height) {
                     modeIndex = index;
