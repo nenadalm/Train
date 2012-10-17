@@ -74,16 +74,18 @@ public class Menu extends Entity {
         int marginWidth = 0;
         int counter = 0;
         int offsetY = 0;
+        int lastMarginBottom = 0;
         for (MenuItem item : this.items) {
-            Rectangle addition = new Rectangle(item.getMarginLeft(), item.getMarginTop(),
-                    item.getMarginRight(), item.getMarginBottom());
+            Rectangle addition = new Rectangle(item.getMarginLeft(), item.getMarginTop()
+                    + lastMarginBottom, 0, 0);
             Rectangle r = this.rectangles.get(counter);
             r.setX(r.getX() + addition.getX());
             r.setY(r.getY() + addition.getY() + offsetY);
             marginHeight += item.getMarginTop();
             marginHeight += item.getMarginBottom();
-            marginWidth += item.getMarginLeft();
-            marginWidth += item.getMarginRight();
+            int itemMarginWidth = item.getMarginLeft() + item.getMarginRight();
+            marginWidth = (marginWidth < itemMarginWidth) ? itemMarginWidth : marginWidth;
+            lastMarginBottom = item.getMarginBottom();
             offsetY += addition.getY();
             counter++;
         }
