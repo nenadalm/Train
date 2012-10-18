@@ -3,6 +3,8 @@ package app;
 import helper.XmlHelper;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ public class Configuration {
 
             for (String key : this.properties.keySet()) {
                 Property property = this.properties.get(key);
-                if (property.isDirty) {
+                if (property.isDirty()) {
                     this.putIntoNodeList(nodeList, key, property);
                 }
             }
@@ -56,8 +58,8 @@ public class Configuration {
             if (nodeList.item(i).hasAttributes()
                     && nodeList.item(i).getAttributes().getNamedItem("name") != null) {
 
-                if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue()
-                        .equals(configName)) {
+                if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(
+                        configName)) {
                     nodeList.item(i).setTextContent(property.getValue());
                     break;
                 }
@@ -67,20 +69,32 @@ public class Configuration {
     }
 
     public void set(String configName, String configValue) {
-        try {
-            if (!this.properties.containsKey(configName)) {
-                throw new Exception("Config '" + configName + "' does not exist.");
-            }
-
-            this.properties.get(configName).setValue(configValue);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!this.properties.containsKey(configName)) {
+            properties.put(configName, new Property(configValue));
+            return;
         }
+
+        this.properties.get(configName).setValue(configValue);
     }
 
     private Document getDocument() throws Exception {
-        return XmlHelper.getDocument(new File(Game.CONTENT_PATH + "config.xml"));
+        File file = new File(Game.CONTENT_PATH + "config.xml");
+        if (!file.exists()) {
+            file.createNewFile();
+            String s = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<configuration>\n    <properties>";
+            s += "<property name=\"language\">en</property>\n";
+            s += "<property name=\"width\">0</property>\n";
+            s += "<property name=\"height\">0</property>\n";
+            s += "<property name=\"fullscreen\">true</property>\n";
+            s += "<property name=\"autoscale\">false</property>\n";
+            s += "<property name=\"scale\">1</property>\n";
+            s += "\n    </properties>\n</configuration>";
+            byte[] buffer = s.getBytes("UTF-8");
+            OutputStream stream = new FileOutputStream(file);
+            stream.write(buffer);
+            stream.close();
+        }
+        return XmlHelper.getDocument(file);
     }
 
     public String get(String configName) {
@@ -116,10 +130,6 @@ public class Configuration {
 
         public boolean isDirty() {
             return this.isDirty;
-        }
-
-        public void setDirty(boolean isDirty) {
-            this.isDirty = isDirty;
         }
     }
 }

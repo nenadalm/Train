@@ -256,11 +256,12 @@ public class OptionsState extends BasicGameState {
                     displayModes[modeIndex].getHeight(), isFullscreen);
 
             translator.setLanguage(languages[languageIndex]);
-            translate();
 
             if (width != displayModes[modeIndex].getWidth()
                     || height != displayModes[modeIndex].getHeight()) {
                 Game.isReinitializationRequried = true;
+            } else {
+                translate();
             }
         } catch (SlickException e) {
             e.printStackTrace();

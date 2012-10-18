@@ -14,7 +14,6 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import other.Translator;
-import app.Configuration;
 import app.Game;
 import factory.FontFactory;
 
@@ -30,7 +29,6 @@ public class MenuState extends BasicGameState {
     private Point mouse;
     private String version;
     private Translator translator;
-    private Configuration configuration;
 
     public MenuState(int stateId) {
         this.stateId = stateId;
@@ -40,10 +38,9 @@ public class MenuState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = FontFactory.getInstance();
         translator = Translator.getInstance();
-        configuration = Configuration.getInstance();
         width = container.getWidth();
         height = container.getHeight();
-        version = configuration.get("version");
+        version = Game.VERSION;
 
         ColorEffect whiteEffect = new ColorEffect(java.awt.Color.WHITE);
         ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);

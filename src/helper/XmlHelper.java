@@ -26,7 +26,8 @@ public class XmlHelper {
     public static Document getDocument(File xml) throws ParserConfigurationException, SAXException,
             IOException {
 
-        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
         Document document = documentBuilder.parse(xml);
         document.normalizeDocument();
 

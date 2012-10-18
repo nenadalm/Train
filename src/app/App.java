@@ -35,6 +35,7 @@ public class App {
             if (width <= 0 || height <= 0 || !matchFound) {
                 configuration.set("width", String.valueOf(actual.getWidth()));
                 configuration.set("height", String.valueOf(actual.getHeight()));
+                configuration.saveChanges();
                 width = actual.getWidth();
                 height = actual.getHeight();
             }
