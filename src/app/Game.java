@@ -10,6 +10,7 @@ import state.GameState;
 import state.MenuForEditorState;
 import state.MenuForGameState;
 import state.MenuState;
+import state.OptionsState;
 
 public class Game extends StateBasedGame {
 
@@ -18,8 +19,9 @@ public class Game extends StateBasedGame {
     public static final int MENU_STATE = 0;
     public static final int GAME_STATE = 1;
     public static final int EDITOR_STATE = 2;
-    public static final int MENU_FOR_EDITOR_STATE = 3;
-    public static final int MENU_FOR_GAME_STATE = 4;
+    public static final int OPTIONS_STATE = 3;
+    public static final int MENU_FOR_EDITOR_STATE = 4;
+    public static final int MENU_FOR_GAME_STATE = 5;
 
     public static boolean isReinitializationRequried = false;
 
@@ -42,8 +44,7 @@ public class Game extends StateBasedGame {
                 this.addState(state);
             } else {
                 org.newdawn.slick.state.GameState state = this.getState(id);
-                if ((Game.isReinitializationRequried || id == Game.GAME_STATE || id == Game.EDITOR_STATE)
-                        && id != Game.MENU_STATE) {
+                if ((Game.isReinitializationRequried || id == Game.GAME_STATE || id == Game.EDITOR_STATE)) {
                     state.init(this.getContainer(), this);
                 }
             }
@@ -62,6 +63,8 @@ public class Game extends StateBasedGame {
                 return new GameState(Game.GAME_STATE);
             case Game.EDITOR_STATE:
                 return new EditorState(Game.EDITOR_STATE);
+            case Game.OPTIONS_STATE:
+                return new OptionsState(Game.OPTIONS_STATE);
             case Game.MENU_FOR_EDITOR_STATE:
                 return new MenuForEditorState(Game.MENU_FOR_EDITOR_STATE);
             case Game.MENU_FOR_GAME_STATE:
