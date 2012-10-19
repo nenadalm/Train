@@ -3,7 +3,6 @@ package state;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class MenuForGameState extends BasicGameState {
     private byte[] progresses;
     private Rectangle packageArrowLeft, packageArrowRight, levelArrowLeft, levelArrowRight,
             returnRectangle, playRectangle;
-    private ArrayList<LevelPackage> levelPackages;
+    private ArrayList<LevelPackage> levelPackages; 
     private LevelController levelController;
 
     public MenuForGameState(int stateId) {
@@ -63,19 +62,6 @@ public class MenuForGameState extends BasicGameState {
 
         levelController = LevelController.getInstance();
         levelPackages = levelController.getLevels();
-
-        File saveFile = new File(Game.CONTENT_PATH + "save");
-        try {
-            if (!saveFile.exists()) {
-                saveFile.createNewFile();
-            }
-            FileInputStream in = new FileInputStream(saveFile);
-            progresses = new byte[levelPackages.size()];
-            in.read(progresses);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         int arrowWidth = ubuntuLarge.getWidth(">");
         int arrowHeight = ubuntuLarge.getWidth(">");

@@ -58,8 +58,8 @@ public class Configuration {
             if (nodeList.item(i).hasAttributes()
                     && nodeList.item(i).getAttributes().getNamedItem("name") != null) {
 
-                if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(
-                        configName)) {
+                if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue()
+                        .equals(configName)) {
                     nodeList.item(i).setTextContent(property.getValue());
                     break;
                 }
@@ -70,7 +70,7 @@ public class Configuration {
 
     public void set(String configName, String configValue) {
         if (!this.properties.containsKey(configName)) {
-            properties.put(configName, new Property(configValue));
+            this.properties.put(configName, new Property(configValue));
             return;
         }
 

@@ -3,6 +3,7 @@ package other;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.Game;
 import entity.Level;
 import entity.Level.Item;
 
@@ -87,6 +89,23 @@ public class LevelController {
         this.currentLevelFileName = String.format("%1$02d_%2$s", levelIndex, levelName);
         this.currentLevelPackageName = String.format("%1$03d_%2$s", packageIndex, packageName);
         this.level.setArray(this.getArrayFromLines(lines));
+    }
+
+    public byte[] getProgresses() {
+        byte progresses[] = null;
+        File saveFile = new File(Game.CONTENT_PATH + "save");
+        try {
+            if (!saveFile.exists()) {
+                saveFile.createNewFile();
+            }
+            FileInputStream in = new FileInputStream(saveFile);
+            progresses = new byte[this.getLevels().size()];
+            in.read(progresses);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return progresses;
     }
 
     public void loadNextLevel() {
