@@ -28,16 +28,20 @@ public class FontFactory {
 
     @SuppressWarnings("unchecked")
     public Font getFont(String type, int size, Effect effect) throws SlickException {
-        if (this.type_size_effectFont.containsKey(type)
-                && this.type_size_effectFont.get(type).containsKey(size)
-                && this.type_size_effectFont.get(type).get(size).containsKey(effect)) {
-            return this.type_size_effectFont.get(type).get(size).get(effect);
+        if (!this.type_size_effectFont.containsKey(type)) {
+            this.type_size_effectFont.put(type, new HashMap<Integer, Map<Effect, Font>>());
         }
-        UnicodeFont font = new UnicodeFont(String.format("%1$sfonts/%2$s.ttf", Game.CONTENT_PATH,
-                type), size, false, false);
-        font.addGlyphs(32, 382);
-        font.getEffects().add(effect);
-        font.loadGlyphs();
-        return font;
+        if (!this.type_size_effectFont.get(type).containsKey(size)) {
+            this.type_size_effectFont.get(type).put(size, new HashMap<Effect, Font>());
+        }
+        if (!this.type_size_effectFont.get(type).get(size).containsKey(effect)) {
+            UnicodeFont font = new UnicodeFont(String.format("%1$sfonts/%2$s.ttf",
+                    Game.CONTENT_PATH, type), size, false, false);
+            font.addGlyphs(32, 382);
+            font.getEffects().add(effect);
+            font.loadGlyphs();
+            this.type_size_effectFont.get(type).get(size).put(effect, font);
+        }
+        return this.type_size_effectFont.get(type).get(size).get(effect);
     }
 }

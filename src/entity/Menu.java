@@ -12,13 +12,14 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
 import other.ResourceManager;
 
 import component.RectangleComponent;
+
+import factory.EffectFactory;
 
 public class Menu extends Entity {
     private ArrayList<Rectangle> rectangles;
@@ -29,12 +30,13 @@ public class Menu extends Entity {
     public Menu(List<MenuItem> items, GameContainer container) {
         this.addComponent(new RectangleComponent());
         ResourceManager resourceManager = ResourceManager.getInstance();
+        EffectFactory effectFactory = EffectFactory.getInstance();
         this.items = items;
 
         int fontWidth = container.getWidth() / 20;
         try {
-            this.font = resourceManager.getFont("ubuntu", fontWidth, new ColorEffect(
-                    java.awt.Color.WHITE));
+            this.font = resourceManager.getFont("ubuntu", fontWidth,
+                    effectFactory.getColorEffect(java.awt.Color.white));
         } catch (Exception e) {
             e.printStackTrace();
         }
