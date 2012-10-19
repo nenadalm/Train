@@ -30,6 +30,7 @@ public class GameState extends BasicGameState {
     private Translator translator;
     private LevelController levelController;
     private MessageBox messageBox;
+    private boolean wasFinished = false;
 
     public GameState(int stateId) {
         this.stateId = stateId;
@@ -70,6 +71,7 @@ public class GameState extends BasicGameState {
 
     private void initLevel(GameContainer container) {
         try {
+            this.wasFinished = false;
             this.level = this.levelController.getCurrentLevel();
             int itemSize = this.level.getOriginalImageSize();
             float scale = this.computeScale(container);
@@ -132,6 +134,10 @@ public class GameState extends BasicGameState {
                             game.enterState(Game.MENU_STATE);
                         }
                     });
+            if (!this.wasFinished) {
+                this.wasFinished = true;
+                this.levelController.updateProgress();
+            }
         }
         if (!this.showMenu) {
             this.level.update(container, game, delta);

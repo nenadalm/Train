@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,6 +23,8 @@ public class LevelController {
     // loaded level
     private String currentLevelFileName;
     private String currentLevelPackageName;
+    private int currentLevelIndex;
+    private int currentPackageIndex;
     private Level level;
     private Level levelClone;
     // list of levels
@@ -86,6 +89,8 @@ public class LevelController {
                     + "'");
         }
 
+        this.currentLevelIndex = levelIndex;
+        this.currentPackageIndex = packageIndex;
         this.currentLevelFileName = String.format("%1$02d_%2$s", levelIndex, levelName);
         this.currentLevelPackageName = String.format("%1$03d_%2$s", packageIndex, packageName);
         this.level.setArray(this.getArrayFromLines(lines));
@@ -106,6 +111,18 @@ public class LevelController {
             e.printStackTrace();
         }
         return progresses;
+    }
+
+    public void updateProgress() {
+        byte progresses[] = this.getProgresses();
+        progresses[this.currentPackageIndex] = (byte) this.currentLevelIndex;
+        try {
+            FileOutputStream fos = new FileOutputStream("save");
+            fos.write(progresses);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadNextLevel() {
