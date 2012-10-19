@@ -40,7 +40,7 @@ public class MenuForGameState extends BasicGameState {
     private byte[] progresses;
     private Rectangle packageArrowLeft, packageArrowRight, levelArrowLeft, levelArrowRight,
             returnRectangle, playRectangle;
-    private ArrayList<LevelPackage> levelPackages; 
+    private ArrayList<LevelPackage> levelPackages;
     private LevelController levelController;
 
     public MenuForGameState(int stateId) {
@@ -62,6 +62,7 @@ public class MenuForGameState extends BasicGameState {
 
         levelController = LevelController.getInstance();
         levelPackages = levelController.getLevels();
+        progresses = levelController.getProgresses();
 
         int arrowWidth = ubuntuLarge.getWidth(">");
         int arrowHeight = ubuntuLarge.getWidth(">");
@@ -238,13 +239,14 @@ public class MenuForGameState extends BasicGameState {
     private void setProgressText() {
         int size = levelPackages.get(packageIndex).getLevelNames().size();
         progressText = String.format("%4$s %1$d %3$s %2$d", progresses[packageIndex], size,
-                translator.translate((size > 1 && size < 5) ? "of2" : "of"), translator
-                        .translate("completed"));
+                translator.translate((size > 1 && size < 5) ? "of2" : "of"),
+                translator.translate("completed"));
     }
 
     private void setShowingText() {
         int size = levelPackages.get(packageIndex).getLevelNames().size();
-        showingText = String.format("%4$s %1$d %3$s %2$d", levelIndex + 1, size, translator
-                .translate((size > 1 && size < 5) ? "of2" : "of"), translator.translate("showing"));
+        showingText = String.format("%4$s %1$d %3$s %2$d", levelIndex + 1, size,
+                translator.translate((size > 1 && size < 5) ? "of2" : "of"),
+                translator.translate("showing"));
     }
 }
