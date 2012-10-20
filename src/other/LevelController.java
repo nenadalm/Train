@@ -115,9 +115,11 @@ public class LevelController {
 
     public void updateProgress() {
         byte progresses[] = this.getProgresses();
-        progresses[this.currentPackageIndex] = (byte) this.currentLevelIndex;
+        if (progresses[this.currentPackageIndex] < (byte) (this.currentLevelIndex + 1)) {
+            progresses[this.currentPackageIndex] = (byte) (this.currentLevelIndex + 1);
+        }
         try {
-            FileOutputStream fos = new FileOutputStream("save");
+            FileOutputStream fos = new FileOutputStream(Game.CONTENT_PATH + "save");
             fos.write(progresses);
             fos.close();
         } catch (Exception e) {
