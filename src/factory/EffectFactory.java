@@ -44,8 +44,6 @@ public class EffectFactory {
             this.gradientEffect.get(topColor).get(bottomColor)
                     .put(scale, new GradientEffect(topColor, bottomColor, scale));
         }
-        System.out.println("mrdka");
-        System.out.println(this.gradientEffect.get(topColor).get(bottomColor).get(scale));
         return this.gradientEffect.get(topColor).get(bottomColor).get(scale);
     }
 }

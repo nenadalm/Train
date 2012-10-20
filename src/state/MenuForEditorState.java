@@ -21,6 +21,7 @@ import other.LevelController;
 import other.LevelPackage;
 import other.Translator;
 import app.Game;
+import factory.EffectFactory;
 import factory.FontFactory;
 
 public class MenuForEditorState extends BasicGameState {
@@ -56,7 +57,8 @@ public class MenuForEditorState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = FontFactory.getInstance();
-        ColorEffect whiteEffect = new ColorEffect(java.awt.Color.WHITE);
+        EffectFactory effects = EffectFactory.getInstance();
+        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         translator = Translator.getInstance();
         width = container.getWidth();
         height = container.getHeight();
@@ -193,10 +195,10 @@ public class MenuForEditorState extends BasicGameState {
                 translator.translate("showing"), translator.translate("of"));
         g.drawString(text, width / 2 + width / 200, height * 9 / 11);
         if (isDeletingPackage || isDeletingLevel) {
-            drawString(g, ubuntuSmall, translator.translate("Really") + " "
-                    + translator.translate("delete") + "? " + translator.translate("Yes")
-                    + "(Enter)/" + translator.translate("No") + "(Escape)", width / 2, height
-                    - height / 24);
+            drawString(g, ubuntuSmall,
+                    translator.translate("Really") + " " + translator.translate("delete") + "? "
+                            + translator.translate("Yes") + "(Enter)/" + translator.translate("No")
+                            + "(Escape)", width / 2, height - height / 24);
         }
         for (int i = 0; i < packageActions.length; i++) {
             g.setColor((isPackageActionsDisabled[i]) ? Color.darkGray
@@ -460,8 +462,8 @@ public class MenuForEditorState extends BasicGameState {
                 isDeletingLevel = false;
                 LevelPackage levelPackage = levelPackages.get(packageIndex);
                 ArrayList<String> names = levelPackage.getLevelNames();
-                levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex, names
-                        .get(levelIndex));
+                levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex,
+                        names.get(levelIndex));
                 names.remove(levelIndex);
                 if (levelBaseIndex > 0) {
                     levelBaseIndex--;
@@ -586,8 +588,8 @@ public class MenuForEditorState extends BasicGameState {
                     }
                     if (isMouseOverLevelActions[4] && !isLevelActionsDisabled[4]) { // RENAME
                         isRenamingLevel = true;
-                        textField.setText(levelPackages.get(packageIndex).getLevelNames().get(
-                                levelIndex));
+                        textField.setText(levelPackages.get(packageIndex).getLevelNames()
+                                .get(levelIndex));
                     }
                     if (isMouseOverLevelActions[5] && !isLevelActionsDisabled[5]) { // RESIZE
                         isResizingLevel = true;

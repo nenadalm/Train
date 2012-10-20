@@ -15,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import other.Translator;
 import app.Game;
+import factory.EffectFactory;
 import factory.FontFactory;
 
 public class MenuState extends BasicGameState {
@@ -27,8 +28,7 @@ public class MenuState extends BasicGameState {
     private Rectangle startGameRectangle, levelEditorRectangle, optionsRectangle, exitRectangle;
     private Input input;
     private Point mouse;
-    private String version;
-    private Translator translator;
+    private String version, trainText, startGame, levelEditor, options, exit;
 
     public MenuState(int stateId) {
         this.stateId = stateId;
@@ -37,35 +37,38 @@ public class MenuState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = FontFactory.getInstance();
-        translator = Translator.getInstance();
+        EffectFactory effects = EffectFactory.getInstance();
+        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
+        Translator translator = Translator.getInstance();
         width = container.getWidth();
         height = container.getHeight();
         version = Game.VERSION;
 
-        ColorEffect whiteEffect = new ColorEffect(java.awt.Color.WHITE);
         ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
+
+        startGame = translator.translate("start game");
+        levelEditor = translator.translate("level editor");
+        options = translator.translate("options");
+        exit = translator.translate("exit");
 
         distanceBetweenMenuEntries = height / 7;
 
         startGameRectangle = new Rectangle();
-        setRectangle(startGameRectangle, translator.translate("new game"), width / 2,
-                distanceBetweenMenuEntries * 2);
+        setRectangle(startGameRectangle, startGame, width / 2, distanceBetweenMenuEntries * 2);
 
         levelEditorRectangle = new Rectangle();
-        setRectangle(levelEditorRectangle, translator.translate("level editor"), width / 2,
-                distanceBetweenMenuEntries * 3);
+        setRectangle(levelEditorRectangle, levelEditor, width / 2, distanceBetweenMenuEntries * 3);
 
         optionsRectangle = new Rectangle();
-        setRectangle(optionsRectangle, translator.translate("options"), width / 2,
-                distanceBetweenMenuEntries * 4);
+        setRectangle(optionsRectangle, options, width / 2, distanceBetweenMenuEntries * 4);
 
         exitRectangle = new Rectangle();
-        setRectangle(exitRectangle, translator.translate("exit"), width / 2,
-                distanceBetweenMenuEntries * 5);
+        setRectangle(exitRectangle, exit, width / 2, distanceBetweenMenuEntries * 5);
 
-        trainTextWidth = ubuntuLarge.getWidth("Train " + version);
-        trainTextHeight = ubuntuLarge.getHeight("Train " + version);
+        trainText = "Train " + version;
+        trainTextWidth = ubuntuLarge.getWidth(trainText);
+        trainTextHeight = ubuntuLarge.getHeight(trainText);
     }
 
     @Override
@@ -73,24 +76,20 @@ public class MenuState extends BasicGameState {
             throws SlickException {
         g.setFont(ubuntuLarge);
         g.setColor(Color.gray);
-        drawString(g, ubuntuLarge, "Train " + version, (int) (trainTextWidth / 1.75) + width / 500,
+        drawString(g, ubuntuLarge, trainText, (int) (trainTextWidth / 1.75) + width / 500,
                 (int) (trainTextHeight / 1.5) + width / 750);
         g.setColor(Color.white);
-        drawString(g, ubuntuLarge, "Train " + version, (int) (trainTextWidth / 1.75),
+        drawString(g, ubuntuLarge, trainText, (int) (trainTextWidth / 1.75),
                 (int) (trainTextHeight / 1.5));
         g.setFont(ubuntuMedium);
         g.setColor((isMouseOverStartGame) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, translator.translate("start game"), width / 2,
-                distanceBetweenMenuEntries * 2);
+        drawString(g, ubuntuMedium, startGame, width / 2, distanceBetweenMenuEntries * 2);
         g.setColor((isMouseOverLevelEditor) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, translator.translate("level editor"), width / 2,
-                distanceBetweenMenuEntries * 3);
+        drawString(g, ubuntuMedium, levelEditor, width / 2, distanceBetweenMenuEntries * 3);
         g.setColor((isMouseOverOptions) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, translator.translate("options"), width / 2,
-                distanceBetweenMenuEntries * 4);
+        drawString(g, ubuntuMedium, options, width / 2, distanceBetweenMenuEntries * 4);
         g.setColor((isMouseOverExit) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, translator.translate("exit"), width / 2,
-                distanceBetweenMenuEntries * 5);
+        drawString(g, ubuntuMedium, exit, width / 2, distanceBetweenMenuEntries * 5);
     }
 
     @Override

@@ -2,9 +2,6 @@ package state;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
@@ -22,6 +19,7 @@ import other.LevelController;
 import other.LevelPackage;
 import other.Translator;
 import app.Game;
+import factory.EffectFactory;
 import factory.FontFactory;
 
 public class MenuForGameState extends BasicGameState {
@@ -50,8 +48,9 @@ public class MenuForGameState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = FontFactory.getInstance();
-        ColorEffect whiteEffect = new ColorEffect(java.awt.Color.WHITE);
-        GradientEffect gradientEffect = new GradientEffect(java.awt.Color.WHITE,
+        EffectFactory effects = EffectFactory.getInstance();
+        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
+        GradientEffect gradientEffect = effects.getGradientEffect(java.awt.Color.WHITE,
                 java.awt.Color.GRAY, 0.5f);
         translator = Translator.getInstance();
         width = container.getWidth();
@@ -184,17 +183,6 @@ public class MenuForGameState extends BasicGameState {
         isMouseOverPlay = playRectangle.contains(mouse);
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            File saveFile = new File(Game.CONTENT_PATH + "save");
-            try {
-                if (!saveFile.exists()) {
-                    saveFile.createNewFile();
-                }
-                FileOutputStream out = new FileOutputStream(saveFile);
-                out.write(progresses);
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             game.enterState(Game.MENU_STATE);
         }
 

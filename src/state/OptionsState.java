@@ -24,6 +24,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import other.Translator;
 import app.Configuration;
 import app.Game;
+import factory.EffectFactory;
 import factory.FontFactory;
 
 public class OptionsState extends BasicGameState {
@@ -49,12 +50,13 @@ public class OptionsState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = FontFactory.getInstance();
+        EffectFactory effects = EffectFactory.getInstance();
         translator = Translator.getInstance();
         configuration = Configuration.getInstance();
         width = container.getWidth();
         height = container.getHeight();
 
-        ColorEffect whiteEffect = new ColorEffect(java.awt.Color.WHITE);
+        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
 
