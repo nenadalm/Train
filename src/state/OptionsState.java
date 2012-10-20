@@ -1,5 +1,6 @@
 package state;
 
+import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -15,12 +16,14 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import other.LevelController;
 import other.Translator;
 import app.Configuration;
 import app.Game;
@@ -30,16 +33,18 @@ import factory.FontFactory;
 public class OptionsState extends BasicGameState {
 
     private boolean isMouseOverReturn, isMouseOverSave, isMouseOverResolution,
-            isMouseOverFullscreen, isMouseOverLanguage, isMouseOverAutoscale, isFullscreen,
-            isAutoscale;
-    private int stateId, width, height, languageIndex, modeIndex;
-    private Font ubuntuMedium, ubuntuLarge;
+            isMouseOverFullscreen, isMouseOverLanguage, isMouseOverAutoscale, isMouseOverScale,
+            isFullscreen, isAutoscale, isHolding;
+    private int stateId, width, height, languageIndex, modeIndex, scale, holdCounter;
+    private Font ubuntuSmall, ubuntuMedium, ubuntuLarge;
     private Rectangle saveRectangle, returnRectangle, resolutionRectangle, fullscreenRectangle,
-            languageRectangle, autoscaleRectangle;
+            languageRectangle, autoscaleRectangle, scaleRectangle;
     private DisplayMode displayModes[];
+    private Dimension size;
+    private Image wall, wallPreview;
     private Input input;
     private Point mouse;
-    private String resolutionText, languages[], yes, no, save;
+    private String resolutionText, languages[], yes, no, save, scaleText, sizeText;
     private Translator translator;
     private Configuration configuration;
 
@@ -55,12 +60,16 @@ public class OptionsState extends BasicGameState {
         configuration = Configuration.getInstance();
         width = container.getWidth();
         height = container.getHeight();
+        scale = (int) (Float.parseFloat(configuration.get("scale")) * 100);
 
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
+        ubuntuSmall = fonts.getFont("ubuntu", width / 40, whiteEffect);
         ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
 
         translate();
+        wall = new Image(Game.CONTENT_PATH + "graphics/newWall.png");
+        wallPreview = wall.getScaledCopy(scale / 512f);
 
         ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();
         GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -122,6 +131,9 @@ public class OptionsState extends BasicGameState {
         autoscaleRectangle = new Rectangle();
         setAutoscaleRectangle();
 
+        scaleRectangle = new Rectangle();
+        setScaleRectangle();
+
         saveRectangle = new Rectangle();
         saveRectangle.width = ubuntuMedium.getWidth(save);
         saveRectangle.height = ubuntuMedium.getHeight(save);
@@ -153,6 +165,8 @@ public class OptionsState extends BasicGameState {
                 height * 4 / 10);
         drawString(g, ubuntuMedium, translator.translate("Autoscale") + ":", width / 6 * 2,
                 height * 5 / 10);
+        drawString(g, ubuntuMedium, translator.translate("Scale") + ":", width / 6 * 2,
+                height * 6 / 10);
 
         g.setColor((isMouseOverResolution) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, resolutionText, width / 6 * 4, height * 2 / 10);
@@ -162,6 +176,8 @@ public class OptionsState extends BasicGameState {
         drawString(g, ubuntuMedium, languages[languageIndex], width / 6 * 4, height * 4 / 10);
         g.setColor((isMouseOverAutoscale) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, isAutoscale ? yes : no, width / 6 * 4, height * 5 / 10);
+        g.setColor((isAutoscale) ? Color.darkGray : (isMouseOverScale) ? Color.blue : Color.red);
+        drawString(g, ubuntuMedium, scaleText, width / 6 * 4, height * 6 / 10);
 
         g.setColor((isMouseOverSave) ? Color.red : Color.white);
         drawString(g, ubuntuMedium, translator.translate("save"), width / 3,
@@ -169,6 +185,11 @@ public class OptionsState extends BasicGameState {
         g.setColor((isMouseOverReturn) ? Color.red : Color.white);
         drawString(g, ubuntuMedium, translator.translate("return"), (int) (width / 1.5),
                 (height - returnRectangle.height * 3 / 4));
+        g.setFont(ubuntuSmall);
+        g.setColor((size.width > 7 && size.height > 7 && size.width <= 100 && size.height <= 100) ? Color.white
+                : Color.blue);
+        drawString(g, ubuntuSmall, sizeText, width / 6 * 4, height * 8 / 12);
+        g.drawImage(wallPreview, width * 5 / 6, height * 7 / 10);
     }
 
     @Override
@@ -181,8 +202,10 @@ public class OptionsState extends BasicGameState {
         isMouseOverFullscreen = fullscreenRectangle.contains(mouse);
         isMouseOverLanguage = languageRectangle.contains(mouse);
         isMouseOverAutoscale = autoscaleRectangle.contains(mouse);
+        isMouseOverScale = scaleRectangle.contains(mouse) && !isAutoscale;
         isMouseOverSave = saveRectangle.contains(mouse);
         isMouseOverReturn = returnRectangle.contains(mouse);
+        isHolding = false;
 
         if (input.isKeyPressed(Input.KEY_ENTER)) {
             saveOptions(container, game);
@@ -191,7 +214,7 @@ public class OptionsState extends BasicGameState {
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);
         }
-        if (input.isMousePressed(0)) {
+        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
             if (isMouseOverResolution) {
                 modeIndex++;
                 if (modeIndex == displayModes.length) {
@@ -222,7 +245,7 @@ public class OptionsState extends BasicGameState {
                 game.enterState(Game.MENU_STATE);
             }
         }
-        if (input.isMousePressed(1)) {
+        if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
             if (isMouseOverResolution) {
                 modeIndex--;
                 if (modeIndex == -1) {
@@ -238,6 +261,49 @@ public class OptionsState extends BasicGameState {
                 setLanguageRectangle();
             }
         }
+        if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+            if (isMouseOverScale && scale < 512 && size.width > 7 && size.height > 7) {
+                isHolding = true;
+                if (holdCounter == 0) {
+                    scale++;
+                } else if (holdCounter <= 60) {
+                    if (holdCounter % 6 == 0) {
+                        scale++;
+                    }
+                } else if (holdCounter <= 120) {
+                    if (holdCounter % 2 == 0) {
+                        scale++;
+                    }
+                } else {
+                    scale++;
+                }
+                holdCounter++;
+                setScaleRectangle();
+            }
+        }
+        if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
+            if (isMouseOverScale && scale > 25 && size.width <= 100 && size.height <= 100) {
+                isHolding = true;
+                if (holdCounter == 0) {
+                    scale--;
+                } else if (holdCounter <= 60) {
+                    if (holdCounter % 6 == 0) {
+                        scale--;
+                    }
+                } else if (holdCounter <= 120) {
+                    if (holdCounter % 2 == 0) {
+                        scale--;
+                    }
+                } else {
+                    scale--;
+                }
+                holdCounter++;
+                setScaleRectangle();
+            }
+        }
+        if (!isHolding) {
+            holdCounter = 0;
+        }
     }
 
     @Override
@@ -252,6 +318,7 @@ public class OptionsState extends BasicGameState {
             configuration.set("language", languages[languageIndex]);
             configuration.set("fullscreen", String.valueOf(isFullscreen));
             configuration.set("autoscale", String.valueOf(isAutoscale));
+            configuration.set("scale", String.valueOf(scale / 100f));
             configuration.saveChanges();
 
             ((AppGameContainer) container).setDisplayMode(displayModes[modeIndex].getWidth(),
@@ -295,6 +362,14 @@ public class OptionsState extends BasicGameState {
     private void setAutoscaleRectangle() {
         String text = isAutoscale ? yes : no;
         setRectangle(autoscaleRectangle, text, width * 4 / 6, height * 5 / 10);
+    }
+
+    private void setScaleRectangle() {
+        size = LevelController.getInstance().getOptimalLevelDimension(width, height, scale / 100f);
+        sizeText = String.format("[%1$02d , %2$02d]", size.width, size.height);
+        scaleText = String.format("%1$d.%2$02dx", scale / 100, scale % 100);
+        wallPreview = wall.getScaledCopy(scale / 512f);
+        setRectangle(scaleRectangle, scaleText, width * 4 / 6, height * 6 / 10);
     }
 
     private void setRectangle(Rectangle rectangle, String text, int x, int y) {
