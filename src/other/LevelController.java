@@ -113,6 +113,10 @@ public class LevelController {
         return progresses;
     }
 
+    public boolean nextLevelExist() {
+        return (this.levels[this.currentPackageIndex].getLevelNames().size() > this.currentLevelIndex + 1);
+    }
+
     public void updateProgress() {
         byte progresses[] = this.getProgresses();
         if (progresses[this.currentPackageIndex] < (byte) (this.currentLevelIndex + 1)) {

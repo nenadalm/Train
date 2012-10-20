@@ -119,22 +119,42 @@ public class GameState extends BasicGameState {
             this.showMenu = true;
         }
         if (this.level.isFinished()) {
-            this.messageBox.showConfirm(this.translator
-                    .translate("Level was finished. do you wanna continue to next level?"),
-                    new ActionListener() {
+            if (this.levelController.nextLevelExist()) {
+                this.messageBox.showConfirm(this.translator
+                        .translate("Level was finished. do you wanna continue to next level?"),
+                        new ActionListener() {
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GameState.this.levelController.loadNextLevel();
-                            GameState.this.initLevel(container);
-                        }
-                    }, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GameState.this.levelController.loadNextLevel();
+                                GameState.this.initLevel(container);
+                            }
+                        }, new ActionListener() {
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            game.enterState(Game.MENU_STATE);
-                        }
-                    });
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                game.enterState(Game.MENU_STATE);
+                            }
+                        });
+            } else {
+                this.messageBox
+                        .showConfirm(
+                                this.translator
+                                        .translate("Congratulation!!! Package was finished. Do you wanna continue?"),
+                                new ActionListener() {
+
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        game.enterState(Game.MENU_FOR_GAME_STATE);
+                                    }
+                                }, new ActionListener() {
+
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        game.enterState(Game.MENU_STATE);
+                                    }
+                                });
+            }
             if (!this.wasFinished) {
                 this.wasFinished = true;
                 this.levelController.updateProgress();
