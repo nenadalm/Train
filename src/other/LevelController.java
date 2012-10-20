@@ -29,6 +29,7 @@ public class LevelController {
     private Level levelClone;
     // list of levels
     private LevelPackage[] levels;
+    private byte progresses[];
 
     public static LevelController getInstance() {
         if (LevelController.levelController == null) {
@@ -97,20 +98,19 @@ public class LevelController {
     }
 
     public byte[] getProgresses() {
-        byte progresses[] = null;
         File saveFile = new File(Game.CONTENT_PATH + "save");
         try {
             if (!saveFile.exists()) {
                 saveFile.createNewFile();
             }
             FileInputStream in = new FileInputStream(saveFile);
-            progresses = new byte[this.getLevels().size()];
-            in.read(progresses);
+            this.progresses = new byte[this.getLevels().size()];
+            in.read(this.progresses);
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return progresses;
+        return this.progresses;
     }
 
     public boolean nextLevelExist() {
@@ -118,13 +118,12 @@ public class LevelController {
     }
 
     public void updateProgress() {
-        byte progresses[] = this.getProgresses();
-        if (progresses[this.currentPackageIndex] < (byte) (this.currentLevelIndex + 1)) {
-            progresses[this.currentPackageIndex] = (byte) (this.currentLevelIndex + 1);
+        if (this.progresses[this.currentPackageIndex] < (byte) (this.currentLevelIndex + 1)) {
+            this.progresses[this.currentPackageIndex] = (byte) (this.currentLevelIndex + 1);
         }
         try {
             FileOutputStream fos = new FileOutputStream(Game.CONTENT_PATH + "save");
-            fos.write(progresses);
+            fos.write(this.progresses);
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
