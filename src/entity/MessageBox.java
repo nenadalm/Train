@@ -31,6 +31,10 @@ public class MessageBox extends Entity {
     private ActionListener noListener;
     private boolean wasPressed = false;
 
+    private Color bakcgroundColor = Color.lightGray;
+    private Color textColor = Color.red;
+    private Color buttonsColor = Color.blue;
+
     public MessageBox(GameContainer container) {
         this.addComponent(new RectangleComponent());
         ResourceManager resourceManager = ResourceManager.getInstance();
@@ -74,11 +78,33 @@ public class MessageBox extends Entity {
         if (!this.show) {
             return;
         }
-        g.setColor(Color.lightGray);
+
+        g.setColor(this.bakcgroundColor);
         super.render(container, game, g);
+
         container.getWidth();
         g.setFont(this.font);
-        g.setColor(Color.red);
+
+        g.setColor(this.textColor);
+        this.renderMessage(g);
+
+        g.setColor(this.buttonsColor);
+        this.renderButtons(g);
+    }
+
+    private void renderButtons(Graphics g) {
+        int i = 0;
+        for (Rectangle button : this.buttons) {
+            if (this.active == i) {
+                g.setColor(Color.red);
+            }
+            g.drawString(this.buttonsText[i], button.getX(), button.getY());
+            g.setColor(Color.blue);
+            i++;
+        }
+    }
+
+    private void renderMessage(Graphics g) {
         String text[] = this.text.split(" ");
         ArrayList<String> lines = new ArrayList<String>(text.length);
         String line = "";
@@ -100,16 +126,6 @@ public class MessageBox extends Entity {
         for (int j = 0; j < lines.size(); j++) {
             g.drawString(lines.get(j), this.getPosition().x + 10, this.getPosition().y + 10 + j
                     * lineHeight);
-        }
-        g.setColor(Color.blue);
-        int i = 0;
-        for (Rectangle button : this.buttons) {
-            if (this.active == i) {
-                g.setColor(Color.red);
-            }
-            g.drawString(this.buttonsText[i], button.getX(), button.getY());
-            g.setColor(Color.blue);
-            i++;
         }
     }
 
