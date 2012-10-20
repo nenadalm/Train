@@ -103,7 +103,7 @@ public class MenuForGameState extends BasicGameState {
         playRectangle.y = (int) (height - playRectangle.height * 1.1f);
 
         packageIndex = 0;
-        levelIndex = 0;
+        levelIndex = progresses[packageIndex];
         setProgressText();
         setShowingText();
     }
@@ -189,13 +189,15 @@ public class MenuForGameState extends BasicGameState {
         if (input.isMousePressed(0)) {
             if (isMouseOverPackageArrowLeft && !isPackageArrowLeftDisabled) {
                 packageIndex--;
-                levelIndex = 0;
+                levelIndex = progresses[packageIndex];
                 setProgressText();
+                setShowingText();
             }
             if (isMouseOverPackageArrowRight && !isPackageArrowRightDisabled) {
                 packageIndex++;
-                levelIndex = 0;
+                levelIndex = progresses[packageIndex];
                 setProgressText();
+                setShowingText();
             }
             if (isMouseOverLevelArrowLeft && !isLevelArrowLeftDisabled) {
                 levelIndex--;
