@@ -12,9 +12,9 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import other.ResourceManager;
 import app.Game;
 
 public class Level extends Entity implements Cloneable {
@@ -34,8 +34,10 @@ public class Level extends Entity implements Cloneable {
     private int originalImageSize;
     private int imageSize;
     private Point trainDirectionPrepared = new Point();
+    private ResourceManager resourceManager;
 
     public Level(int width, int height) {
+        this.resourceManager = ResourceManager.getInstance();
         this.levelInit(width, height);
         this.train = new Train();
         this.trucks = new ArrayList<Truck>();
@@ -102,19 +104,15 @@ public class Level extends Entity implements Cloneable {
     }
 
     private void loadImages() {
-        this.images = new HashMap<Item, Image>(5);
-        try {
-            this.images.put(Item.WALL, new Image(Level.GRAPHICS + "wall.png"));
-            this.images.put(Item.GATE, new Image(Level.GRAPHICS + "gate.png"));
-            this.images.put(Item.TREE, new Image(Level.GRAPHICS + "tree.png"));
-            this.images.put(Item.TRAIN, new Image(Level.GRAPHICS + "train.png"));
-            this.images.put(Item.EMPTY, new Image(Level.GRAPHICS + "empty.png"));
-            this.images.put(Item.TRUCK, new Image(Level.GRAPHICS + "treeTruck.png"));
-            this.imageSize = this.images.get(Item.WALL).getWidth();
-            this.originalImageSize = this.imageSize;
-        } catch (SlickException e) {
-            e.printStackTrace();
-        }
+        this.images = new HashMap<Item, Image>(6);
+        this.images.put(Item.WALL, this.resourceManager.getImage("wall"));
+        this.images.put(Item.GATE, this.resourceManager.getImage("gate"));
+        this.images.put(Item.TREE, this.resourceManager.getImage("tree"));
+        this.images.put(Item.TRAIN, this.resourceManager.getImage("train"));
+        this.images.put(Item.EMPTY, this.resourceManager.getImage("empty"));
+        this.images.put(Item.TRUCK, this.resourceManager.getImage("treeTruck"));
+        this.imageSize = this.images.get(Item.WALL).getWidth();
+        this.originalImageSize = this.imageSize;
     }
 
     private void levelInit(int width, int height) {
@@ -284,12 +282,8 @@ public class Level extends Entity implements Cloneable {
     }
 
     private void doCrash() {
-        try {
-            this.images.put(Item.TRAIN, new Image(Level.GRAPHICS + "trainCrash.png"));
-            this.isGameOver = true;
-        } catch (SlickException e) {
-            e.printStackTrace();
-        }
+        this.images.put(Item.TRAIN, this.resourceManager.getImage("trainCrash"));
+        this.isGameOver = true;
     }
 
     public Train getTrain() {

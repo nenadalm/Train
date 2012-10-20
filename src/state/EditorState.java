@@ -15,6 +15,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import other.LevelController;
+import other.ResourceManager;
 import other.Translator;
 import app.Game;
 import entity.Level;
@@ -44,6 +45,7 @@ public class EditorState extends BasicGameState {
     private Level level = null;
     // states
     private boolean wasLeftButtonDown = false;
+    private ResourceManager resourceManager;
 
     private LevelController levelController;
     float scale = 1;
@@ -55,24 +57,24 @@ public class EditorState extends BasicGameState {
 
     public EditorState(int stateId) {
         this.stateId = stateId;
+        this.resourceManager = ResourceManager.getInstance();
     }
 
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
-        String path = Game.CONTENT_PATH + "graphics/";
         this.translator = Translator.getInstance();
         this.messageBox = new MessageBox(container);
         this.messageBox.setBackgroundColor(Color.lightGray);
         this.fieldPosition = new Point();
 
-        this.train = new Image(path + "train.png");
-        this.gate = new Image(path + "gate.png");
-        this.tree = new Image(path + "tree.png");
-        this.wall = new Image(path + "wall.png");
-        this.save = new Image(path + "save.png");
+        this.train = this.resourceManager.getImage("train");
+        this.gate = this.resourceManager.getImage("gate");
+        this.tree = this.resourceManager.getImage("tree");
+        this.wall = this.resourceManager.getImage("wall");
+        this.save = this.resourceManager.getImage("save");
 
-        this.itemMenu = new Image(path + "itemMenu.png");
-        this.active = new Image(path + "active.png");
+        this.itemMenu = this.resourceManager.getImage("itemMenu");
+        this.active = this.resourceManager.getImage("active");
         this.activeItem = Item.WALL;
         this.itemSize = this.active.getWidth();
 

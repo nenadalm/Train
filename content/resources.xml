@@ -21,6 +21,8 @@
 	<resource type="image" id="saveAs">graphics/saveAs.png</resource>
 	<resource type="image" id="succeed">graphics/succeed.png</resource>
 	<resource type="image" id="train">graphics/train.png</resource>
+	<resource type="image" id="trainCrash">graphics/trainCrash.png</resource>
+	<resource type="image" id="tree">graphics/tree.png</resource>
 	<resource type="image" id="treeTruck">graphics/treeTruck.png</resource>
 	<resource type="image" id="try">graphics/try.png</resource>
 	<resource type="image" id="wall">graphics/wall.png</resource>
