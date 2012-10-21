@@ -20,6 +20,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import other.LevelController;
 import other.LevelPackage;
 import other.Translator;
+import app.Configuration;
 import app.Game;
 import factory.EffectFactory;
 import factory.FontFactory;
@@ -38,6 +39,7 @@ public class MenuForEditorState extends BasicGameState {
 
     private Input input;
     private Point mouse;
+    private Dimension optimalSize;
     private Translator translator;
     private Rectangle packageArrowUpRectangle, packageArrowDownRectangle, levelArrowUpRectangle,
             levelArrowDownRectangle, returnRectangle, packageNameRectangles[],
@@ -59,6 +61,7 @@ public class MenuForEditorState extends BasicGameState {
         FontFactory fonts = FontFactory.getInstance();
         EffectFactory effects = EffectFactory.getInstance();
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
+        Configuration configuration = Configuration.getInstance();
         translator = Translator.getInstance();
         width = container.getWidth();
         height = container.getHeight();
@@ -68,6 +71,8 @@ public class MenuForEditorState extends BasicGameState {
 
         levelController = LevelController.getInstance();
         levelPackages = levelController.getLevels();
+        float scale = Float.parseFloat(configuration.get("scale"));
+        optimalSize = levelController.getOptimalLevelDimension(width, height, scale);
 
         arrowUp = new Image(Game.CONTENT_PATH + "graphics/arrow.png").getScaledCopy(width / 2000f);
         arrowDown = arrowUp.getFlippedCopy(false, true);
@@ -311,7 +316,7 @@ public class MenuForEditorState extends BasicGameState {
                 game.enterState(Game.MENU_STATE);
             }
         }
-        if (input.isKeyPressed(Input.KEY_ENTER)) {
+        if (input.isKeyPressed(Input.KEY_ENTER) || input.isKeyPressed(Input.KEY_NUMPADENTER)) {
             if (isCreatingNewPackage) {
                 String name = textField.getText();
                 boolean isPackageAlreadyExist = false;
@@ -390,7 +395,7 @@ public class MenuForEditorState extends BasicGameState {
                         if (levelWidth >= 7 && levelWidth <= 100) {
                             inputState = 2;
                             levelSize = new Dimension(levelWidth, 0);
-                            textField.setText("");
+                            textField.setText(String.valueOf(optimalSize.height));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -409,7 +414,7 @@ public class MenuForEditorState extends BasicGameState {
                     if (!isLevelAlreadyExist) {
                         inputState = 1;
                         newLevelName = name;
-                        textField.setText("");
+                        textField.setText(String.valueOf(optimalSize.width));
                     }
                 }
             }
@@ -473,7 +478,7 @@ public class MenuForEditorState extends BasicGameState {
             }
         }
 
-        if (input.isMousePressed(0)) {
+        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
             if (isMouseOverPackageArrowUp && packageBaseIndex > 0) {
                 packageBaseIndex--;
                 setPackageNameRectangles();
