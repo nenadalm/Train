@@ -422,10 +422,10 @@ public class LevelController {
     }
 
     public void renameLevel(int packageIndex, String packageName, int oldIndex, String oldName,
-            int newNumber, String newName) {
+            int newIndex, String newName) {
         String path = this.getLevelPath(packageIndex, packageName, oldIndex, oldName);
         File level = new File(path);
-        path = this.getLevelPath(packageIndex, packageName, oldIndex, oldName);
+        path = this.getLevelPath(packageIndex, packageName, newIndex, newName);
         File renamedLevel = new File(path);
         level.renameTo(renamedLevel);
     }
@@ -448,6 +448,7 @@ public class LevelController {
         String path = this.getLevelPath(packageIndex, packageName, levelIndex, levelName);
         File beingDeletedLevel = new File(path);
         beingDeletedLevel.delete();
+        this.levels[packageIndex].getLevelNames().remove(levelIndex);
 
         // change level numbers
         for (int i = levelIndex; i < this.levels[packageIndex].getLevelNames().size(); i++) {
