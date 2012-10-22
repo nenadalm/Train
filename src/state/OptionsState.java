@@ -68,7 +68,7 @@ public class OptionsState extends BasicGameState {
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
 
         translate();
-        wall = new Image(Game.CONTENT_PATH + "graphics/newWall.png");
+        wall = new Image(Game.CONTENT_PATH + "graphics/wall.png");
         wallPreview = wall.getScaledCopy(scale / 512f);
 
         ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();

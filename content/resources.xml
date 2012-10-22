@@ -15,7 +15,6 @@
 	<resource type="image" id="loading">graphics/loading.png</resource>
 	<resource type="image" id="message">graphics/message.png</resource>
 	<resource type="image" id="new">graphics/new.png</resource>
-	<resource type="image" id="newWall">graphics/newWall.png</resource>
 	<resource type="image" id="pause">graphics/pause.png</resource>
 	<resource type="image" id="save">graphics/save.png</resource>
 	<resource type="image" id="saveAs">graphics/saveAs.png</resource>
