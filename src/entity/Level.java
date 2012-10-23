@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -140,6 +141,9 @@ public class Level extends Entity implements Cloneable {
 
     @Override
     public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
+        gr.setColor(Color.red);
+        gr.drawRect(this.getMarginLeft(), this.getMarginTop(), this.level.length * this.imageSize
+                - gr.getLineWidth(), this.level[0].length * this.imageSize - gr.getLineWidth());
         Image image = null;
         for (int i = 0; i < this.level.length; i++) {
             for (int j = 0; j < this.level[0].length; j++) {
