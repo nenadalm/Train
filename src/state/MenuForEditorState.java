@@ -40,14 +40,14 @@ public class MenuForEditorState extends BasicGameState {
     private Input input;
     private Point mouse;
     private Dimension optimalSize;
-    private Translator translator;
     private Rectangle packageArrowUpRectangle, packageArrowDownRectangle, levelArrowUpRectangle,
             levelArrowDownRectangle, returnRectangle, packageNameRectangles[],
             levelNameRectangles[], packageActionRectangles[], levelActionRectangles[];
     private ArrayList<LevelPackage> levelPackages;
     private Image arrowUp, arrowDown, arrowMouseOverUp, arrowMouseOverDown, arrowDisabledUp,
             arrowDisabledDown;
-    private String packageActions[], levelActions[], newLevelName;
+    private String packageActions[], levelActions[], newLevelName, showing, of, yes, no, really,
+            delete, name, widthText, heightText, returnText, packagesText, levelsText;
     private TextField textField;
     private Dimension levelSize;
     private LevelController levelController;
@@ -62,7 +62,7 @@ public class MenuForEditorState extends BasicGameState {
         EffectFactory effects = EffectFactory.getInstance();
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         Configuration configuration = Configuration.getInstance();
-        translator = Translator.getInstance();
+        Translator translator = Translator.getInstance();
         width = container.getWidth();
         height = container.getHeight();
 
@@ -108,8 +108,9 @@ public class MenuForEditorState extends BasicGameState {
         levelArrowDownRectangle.y = height * 9 / 12;
 
         returnRectangle = new Rectangle();
-        returnRectangle.width = ubuntuSmall.getWidth(translator.translate("return"));
-        returnRectangle.height = ubuntuSmall.getHeight(translator.translate("return"));
+        returnText = translator.translate("return");
+        returnRectangle.width = ubuntuSmall.getWidth(returnText);
+        returnRectangle.height = ubuntuSmall.getHeight(returnText);
         returnRectangle.x = width / 100;
         returnRectangle.y = (int) (height - returnRectangle.height * 1.1f);
 
@@ -154,26 +155,35 @@ public class MenuForEditorState extends BasicGameState {
         textField.setMaxLength(15);
         textField.setTextColor(Color.white);
         textField.setText("");
+
+        showing = translator.translate("showing");
+        of = translator.translate("of");
+        yes = translator.translate("Yes");
+        no = translator.translate("No");
+        really = translator.translate("Really");
+        delete = translator.translate("delete");
+        name = translator.translate("Name") + ":";
+        widthText = translator.translate("Width") + ":";
+        heightText = translator.translate("Height") + ":";
+        packagesText = translator.translate("Packages");
+        levelsText = translator.translate("Levels");
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-        String text = translator.translate("Packages");
-        String text2 = translator.translate("Levels");
         g.setFont(ubuntuMedium);
         g.setColor(Color.gray);
-        g.drawString(text, width / 500, height / 6 - ubuntuMedium.getHeight(text) / 2 + height
-                / 750);
-        g.drawString(text2, width / 2 + width / 500, height / 6 - ubuntuMedium.getHeight(text) / 2
-                + height / 750);
+        g.drawString(packagesText, width / 500, height / 6 - ubuntuMedium.getHeight(packagesText)
+                / 2 + height / 750);
+        g.drawString(levelsText, width / 2 + width / 500,
+                height / 6 - ubuntuMedium.getHeight(packagesText) / 2 + height / 750);
         g.setColor(Color.white);
-        g.drawString(text, 0, height / 6 - ubuntuMedium.getHeight(text) / 2);
-        g.drawString(text2, width / 2, height / 6 - ubuntuMedium.getHeight(text) / 2);
+        g.drawString(packagesText, 0, height / 6 - ubuntuMedium.getHeight(packagesText) / 2);
+        g.drawString(levelsText, width / 2, height / 6 - ubuntuMedium.getHeight(packagesText) / 2);
         g.setFont(ubuntuSmall);
         g.setColor((isMouseOverReturn) ? Color.red : Color.white);
-        g.drawString(translator.translate("return"), width / 100, height - returnRectangle.height
-                * 1.1f);
+        g.drawString(returnText, width / 100, height - returnRectangle.height * 1.1f);
         for (int i = 0; i < levelPackages.size() && i < 5; i++) {
             g.setColor((packageIndex == packageBaseIndex + i) ? Color.blue
                     : ((isMouseOverPackageNames[i]) ? Color.red : Color.white));
@@ -191,19 +201,17 @@ public class MenuForEditorState extends BasicGameState {
             }
         }
         g.setColor(Color.red);
-        text = String.format("%4$s %1$d - %2$d %5$s %3$d", packageBaseIndex + 1,
-                packageBaseIndex + 5, levelPackages.size(), translator.translate("showing"),
-                translator.translate("of"));
-        g.drawString(text, width / 200, height * 9 / 11);
-        text = String.format("%4$s %1$d - %2$d %5$s %3$d", levelBaseIndex + 1, levelBaseIndex + 5,
-                (packageIndex >= 0) ? levelPackages.get(packageIndex).getLevelNames().size() : 0,
-                translator.translate("showing"), translator.translate("of"));
-        g.drawString(text, width / 2 + width / 200, height * 9 / 11);
+        packagesText = String.format("%4$s %1$d - %2$d %5$s %3$d", packageBaseIndex + 1,
+                packageBaseIndex + 5, levelPackages.size(), showing, of);
+        g.drawString(packagesText, width / 200, height * 9 / 11);
+        packagesText = String.format("%4$s %1$d - %2$d %5$s %3$d", levelBaseIndex + 1,
+                levelBaseIndex + 5, (packageIndex >= 0) ? levelPackages.get(packageIndex)
+                        .getLevelNames().size() : 0, showing, of);
+        g.drawString(packagesText, width / 2 + width / 200, height * 9 / 11);
         if (isDeletingPackage || isDeletingLevel) {
             drawString(g, ubuntuSmall,
-                    translator.translate("Really") + " " + translator.translate("delete") + "? "
-                            + translator.translate("Yes") + "(Enter)/" + translator.translate("No")
-                            + "(Escape)", width / 2, height - height / 24);
+                    String.format("%1$s %2$s? %3$s(Enter)/%4$s(Escape)", really, delete, yes, no),
+                    width / 2, height - height / 24);
         }
         for (int i = 0; i < packageActions.length; i++) {
             g.setColor((isPackageActionsDisabled[i]) ? Color.darkGray
@@ -236,17 +244,18 @@ public class MenuForEditorState extends BasicGameState {
         g.setColor(Color.white);
         if (isCreatingNewPackage || isRenamingPackage || isCreatingNewLevel || isRenamingLevel
                 || isResizingLevel) {
+            String text = null;
             textField.render(container, g);
             textField.setFocus(true);
             if (isCreatingNewPackage || isRenamingPackage
                     || (isCreatingNewLevel && inputState == 0) || isRenamingLevel) {
-                text = translator.translate("Name") + ":";
-            }
-            if ((isCreatingNewLevel && inputState == 1) || (isResizingLevel && inputState == 0)) {
-                text = translator.translate("Width") + ":";
-            }
-            if ((isCreatingNewLevel && inputState == 2) || (isResizingLevel && inputState == 1)) {
-                text = translator.translate("Height") + ":";
+                text = name;
+            } else if ((isCreatingNewLevel && inputState == 1)
+                    || (isResizingLevel && inputState == 0)) {
+                text = widthText;
+            } else if ((isCreatingNewLevel && inputState == 2)
+                    || (isResizingLevel && inputState == 1)) {
+                text = heightText;
             }
             g.drawString(text, width / 3 - ubuntuSmall.getWidth(text) * 1.1f, height - width / 26);
         }

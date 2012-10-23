@@ -324,13 +324,15 @@ public class OptionsState extends BasicGameState {
             ((AppGameContainer) container).setDisplayMode(displayModes[modeIndex].getWidth(),
                     displayModes[modeIndex].getHeight(), isFullscreen);
 
+            if (!translator.getLanguageCode().equals(languages[languageIndex])) {
+                Game.isReinitializationRequried = true;
+                translate();
+            }
             translator.setLanguage(languages[languageIndex]);
 
             if (width != displayModes[modeIndex].getWidth()
                     || height != displayModes[modeIndex].getHeight()) {
                 Game.isReinitializationRequried = true;
-            } else {
-                translate();
             }
         } catch (SlickException e) {
             e.printStackTrace();
