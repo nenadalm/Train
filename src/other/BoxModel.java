@@ -1,9 +1,10 @@
 package other;
 
-public class MarginPadding {
+public class BoxModel {
 
     private int marginTop = 0, marginRight = 0, marginBottom = 0, marginLeft = 0;
     private int paddingTop = 0, paddingRight = 0, paddingBottom = 0, paddingLeft = 0;
+    private int borderWidth = 0;
 
     public void setMargin(int all) {
         this.marginTop = all;
@@ -21,6 +22,14 @@ public class MarginPadding {
 
     public int getMarginTop() {
         return this.marginTop;
+    }
+
+    public void getBorderWidth(int width) {
+        this.borderWidth = width;
+    }
+
+    public int setBorderWidth() {
+        return this.borderWidth;
     }
 
     public void setMarginTop(int marginTop) {

@@ -2,9 +2,9 @@ package entity;
 
 import java.awt.event.ActionListener;
 
-import other.MarginPadding;
+import other.BoxModel;
 
-public class MenuItem extends MarginPadding {
+public class MenuItem extends BoxModel {
 
     private String text;
     private ActionListener listener;

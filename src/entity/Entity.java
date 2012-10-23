@@ -8,12 +8,12 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
-import other.MarginPadding;
+import other.BoxModel;
 
 import component.Component;
 import component.RenderComponent;
 
-public class Entity extends MarginPadding {
+public class Entity extends BoxModel {
 
     private Point position;
     private float scale;
