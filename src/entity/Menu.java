@@ -40,35 +40,54 @@ public class Menu extends Entity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        this.placeMenuItems(container);
+    }
+
+    private void placeMenuItems(GameContainer container) {
         this.calculateRectangles(container);
+        this.applyItemMargin();
     }
 
     private void calculateRectangles(GameContainer container) {
         this.rectangles = new ArrayList<Rectangle>(this.items.size());
-        int menuHeight = 0;
-        for (MenuItem item : this.items) {
-            menuHeight += this.font.getHeight(item.getText()) + item.getPaddingTop()
-                    + item.getPaddingBottom();
-        }
-        int maxWidth = 0;
+        int menuHeight = this.getMenuHeight();
+        int maxWidth = this.getMenuItemMaxWidth();
+
         int lastOffsetY = 0;
         for (MenuItem item : this.items) {
             int width = this.font.getWidth(item.getText());
             int height = this.font.getHeight(item.getText()) + item.getPaddingBottom()
                     + item.getPaddingTop();
-            if (width > maxWidth) {
-                maxWidth = width;
-            }
             int x = container.getWidth() / 2 - width / 2;
             int y = container.getHeight() / 2 - menuHeight / 2 + lastOffsetY;
             this.rectangles.add(new Rectangle(x, y, width, this.font.getHeight(item.getText())));
             lastOffsetY += height;
         }
+
         this.setPosition(new Point(container.getWidth() / 2 - maxWidth / 2, container.getHeight()
                 / 2 - menuHeight / 2));
         this.setWidth(maxWidth);
         this.setHeight(menuHeight);
-        this.applyItemMargin();
+    }
+
+    private int getMenuHeight() {
+        int menuHeight = 0;
+        for (MenuItem item : this.items) {
+            menuHeight += this.font.getHeight(item.getText()) + item.getPaddingTop()
+                    + item.getPaddingBottom();
+        }
+        return menuHeight;
+    }
+
+    private int getMenuItemMaxWidth() {
+        int maxWidth = 0;
+        for (MenuItem item : this.items) {
+            int width = this.font.getWidth(item.getText());
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
+        }
+        return maxWidth;
     }
 
     private void applyItemMargin() {
