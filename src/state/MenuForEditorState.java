@@ -268,10 +268,10 @@ public class MenuForEditorState extends BasicGameState {
         mouse = new Point(input.getMouseX(), input.getMouseY());
 
         isPackageActionsDisabled[0] = levelPackages.size() >= 1000;
-        isPackageActionsDisabled[1] = packageIndex < 4;
-        isPackageActionsDisabled[2] = packageIndex < 3 || packageIndex >= levelPackages.size() - 1;
-        isPackageActionsDisabled[3] = packageIndex < 3;
-        isPackageActionsDisabled[4] = packageIndex < 3;
+        isPackageActionsDisabled[1] = packageIndex < 1;
+        isPackageActionsDisabled[2] = packageIndex < 0 || packageIndex >= levelPackages.size() - 1;
+        isPackageActionsDisabled[3] = packageIndex < 0;
+        isPackageActionsDisabled[4] = packageIndex < 0;
 
         isLevelActionsDisabled[0] = packageIndex < 0
                 || levelPackages.get(packageIndex).getLevelNames().size() >= 100;
@@ -478,7 +478,6 @@ public class MenuForEditorState extends BasicGameState {
                 ArrayList<String> names = levelPackage.getLevelNames();
                 levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex,
                         names.get(levelIndex));
-                names.remove(levelIndex);
                 if (levelBaseIndex > 0) {
                     levelBaseIndex--;
                 }
