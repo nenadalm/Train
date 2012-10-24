@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import other.LevelController;
 import other.Translator;
 import state.EditorState;
 import state.GameState;
@@ -34,6 +35,9 @@ public class Game extends StateBasedGame {
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException {
+        LevelController levelController = LevelController.getInstance();
+        levelController.renumberPackages();
+        levelController.renumberLevels();
         this.addState(new MenuState(Game.MENU_STATE));
     }
 

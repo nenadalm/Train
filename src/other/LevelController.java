@@ -438,8 +438,11 @@ public class LevelController {
         }
         beingDeletedPackage.delete();
 
-        // change package numbers
-        for (int i = packageIndex; i < this.levels.length; i++) {
+        this.renumberPackages();
+    }
+
+    public void renumberPackages() {
+        for (int i = 0; i < this.levels.length; i++) {
             this.renamePackage(i + 1, this.levels[i].getName(), i, this.levels[i].getName());
         }
     }
@@ -449,9 +452,17 @@ public class LevelController {
         File beingDeletedLevel = new File(path);
         beingDeletedLevel.delete();
         this.levels[packageIndex].getLevelNames().remove(levelIndex);
+        this.renumberLevels(packageIndex);
+    }
 
-        // change level numbers
-        for (int i = levelIndex; i < this.levels[packageIndex].getLevelNames().size(); i++) {
+    public void renumberLevels() {
+        for (int i = 0; i < this.levels.length; i++) {
+            this.renumberLevels(i);
+        }
+    }
+
+    private void renumberLevels(int packageIndex) {
+        for (int i = 0; i < this.levels[packageIndex].getLevelNames().size(); i++) {
             this.renameLevel(packageIndex, this.levels[packageIndex].getName(), i + 1,
                     this.levels[packageIndex].getLevelNames().get(i), i, this.levels[packageIndex]
                             .getLevelNames().get(i));
