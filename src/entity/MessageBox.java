@@ -50,8 +50,8 @@ public class MessageBox extends Entity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        int width = 400;
-        int height = 200;
+        int width = container.getWidth() / 2;
+        int height = container.getHeight() / 3;
         this.setPosition(new Point(container.getWidth() / 2 - width / 2, container.getHeight() / 2
                 - height / 2));
         this.setWidth(width);
