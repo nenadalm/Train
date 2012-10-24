@@ -200,14 +200,15 @@ public class MenuForEditorState extends BasicGameState {
                         * (4 + i) / 13);
             }
         }
+        String text = "";
         g.setColor(Color.red);
-        packagesText = String.format("%4$s %1$d - %2$d %5$s %3$d", packageBaseIndex + 1,
+        text = String.format("%4$s %1$d - %2$d %5$s %3$d", packageBaseIndex + 1,
                 packageBaseIndex + 5, levelPackages.size(), showing, of);
-        g.drawString(packagesText, width / 200, height * 9 / 11);
-        packagesText = String.format("%4$s %1$d - %2$d %5$s %3$d", levelBaseIndex + 1,
-                levelBaseIndex + 5, (packageIndex >= 0) ? levelPackages.get(packageIndex)
-                        .getLevelNames().size() : 0, showing, of);
-        g.drawString(packagesText, width / 2 + width / 200, height * 9 / 11);
+        g.drawString(text, width / 200, height * 9 / 11);
+        text = String.format("%4$s %1$d - %2$d %5$s %3$d", levelBaseIndex + 1, levelBaseIndex + 5,
+                (packageIndex >= 0) ? levelPackages.get(packageIndex).getLevelNames().size() : 0,
+                showing, of);
+        g.drawString(text, width / 2 + width / 200, height * 9 / 11);
         if (isDeletingPackage || isDeletingLevel) {
             drawString(g, ubuntuSmall,
                     String.format("%1$s %2$s? %3$s(Enter)/%4$s(Escape)", really, delete, yes, no),
@@ -229,7 +230,7 @@ public class MenuForEditorState extends BasicGameState {
         Image arrowImageToBeDrawn = (packageBaseIndex == 0) ? arrowDisabledUp
                 : ((isMouseOverPackageArrowUp) ? arrowMouseOverUp : arrowUp);
         drawImage(arrowImageToBeDrawn, width / 12, height * 3 / 12);
-        arrowImageToBeDrawn = (packageBaseIndex + 5 == levelPackages.size()) ? arrowDisabledDown
+        arrowImageToBeDrawn = (packageBaseIndex + 5 >= levelPackages.size()) ? arrowDisabledDown
                 : ((isMouseOverPackageArrowDown) ? arrowMouseOverDown : arrowDown);
         drawImage(arrowImageToBeDrawn, width / 12, height * 9 / 12);
 
@@ -244,7 +245,6 @@ public class MenuForEditorState extends BasicGameState {
         g.setColor(Color.white);
         if (isCreatingNewPackage || isRenamingPackage || isCreatingNewLevel || isRenamingLevel
                 || isResizingLevel) {
-            String text = null;
             textField.render(container, g);
             textField.setFocus(true);
             if (isCreatingNewPackage || isRenamingPackage
