@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import app.Game;
@@ -441,7 +442,7 @@ public class LevelController {
         this.renumberPackages();
     }
 
-    public void renumberPackages() {
+    private void renumberPackages() {
         for (int i = 0; i < this.levels.length; i++) {
             this.renamePackage(i + 1, this.levels[i].getName(), i, this.levels[i].getName());
         }
@@ -455,9 +456,37 @@ public class LevelController {
         this.renumberLevels(packageIndex);
     }
 
-    public void renumberLevels() {
-        for (int i = 0; i < this.levels.length; i++) {
-            this.renumberLevels(i);
+    public void repairLevelsNames() {
+        File pkg = new File(Level.LEVELS_PATH);
+        File packages[] = pkg.listFiles();
+        Arrays.sort(packages);
+        for (int i = 0; i < packages.length; i++) {
+            File levels[] = packages[i].listFiles();
+            Arrays.sort(levels);
+            String packageName = packages[i].getName().replaceFirst(".*_", "");
+            for (int j = 0; j < levels.length; j++) {
+                int currentIndex = Integer.valueOf(levels[j].getName().replaceFirst("_.*", ""));
+                String name = levels[j].getName().replaceFirst(".*_", "");
+                if (currentIndex != j) {
+                    this.renameLevel(i, packageName, currentIndex, name, j, name);
+                }
+            }
+        }
+    }
+
+    public void repairPackagesNames() {
+        File pkg = new File(Level.LEVELS_PATH);
+        File packages[] = pkg.listFiles();
+        Arrays.sort(packages);
+        for (int i = 0; i < packages.length; i++) {
+            String currentIndex = packages[i].getName().replaceFirst("_.*", "");
+            if (currentIndex.matches("^\\d+$")) {
+
+            }
+            String name = packages[i].getName().replaceFirst(".*_", "");
+            if (!currentIndex.equals(String.format("%1$02d", i))) {
+                this.renamePackage(Integer.valueOf(currentIndex), name, i, name);
+            }
         }
     }
 
