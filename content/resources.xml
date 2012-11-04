@@ -5,20 +5,13 @@
 	<resource type="image" id="arrow">graphics/arrow.png</resource>
 	<resource type="image" id="arrowDisabled">graphics/arrowDisabled.png</resource>
 	<resource type="image" id="arrowMouseOver">graphics/arrowMouseOver.png</resource>
-	<resource type="image" id="cross">graphics/cross.png</resource>
-	<resource type="image" id="cursor">graphics/cursor.png</resource>
 	<resource type="image" id="empty">graphics/empty.png</resource>
 	<resource type="image" id="gate">graphics/gate.png</resource>
 	<resource type="image" id="gateOpen">graphics/gateOpen.png</resource>
 	<resource type="image" id="itemMenu">graphics/itemMenu.png</resource>
-	<resource type="image" id="load">graphics/load.png</resource>
-	<resource type="image" id="loading">graphics/loading.png</resource>
 	<resource type="image" id="message">graphics/message.png</resource>
-	<resource type="image" id="new">graphics/new.png</resource>
 	<resource type="image" id="pause">graphics/pause.png</resource>
 	<resource type="image" id="save">graphics/save.png</resource>
-	<resource type="image" id="saveAs">graphics/saveAs.png</resource>
-	<resource type="image" id="succeed">graphics/succeed.png</resource>
 	<resource type="image" id="train">graphics/train.png</resource>
 	<resource type="image" id="trainCrash">graphics/trainCrash.png</resource>
 	<resource type="image" id="tree">graphics/tree.png</resource>
