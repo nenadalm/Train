@@ -1,5 +1,8 @@
 package state;
 
+import helper.LevelHelper;
+
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -74,7 +77,8 @@ public class GameState extends BasicGameState {
             this.wasFinished = false;
             this.level = this.levelController.getCurrentLevel();
             int itemSize = this.level.getOriginalImageSize();
-            float scale = this.computeScale(container);
+            float scale = LevelHelper.computeScale(container, this.level.getOriginalImageSize(),
+                    new Dimension(this.level.getWidth(), this.level.getHeight()));
             this.level.setScale(scale);
             int width = this.level.getWidth() * (int) (itemSize * scale);
             int height = this.level.getHeight() * (int) (itemSize * scale);
@@ -83,19 +87,6 @@ public class GameState extends BasicGameState {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public float computeScale(GameContainer container) {
-        int itemSize = this.level.getOriginalImageSize();
-        float scale = 1;
-        float scaleWidth = container.getWidth() / ((float) this.level.getWidth() * itemSize);
-        float scaleHeight = container.getHeight() / ((float) itemSize * this.level.getHeight());
-        if (scaleWidth < 1 && scaleHeight < 1) {
-            scale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
-        } else if (scaleWidth < 1 || scaleHeight < 1) {
-            scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
-        }
-        return scale;
     }
 
     @Override

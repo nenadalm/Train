@@ -1,5 +1,8 @@
 package state;
 
+import helper.LevelHelper;
+
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -190,15 +193,8 @@ public class EditorState extends BasicGameState {
         this.level = this.levelController.getCurrentLevel();
         this.trainPosition = this.level.findTrainPosition();
         this.gatePosition = this.level.findGatePosition();
-        float scale = 1;
-        float scaleWidth = container.getWidth() / ((float) this.level.getWidth() * this.itemSize);
-        float scaleHeight = container.getHeight()
-                / ((float) this.itemSize * this.level.getHeight());
-        if (scaleWidth < 1 && scaleHeight < 1) {
-            scale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
-        } else if (scaleWidth < 1 || scaleHeight < 1) {
-            scale = (scaleWidth < 1) ? scaleWidth : scaleHeight;
-        }
+        float scale = LevelHelper.computeScale(container, this.level.getOriginalImageSize(),
+                new Dimension(this.level.getWidth(), this.level.getHeight()));
         this.level.setScale(scale);
         this.itemSize *= scale;
         this.scale = scale;
