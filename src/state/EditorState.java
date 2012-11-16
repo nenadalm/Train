@@ -82,6 +82,7 @@ public class EditorState extends BasicGameState {
         this.itemSize = this.active.getWidth();
 
         this.levelController = LevelController.getInstance();
+        this.loadLevel(container);
 
         this.menuItems = new Image[5];
 
@@ -95,9 +96,7 @@ public class EditorState extends BasicGameState {
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-        if (this.level == null) {
-            return;
-        }
+
         this.level.render(container, game, g);
 
         if (this.showMenu) {
@@ -132,10 +131,6 @@ public class EditorState extends BasicGameState {
     @Override
     public void update(GameContainer container, final StateBasedGame game, int delta)
             throws SlickException {
-
-        if (this.level == null) {
-            this.loadLevel(container);
-        }
 
         Input input = container.getInput();
         int mouseX = input.getMouseX();

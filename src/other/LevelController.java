@@ -374,17 +374,16 @@ public class LevelController {
         Item newArray[][] = new Item[width][height];
         for (int i = 0; i < newArray.length; i++) {
             for (int j = 0; j < newArray[0].length; j++) {
-                if (levelArray.length >= i && levelArray[0].length >= j) {
+                if (levelArray.length > i && levelArray[0].length > j) {
                     newArray[i][j] = levelArray[i][j];
                 } else {
                     newArray[i][j] = Item.EMPTY;
                 }
             }
         }
-        LevelPackage levelPackage = this.levels[packageIndex];
-        String packageName = levelPackage.getName();
-        String levelName = levelPackage.getLevelNames().get(levelIndex);
-        this.saveLevel(newArray, levelName, packageName);
+
+        this.getCurrentLevel().setArray(newArray);
+        this.saveCurrentLevel();
     }
 
     /**
@@ -398,7 +397,7 @@ public class LevelController {
         LevelPackage levelPackage = this.levels[packageIndex];
         String packageName = levelPackage.getName();
         String levelName = levelPackage.getLevelNames().get(levelIndex);
-        File level = new File(Level.LEVELS_PATH + packageName + '/' + levelName);
+        File level = new File(this.getLevelPath(packageIndex, packageName, levelIndex, levelName));
         try {
             List<String> lines = this.getLines(level);
             return new Dimension(lines.get(0).length(), lines.size());
