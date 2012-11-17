@@ -60,6 +60,13 @@ public class GameState extends BasicGameState {
                 GameState.this.showMenu = false;
             }
         }));
+        menuItems.add(new MenuItem(this.translator.translate("Sub menu"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GameState.this.showMenu = false;
+                game.enterState(Game.MENU_FOR_GAME_STATE);
+            }
+        }));
         menuItems.add(new MenuItem(this.translator.translate("Main menu"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -67,6 +74,9 @@ public class GameState extends BasicGameState {
                 game.enterState(Game.MENU_STATE);
             }
         }));
+        for (MenuItem item : menuItems) {
+            item.setMargin(30);
+        }
         this.menu = new Menu(menuItems, container);
         this.menu.setBackgroundColor(Color.lightGray);
         this.initLevel(container);

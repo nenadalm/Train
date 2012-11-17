@@ -88,6 +88,7 @@ public class Configuration {
             s += "<property name=\"fullscreen\">true</property>\n";
             s += "<property name=\"autoscale\">false</property>\n";
             s += "<property name=\"scale\">1</property>\n";
+            s += "<property name=\"refreshSpeed\">500</property>\n";
             s += "\n    </properties>\n</configuration>";
             byte[] buffer = s.getBytes("UTF-8");
             OutputStream stream = new FileOutputStream(file);

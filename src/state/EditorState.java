@@ -97,6 +97,10 @@ public class EditorState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
 
+        if (this.level == null) {
+            this.loadLevel(container);
+        }
+
         this.level.render(container, game, g);
 
         if (this.showMenu) {
@@ -141,12 +145,13 @@ public class EditorState extends BasicGameState {
         int indexY;
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            this.messageBox.showConfirm(this.translator.translate("Exit to menu without saving?"),
+            this.messageBox.showConfirm(
+                    this.translator.translate("Exit to sub menu without saving?"),
                     new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
                             EditorState.this.level = null;
-                            game.enterState(Game.MENU_STATE);
+                            game.enterState(Game.MENU_FOR_EDITOR_STATE);
                         }
                     }, new ActionListener() {
                         @Override
@@ -276,7 +281,7 @@ public class EditorState extends BasicGameState {
                         this.activeItem = Item.TREE;
                     } else if (image == this.save) {
                         this.levelController.saveCurrentLevel();
-                        game.enterState(Game.MENU_STATE);
+                        game.enterState(Game.MENU_FOR_EDITOR_STATE);
                     }
                 }
             }

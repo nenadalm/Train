@@ -16,6 +16,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 
 import other.ResourceManager;
+import app.Configuration;
 import app.Game;
 
 public class Level extends Entity implements Cloneable {
@@ -38,6 +39,8 @@ public class Level extends Entity implements Cloneable {
     private ResourceManager resourceManager;
 
     public Level(int width, int height) {
+        Configuration config = Configuration.getInstance();
+        this.interval = Integer.valueOf(config.get("refreshSpeed"));
         this.resourceManager = ResourceManager.getInstance();
         this.levelInit(width, height);
         this.train = new Train();
