@@ -1,7 +1,7 @@
 Train
 =====
 
-Remake of  old DOS game Vlak
+Remake of  old DOS game [Vlak][3]
 
 (still in development)
 
@@ -34,3 +34,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 [1]: http://www.oracle.com/technetwork/java/javase/overview/index.html
 [2]: http://slick.cokeandcode.com/
+[3]: http://www.bestoldgames.net/eng/old-games/vlak.php
