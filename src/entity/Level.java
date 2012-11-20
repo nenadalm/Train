@@ -152,11 +152,8 @@ public class Level extends Entity implements Cloneable {
             for (int j = 0; j < this.level[0].length; j++) {
                 image = this.images.get(this.level[i][j]);
                 if (this.level[i][j] == Item.TRAIN) {
-                    switch ((int) this.train.getRotation()) {
-                        case 180:
-                            image = image.getFlippedCopy(false, true);
-                            break;
-                    }
+                    image = image.getFlippedCopy(this.train.isFlippedHorizontal(),
+                            this.train.isFlippedVertical());
                     int origin = this.imageSize / 2;
                     image.setCenterOfRotation(origin, origin);
                     image.setRotation(this.train.getRotation());

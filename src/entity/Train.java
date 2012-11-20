@@ -5,6 +5,10 @@ import java.awt.Point;
 import component.MoveComponent;
 
 public class Train extends Entity {
+
+    boolean flippedHorizontal = false;
+    boolean flippedVertical = false;
+
     public Train() {
         this.addComponent(new MoveComponent());
     }
@@ -17,9 +21,11 @@ public class Train extends Entity {
         switch (direction.x) {
             case -1:
                 rotation = 180;
+                this.setFlippedVertical(true);
                 break;
             case 1:
                 rotation = 0;
+                this.setFlippedVertical(false);
                 break;
         }
         switch (direction.y) {
@@ -31,5 +37,21 @@ public class Train extends Entity {
                 break;
         }
         this.setRotation(rotation);
+    }
+
+    public boolean isFlippedHorizontal() {
+        return this.flippedHorizontal;
+    }
+
+    public void setFlippedHorizontal(boolean flippedHorizontal) {
+        this.flippedHorizontal = flippedHorizontal;
+    }
+
+    public boolean isFlippedVertical() {
+        return this.flippedVertical;
+    }
+
+    public void setFlippedVertical(boolean flippedVertical) {
+        this.flippedVertical = flippedVertical;
     }
 }
