@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
@@ -105,18 +104,13 @@ public class Layout {
         this.applyItemMargin();
     }
 
-    public void render(Graphics g, int active) {
+    public void render(Graphics g) {
         int counter = 0;
-        Color color = Color.red;
-        Color activeColor = Color.blue;
         for (MenuItem item : this.container.getChildren()) {
-            if (active == counter) {
-                g.setColor(activeColor);
-            }
+            g.setColor(item.getColor());
             g.drawString(item.getText(), this.rectangles.get(counter).getX(),
                     this.rectangles.get(counter).getY());
             counter++;
-            g.setColor(color);
         }
     }
 }

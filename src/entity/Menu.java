@@ -20,12 +20,12 @@ import component.RectangleComponent;
 
 import factory.EffectFactory;
 
-public class Menu extends Entity {
+public class Menu extends Container<MenuItem> {
     int active = -1;
     private Font font;
     private List<MenuItem> items;
-    private Layout layout = null;
 
+    @Override
     protected List<MenuItem> getChildren() {
         return this.items;
     }
@@ -43,12 +43,8 @@ public class Menu extends Entity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.layout = new Layout(container, this);
-        layout.setContainer(this);
-    }
-
-    public void setLayout(Layout layout) {
-        this.layout = layout;
+        this.setLayout(new Layout(container, this));
+        this.getLayout().setContainer(this);
     }
 
     protected Font getFont() {
@@ -58,11 +54,8 @@ public class Menu extends Entity {
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
         g.setColor(Color.lightGray);
-        super.render(container, game, g);
-        container.getWidth();
         g.setFont(this.font);
-        g.setColor(Color.red);
-        this.layout.render(g, active);
+        super.render(container, game, g);
     }
 
     @Override
@@ -73,14 +66,16 @@ public class Menu extends Entity {
         Point mouse = new Point(mouseX, mouseY);
         int counter = 0;
         boolean over = false;
-        for (Rectangle r : this.layout.getRectangles()) {
+        for (Rectangle r : this.getLayout().getRectangles()) {
             if (MathHelper.rectangleContainsPoint(r, mouse)) {
                 this.active = counter;
+                this.items.get(this.active).setColor(Color.blue);
                 over = true;
             }
             counter++;
         }
-        if (!over) {
+        if (!over && this.active != -1) {
+            this.items.get(this.active).setColor(Color.red);
             this.active = -1;
         }
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON) && over) {
