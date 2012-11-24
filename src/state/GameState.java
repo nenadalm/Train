@@ -122,7 +122,7 @@ public class GameState extends BasicGameState {
         if (this.level.isFinished()) {
             if (this.levelController.nextLevelExist()) {
                 this.messageBox.showConfirm(this.translator
-                        .translate("Level was finished. do you wanna continue to next level?"),
+                        .translate("Level was finished. Do you wanna continue to next level?"),
                         new ActionListener() {
 
                             @Override
