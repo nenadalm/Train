@@ -132,8 +132,8 @@ public class LevelController {
     }
 
     public void loadNextLevel() {
-        int packageIndex = Integer.valueOf(this.currentLevelPackageName.replaceFirst("_.*", ""));
-        int levelIndex = Integer.valueOf(this.currentLevelFileName.replaceFirst("_.*", "")) + 1;
+        int packageIndex = this.currentPackageIndex;
+        int levelIndex = this.currentLevelIndex + 1;
         try {
             this.loadLevel(packageIndex, levelIndex);
         } catch (Exception ex) {
@@ -172,10 +172,10 @@ public class LevelController {
             this.sortArrayByStartingNumbers(levelFileNames);
             ArrayList<String> levelNames = new ArrayList<String>(levelFileNames.length);
             for (String levelFileName : levelFileNames) {
-                String levelName = levelFileName.replaceFirst(".*?_", "");
+                String levelName = this.getEntityName(levelFileName);
                 levelNames.add(levelName);
             }
-            String packageName = packageFileNames[i].replaceFirst(".*?_", "");
+            String packageName = this.getEntityName(packageFileNames[i]);
             packages.add(new LevelPackage(packageName, levelNames));
             levelPackages[i] = new LevelPackage(packageName, levelNames);
         }
@@ -188,8 +188,8 @@ public class LevelController {
         String tmp;
         for (int i = 0; i < list.length - 1; i++) {
             for (int j = 0; j < list.length - i - 1; j++) {
-                index1 = Integer.valueOf(list[j].replaceFirst("_.*", ""));
-                index2 = Integer.valueOf(list[j + 1].replaceFirst("_.*", ""));
+                index1 = this.getEntityIndex(list[j]);
+                index2 = this.getEntityIndex(list[j + 1]);
                 if (index1 > index2) {
                     tmp = list[j];
                     list[j] = list[j + 1];
@@ -197,6 +197,14 @@ public class LevelController {
                 }
             }
         }
+    }
+
+    private int getEntityIndex(String fileName) {
+        return Integer.valueOf(fileName.replaceFirst("_.*", ""));
+    }
+
+    private String getEntityName(String fileName) {
+        return fileName.replaceFirst(".*?_", "");
     }
 
     /**
@@ -463,10 +471,10 @@ public class LevelController {
         for (int i = 0; i < packages.length; i++) {
             File levels[] = packages[i].listFiles();
             Arrays.sort(levels);
-            String packageName = packages[i].getName().replaceFirst(".*_", "");
+            String packageName = this.getEntityName(packages[i].getName());
             for (int j = 0; j < levels.length; j++) {
-                int currentIndex = Integer.valueOf(levels[j].getName().replaceFirst("_.*", ""));
-                String name = levels[j].getName().replaceFirst(".*_", "");
+                int currentIndex = this.getEntityIndex(levels[j].getName());
+                String name = this.getEntityName(levels[j].getName());
                 if (currentIndex != j) {
                     this.renameLevel(i, packageName, currentIndex, name, j, name);
                 }
@@ -483,7 +491,7 @@ public class LevelController {
             if (currentIndex.matches("^\\d+$")) {
 
             }
-            String name = packages[i].getName().replaceFirst(".*_", "");
+            String name = this.getEntityName(packages[i].getName());
             if (!currentIndex.equals(String.format("%1$02d", i))) {
                 this.renamePackage(Integer.valueOf(currentIndex), name, i, name);
             }
