@@ -6,11 +6,11 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
-public abstract class Container<T> extends Entity {
+public abstract class Container extends Entity {
 
     private Layout layout;
 
-    protected abstract List<T> getChildren();
+    protected abstract List<Child> getChildren();
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {

@@ -7,54 +7,36 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
-import other.ResourceManager;
-
 import component.RectangleComponent;
 
-import factory.EffectFactory;
-
-public class Menu extends Container<MenuItem> {
+public class Menu extends Container {
     int active = -1;
-    private Font font;
-    private List<MenuItem> items;
+    private List<Child> items;
 
     @Override
-    protected List<MenuItem> getChildren() {
+    protected List<Child> getChildren() {
         return this.items;
     }
 
-    public Menu(List<MenuItem> items, GameContainer container) {
+    public Menu(List<Child> items, GameContainer container) {
         this.addComponent(new RectangleComponent());
-        ResourceManager resourceManager = ResourceManager.getInstance();
-        EffectFactory effectFactory = EffectFactory.getInstance();
-        this.items = items;
-
-        int fontWidth = container.getWidth() / 20;
-        try {
-            this.font = resourceManager.getFont("ubuntu", fontWidth,
-                    effectFactory.getColorEffect(java.awt.Color.white));
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (Child item : items) {
+            item.setContainer(container);
         }
+        this.items = items;
         this.setLayout(new Layout(container, this));
         this.getLayout().setContainer(this);
-    }
-
-    protected Font getFont() {
-        return this.font;
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
         g.setColor(Color.lightGray);
-        g.setFont(this.font);
         super.render(container, game, g);
     }
 
@@ -79,7 +61,7 @@ public class Menu extends Container<MenuItem> {
             this.active = -1;
         }
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON) && over) {
-            ActionListener listener = this.items.get(this.active).getListener();
+            ActionListener listener = ((MenuItem) this.items.get(this.active)).getListener();
             listener.actionPerformed(null);
         }
     }

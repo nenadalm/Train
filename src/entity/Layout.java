@@ -11,14 +11,14 @@ import org.newdawn.slick.geom.Rectangle;
 public class Layout {
 
     private List<Rectangle> rectangles = new ArrayList<Rectangle>();
-    private Menu container;
+    private Container container;
 
-    public Layout(GameContainer gameContainer, Menu container) {
+    public Layout(GameContainer gameContainer, Container container) {
         this.container = container;
         this.placeMenuItems(gameContainer);
     }
 
-    public void setContainer(Menu container) {
+    public void setContainer(Container container) {
         this.container = container;
     }
 
@@ -32,14 +32,12 @@ public class Layout {
         int maxWidth = this.getMenuItemMaxWidth();
 
         int lastOffsetY = 0;
-        for (MenuItem item : this.container.getChildren()) {
-            int width = this.container.getFont().getWidth(item.getText());
-            int height = this.container.getFont().getHeight(item.getText())
-                    + item.getPaddingBottom() + item.getPaddingTop();
+        for (Child item : this.container.getChildren()) {
+            int width = item.getWidth();
+            int height = item.getHeight();
             int x = container.getWidth() / 2 - width / 2;
             int y = container.getHeight() / 2 - menuHeight / 2 + lastOffsetY;
-            this.rectangles.add(new Rectangle(x, y, width, this.container.getFont().getHeight(
-                    item.getText())));
+            this.rectangles.add(new Rectangle(x, y, width, height));
             lastOffsetY += height;
         }
 
@@ -51,17 +49,16 @@ public class Layout {
 
     private int getMenuHeight() {
         int menuHeight = 0;
-        for (MenuItem item : this.container.getChildren()) {
-            menuHeight += this.container.getFont().getHeight(item.getText()) + item.getPaddingTop()
-                    + item.getPaddingBottom();
+        for (Child item : this.container.getChildren()) {
+            menuHeight += item.getHeight();
         }
         return menuHeight;
     }
 
     private int getMenuItemMaxWidth() {
         int maxWidth = 0;
-        for (MenuItem item : this.container.getChildren()) {
-            int width = this.container.getFont().getWidth(item.getText());
+        for (Child item : this.container.getChildren()) {
+            int width = item.getWidth();
             if (width > maxWidth) {
                 maxWidth = width;
             }
@@ -75,7 +72,7 @@ public class Layout {
         int counter = 0;
         int offsetY = 0;
         int lastMarginBottom = 0;
-        for (MenuItem item : this.container.getChildren()) {
+        for (Child item : this.container.getChildren()) {
             Rectangle addition = new Rectangle(item.getMarginLeft(), item.getMarginTop()
                     + lastMarginBottom, 0, 0);
             Rectangle r = this.rectangles.get(counter);
@@ -106,7 +103,8 @@ public class Layout {
 
     public void render(Graphics g) {
         int counter = 0;
-        for (MenuItem item : this.container.getChildren()) {
+        for (Child item : this.container.getChildren()) {
+            g.setFont(item.getFont());
             g.setColor(item.getColor());
             g.drawString(item.getText(), this.rectangles.get(counter).getX(),
                     this.rectangles.get(counter).getY());
