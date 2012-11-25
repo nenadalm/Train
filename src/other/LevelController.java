@@ -93,8 +93,8 @@ public class LevelController {
 
         this.currentLevelIndex = levelIndex;
         this.currentPackageIndex = packageIndex;
-        this.currentLevelFileName = String.format("%1$02d_%2$s", levelIndex, levelName);
-        this.currentLevelPackageName = String.format("%1$03d_%2$s", packageIndex, packageName);
+        this.currentLevelFileName = this.getLevelFileName(levelIndex, levelName);
+        this.currentLevelPackageName = this.getPackageFileName(packageIndex, packageName);
         this.level.setArray(this.getArrayFromLines(lines));
     }
 
@@ -197,6 +197,14 @@ public class LevelController {
                 }
             }
         }
+    }
+
+    private String getLevelFileName(int levelIndex, String levelName) {
+        return String.format("%1$02d_%2$s", levelIndex, levelName);
+    }
+
+    private String getPackageFileName(int packageIndex, String packageName) {
+        return String.format("%1$03d_%2$s", packageIndex, packageName);
     }
 
     private int getEntityIndex(String fileName) {
@@ -344,20 +352,22 @@ public class LevelController {
      */
     public void createLevel(int packageIndex, String packageName, int levelIndex, String levelName,
             int width, int height) {
-        String levelFileName = String.format("%1$02d_%2$s", levelIndex, levelName);
-        String packageFileName = String.format("%1$03d_%2$s", packageIndex, packageName);
+        String levelFileName = this.getLevelFileName(levelIndex, levelName);
+        String packageFileName = this.getPackageFileName(packageIndex, packageName);
         Level level = new Level(width, height);
         this.saveLevel(level.toArray(), levelFileName, packageFileName);
     }
 
     private String getLevelPath(int packageIndex, String packageName, int levelIndex,
             String levelName) {
-        return String.format("%1$s%2$03d_%3$s/%4$02d_%5$s", Level.LEVELS_PATH, packageIndex,
-                packageName, levelIndex, levelName);
+        String levelFileName = this.getLevelFileName(levelIndex, levelName);
+        String packageFileName = this.getPackageFileName(packageIndex, packageName);
+        return String.format("%1$s%2$s/%3$s", Level.LEVELS_PATH, packageFileName, levelFileName);
     }
 
     private String getPackagePath(int packageIndex, String packageName) {
-        return String.format("%1$s%2$03d_%3$s", Level.LEVELS_PATH, packageIndex, packageName);
+        String packageFileName = this.getPackageFileName(packageIndex, packageName);
+        return String.format("%1$s%2$s", Level.LEVELS_PATH, packageFileName);
     }
 
     /**
