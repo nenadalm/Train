@@ -375,6 +375,10 @@ public class MenuForEditorState extends BasicGameState {
                 }
                 packageIndex--;
                 setPackageNameRectangles();
+
+                levelBaseIndex = 0;
+                levelIndex = -1;
+                setLevelNameRectangles();
             }
 
             if (isCreatingNewLevel) {
