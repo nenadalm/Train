@@ -14,4 +14,6 @@
 	<translation id="Language">Language</translation>
 	<translation id="name">name</translation>
 	<translation id="of2">of</translation>
+	<translation id="PackageAlreadyExist">Package already exist</translation>
+	<translation id="LevelAlreadyExist">Level already exist</translation>
 </translations>

@@ -145,8 +145,7 @@ public class EditorState extends BasicGameState {
         int indexY;
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            this.messageBox.showConfirm(
-                    this.translator.translate("Exit to sub menu without saving?"),
+            this.messageBox.showConfirm(this.translator.translate("Exit to menu without saving?"),
                     new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {

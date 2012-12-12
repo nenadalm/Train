@@ -47,7 +47,8 @@ public class MenuForEditorState extends BasicGameState {
     private Image arrowUp, arrowDown, arrowMouseOverUp, arrowMouseOverDown, arrowDisabledUp,
             arrowDisabledDown;
     private String packageActions[], levelActions[], newLevelName, showing, of, yes, no, really,
-            delete, name, widthText, heightText, returnText, packagesText, levelsText;
+            delete, name, widthText, heightText, returnText, packagesText, levelsText, infoText,
+            packageAlreadyExist, levelAlreadyExist;
     private TextField textField;
     private Dimension levelSize;
     private LevelController levelController;
@@ -156,6 +157,8 @@ public class MenuForEditorState extends BasicGameState {
         textField.setTextColor(Color.white);
         textField.setText("");
 
+        infoText = "";
+
         showing = translator.translate("showing");
         of = translator.translate("of");
         yes = translator.translate("Yes");
@@ -167,6 +170,8 @@ public class MenuForEditorState extends BasicGameState {
         heightText = translator.translate("Height") + ":";
         packagesText = translator.translate("Packages");
         levelsText = translator.translate("Levels");
+        packageAlreadyExist = translator.translate("PackageAlreadyExist");
+        levelAlreadyExist = translator.translate("LevelAlreadyExist");
     }
 
     @Override
@@ -209,6 +214,9 @@ public class MenuForEditorState extends BasicGameState {
                 (packageIndex >= 0) ? levelPackages.get(packageIndex).getLevelNames().size() : 0,
                 showing, of);
         g.drawString(text, width / 2 + width / 200, height * 9 / 11);
+
+        g.drawString(infoText, width * 4 / 12, height * 13 / 15);
+
         if (isDeletingPackage || isDeletingLevel) {
             drawString(g, ubuntuSmall,
                     String.format("%1$s %2$s? %3$s(Enter)/%4$s(Escape)", really, delete, yes, no),
@@ -321,11 +329,13 @@ public class MenuForEditorState extends BasicGameState {
                 isResizingLevel = false;
                 isDeletingLevel = false;
                 textField.setText("");
+                infoText = "";
             } else {
                 game.enterState(Game.MENU_STATE);
             }
         }
         if (input.isKeyPressed(Input.KEY_ENTER) || input.isKeyPressed(Input.KEY_NUMPADENTER)) {
+            infoText = "";
             if (isCreatingNewPackage) {
                 String name = textField.getText();
                 boolean isPackageAlreadyExist = false;
@@ -343,6 +353,8 @@ public class MenuForEditorState extends BasicGameState {
 
                     textField.setText("");
                     setPackageNameRectangles();
+                } else {
+                    infoText = packageAlreadyExist;
                 }
             }
             if (isRenamingPackage) {
@@ -397,6 +409,14 @@ public class MenuForEditorState extends BasicGameState {
                                     levelSize.width, levelSize.height);
                             textField.setText("");
                             setLevelNameRectangles();
+
+                            try {
+                                levelController.loadLevel(packageIndex, levelPackage
+                                        .getLevelNames().size() - 1);
+                                game.enterState(Game.EDITOR_STATE);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -428,6 +448,8 @@ public class MenuForEditorState extends BasicGameState {
                         inputState = 1;
                         newLevelName = name;
                         textField.setText(String.valueOf(optimalSize.width));
+                    } else {
+                        infoText = levelAlreadyExist;
                     }
                 }
             }
@@ -491,6 +513,7 @@ public class MenuForEditorState extends BasicGameState {
         }
 
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+            infoText = "";
             if (isMouseOverPackageArrowUp && packageBaseIndex > 0) {
                 packageBaseIndex--;
                 setPackageNameRectangles();
