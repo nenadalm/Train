@@ -17,16 +17,16 @@ import component.RectangleComponent;
 
 public class Menu extends Container {
     int active = -1;
-    private List<Child> items;
+    private List<MenuItem> items;
 
     @Override
-    protected List<Child> getChildren() {
+    protected List<MenuItem> getChildren() {
         return this.items;
     }
 
-    public Menu(List<Child> items, GameContainer container) {
+    public Menu(List<MenuItem> items, GameContainer container) {
         this.addComponent(new RectangleComponent());
-        for (Child item : items) {
+        for (MenuItem item : items) {
             item.setContainer(container);
         }
         this.items = items;
@@ -61,7 +61,7 @@ public class Menu extends Container {
             this.active = -1;
         }
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON) && over) {
-            ActionListener listener = ((MenuItem) this.items.get(this.active)).getListener();
+            ActionListener listener = this.items.get(this.active).getListener();
             listener.actionPerformed(null);
         }
     }

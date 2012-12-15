@@ -10,7 +10,7 @@ public abstract class Container extends Entity {
 
     private Layout layout;
 
-    protected abstract List<Child> getChildren();
+    protected abstract List<? extends Child> getChildren();
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {

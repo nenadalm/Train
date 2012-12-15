@@ -19,7 +19,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import other.LevelController;
 import other.Translator;
 import app.Game;
-import entity.Child;
 import entity.Level;
 import entity.Menu;
 import entity.MenuItem;
@@ -47,7 +46,7 @@ public class GameState extends BasicGameState {
             throws SlickException {
         this.messageBox = new MessageBox(container);
         this.messageBox.setBackgroundColor(Color.lightGray);
-        List<Child> menuItems = new ArrayList<Child>();
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
         menuItems.add(new MenuItem(this.translator.translate("Continue"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -75,7 +74,7 @@ public class GameState extends BasicGameState {
                 game.enterState(Game.MENU_STATE);
             }
         }));
-        for (Child item : menuItems) {
+        for (MenuItem item : menuItems) {
             item.setMargin(30);
         }
         this.menu = new Menu(menuItems, container);
