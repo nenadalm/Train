@@ -257,7 +257,7 @@ public class EditorState extends BasicGameState {
         }
     }
 
-    private void updateMenu(StateBasedGame game, Input input) {
+    private void updateMenu(final StateBasedGame game, Input input) {
         int mouseY = input.getMouseY();
         int index = this.fieldPosition.x / this.itemSize - 1;
         if (mouseY < this.itemSize && index >= 0 && index < this.menuItems.length) {
@@ -279,8 +279,37 @@ public class EditorState extends BasicGameState {
                     } else if (image == this.tree) {
                         this.activeItem = Item.TREE;
                     } else if (image == this.save) {
-                        this.levelController.saveCurrentLevel();
-                        game.enterState(Game.MENU_FOR_EDITOR_STATE);
+                        if (!this.level.isValid()) {
+                            String message = "";
+                            if (this.level.findTrainPosition() == null
+                                    && this.level.findGatePosition() == null) {
+                                message = this.translator
+                                        .translate("Level is not playable. Train and gate are missing. Do you really want leave editor?");
+                            } else if (this.level.findTrainPosition() == null) {
+                                message = this.translator
+                                        .translate("Level is not playable. Train is missing. Do you really want leave editor?");
+                            } else if (this.level.findGatePosition() == null) {
+                                message = this.translator
+                                        .translate("Level is not playable. Gate is missing. Do you really want leave editor?");
+                            }
+                            this.messageBox.showConfirm(message, new ActionListener() {
+
+                                @Override
+                                public void actionPerformed(ActionEvent arg0) {
+                                    EditorState.this.levelController.saveCurrentLevel();
+                                    game.enterState(Game.MENU_FOR_EDITOR_STATE);
+                                }
+                            }, new ActionListener() {
+
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    EditorState.this.messageBox.close();
+                                }
+                            });
+                        } else {
+                            this.levelController.saveCurrentLevel();
+                            game.enterState(Game.MENU_FOR_EDITOR_STATE);
+                        }
                     }
                 }
             }

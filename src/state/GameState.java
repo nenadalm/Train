@@ -57,7 +57,7 @@ public class GameState extends BasicGameState {
         menuItems.add(new MenuItem(this.translator.translate("Repeat level"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameState.this.initLevel(container);
+                GameState.this.initLevel(container, game);
                 GameState.this.showMenu = false;
             }
         }));
@@ -80,10 +80,10 @@ public class GameState extends BasicGameState {
         }
         this.menu = new Menu(menuItems, container);
         this.menu.setBackgroundColor(Color.lightGray);
-        this.initLevel(container);
+        this.initLevel(container, game);
     }
 
-    private void initLevel(GameContainer container) {
+    private void initLevel(GameContainer container, final StateBasedGame game) {
         try {
             this.wasFinished = false;
             this.level = this.levelController.getCurrentLevel();
@@ -95,6 +95,23 @@ public class GameState extends BasicGameState {
             int height = this.level.getHeight() * (int) (itemSize * scale);
             this.level.setMarginLeft((container.getWidth() - width) / 2);
             this.level.setMarginTop((container.getHeight() - height) / 2);
+            if (!this.level.isValid()) {
+                this.messageBox.showConfirm(this.translator
+                        .translate("Level is not valid. Do you wanna edit this level?"),
+                        new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent arg0) {
+                                game.enterState(Game.EDITOR_STATE);
+                            }
+                        }, new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                game.enterState(Game.MENU_FOR_GAME_STATE);
+                            }
+                        });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,7 +146,7 @@ public class GameState extends BasicGameState {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 GameState.this.levelController.loadNextLevel();
-                                GameState.this.initLevel(container);
+                                GameState.this.initLevel(container, game);
                             }
                         }, new ActionListener() {
 

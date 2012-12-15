@@ -41,9 +41,13 @@
 	<translation id="Main menu">Hlavní menu</translation>
 	<translation id="Repeat level">Opakovat level</translation>
 	<translation id="Continue">Pokračovat</translation>
-	<translation id="Level was finished. Do you wanna continue to next level?">Level byl úspěšně dokončen. Chceš pokračovat do dalšího levelu?</translation>
+	<translation id="Level was finished. Do you wanna continue to nexdt level?">Level byl úspěšně dokončen. Chceš pokračovat do dalšího levelu?</translation>
 	<translation id="Congratulation!!! Package was finished. Do you wanna continue?">Gratuluji!!! Balík byl dokončen. Chceš pokračovat?</translation>
 	<translation id="Exit to menu without saving?">Odejít do menu bez uložení?</translation>
 	<translation id="PackageAlreadyExist">Tento balíček již existuje</translation>
 	<translation id="LevelAlreadyExist">Tento level již existuje</translation>
+	<translation id="Level is not playable. Train is missing. Do you really want leave editor?">Level není hratelný. Chybí vlak. Opravdu chceš ukončit editor?</translation>
+	<translation id="Level is not playable. Gate is missing. Do you really want leave editor?">Level není hratelný. Chybí brána. Opravdu chceš ukončit editor?</translation>
+	<translation id="Level is not playable. Train and gate are missing. Do you really want leave editor?">Level není hratelný. Chybí vlak a brána. Opravdu chceš ukončit editor?</translation>
+	<translation id="Level is not valid. Do you wanna edit this level?">Level je poškozený. Chceš level editovat?</translation>
 </translations>

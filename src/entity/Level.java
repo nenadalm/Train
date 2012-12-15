@@ -37,6 +37,7 @@ public class Level extends Entity implements Cloneable {
     private int imageSize;
     private Point trainDirectionPrepared = new Point();
     private ResourceManager resourceManager;
+    private boolean playable = false;
 
     public Level(int width, int height) {
         Configuration config = Configuration.getInstance();
@@ -189,6 +190,10 @@ public class Level extends Entity implements Cloneable {
 
     @Override
     public void update(GameContainer gc, StateBasedGame sb, int delta) {
+        if (!this.playable) {
+            return;
+        }
+
         Input input = gc.getInput();
 
         if (!this.isGameOver && !this.isGameWon) {
@@ -306,6 +311,7 @@ public class Level extends Entity implements Cloneable {
             e.printStackTrace();
         }
         this.itemsToWin = this.countItemsToWin();
+        this.playable = this.isValid();
     }
 
     private int countItemsToWin() {
@@ -318,6 +324,13 @@ public class Level extends Entity implements Cloneable {
             }
         }
         return counter;
+    }
+
+    public boolean isValid() {
+        if (this.findGatePosition() != null && this.findTrainPosition() != null) {
+            return true;
+        }
+        return false;
     }
 
     public Point findTrainPosition() {
