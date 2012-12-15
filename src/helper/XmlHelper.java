@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -41,8 +42,13 @@ public class XmlHelper {
         StringWriter sw = new StringWriter();
         StreamResult sr = new StreamResult(sw);
         DOMSource dom = new DOMSource(document);
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute("indent-number", 4);
+
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.transform(dom, sr);
+
         String string = sw.toString();
         FileWriter fw = new FileWriter(new File(Game.CONTENT_PATH + "config.xml"));
         fw.write(string);

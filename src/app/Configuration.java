@@ -3,12 +3,15 @@ package app;
 import helper.XmlHelper;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -80,22 +83,36 @@ public class Configuration {
     private Document getDocument() throws Exception {
         File file = new File(Game.CONTENT_PATH + "config.xml");
         if (!file.exists()) {
-            file.createNewFile();
-            String s = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<configuration>\n    <properties>";
-            s += "<property name=\"language\">en</property>\n";
-            s += "<property name=\"width\">0</property>\n";
-            s += "<property name=\"height\">0</property>\n";
-            s += "<property name=\"fullscreen\">true</property>\n";
-            s += "<property name=\"autoscale\">false</property>\n";
-            s += "<property name=\"scale\">1</property>\n";
-            s += "<property name=\"refreshSpeed\">500</property>\n";
-            s += "\n    </properties>\n</configuration>";
-            byte[] buffer = s.getBytes("UTF-8");
-            OutputStream stream = new FileOutputStream(file);
-            stream.write(buffer);
-            stream.close();
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document document = docBuilder.newDocument();
+
+            Element configuration = document.createElement("configuration");
+            Element properties = document.createElement("properties");
+            configuration.appendChild(properties);
+            for (Entry<String, String> property : this.getDefaultProperties().entrySet()) {
+                Element prop = document.createElement("property");
+                prop.setAttribute("name", property.getKey());
+                prop.setTextContent(property.getValue());
+                properties.appendChild(prop);
+            }
+            document.appendChild(configuration);
+            XmlHelper.saveDocument(document);
+            return document;
         }
         return XmlHelper.getDocument(file);
+    }
+
+    private Map<String, String> getDefaultProperties() {
+        HashMap<String, String> properties = new HashMap<String, String>(7);
+        properties.put("language", "en");
+        properties.put("width", "0");
+        properties.put("height", "0");
+        properties.put("fullscreen", "true");
+        properties.put("autoscale", "false");
+        properties.put("scale", "1");
+        properties.put("refreshSpeed", "500");
+        return properties;
     }
 
     public String get(String configName) {
