@@ -457,13 +457,7 @@ public class LevelController {
         }
         beingDeletedPackage.delete();
 
-        this.renumberPackages();
-    }
-
-    private void renumberPackages() {
-        for (int i = 0; i < this.levels.length; i++) {
-            this.renamePackage(i + 1, this.levels[i].getName(), i, this.levels[i].getName());
-        }
+        this.repairPackagesNames();
     }
 
     public void deleteLevel(int packageIndex, String packageName, int levelIndex, String levelName) {
