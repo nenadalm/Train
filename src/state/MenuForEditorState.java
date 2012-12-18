@@ -48,7 +48,7 @@ public class MenuForEditorState extends BasicGameState {
             arrowDisabledDown;
     private String packageActions[], levelActions[], newLevelName, showing, of, yes, no, really,
             delete, name, widthText, heightText, returnText, packagesText, levelsText, infoText,
-            packageAlreadyExist, levelAlreadyExist;
+            packageAlreadyExist, levelAlreadyExist, wrongLevelSize;
     private TextField textField;
     private Dimension levelSize;
     private LevelController levelController;
@@ -172,6 +172,7 @@ public class MenuForEditorState extends BasicGameState {
         levelsText = translator.translate("Levels");
         packageAlreadyExist = translator.translate("PackageAlreadyExist");
         levelAlreadyExist = translator.translate("LevelAlreadyExist");
+        wrongLevelSize = translator.translate("WrongLevelSize");
     }
 
     @Override
@@ -410,13 +411,12 @@ public class MenuForEditorState extends BasicGameState {
                             textField.setText("");
                             setLevelNameRectangles();
 
-                            try {
-                                levelController.loadLevel(packageIndex, levelPackage
-                                        .getLevelNames().size() - 1);
-                                game.enterState(Game.EDITOR_STATE);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            levelController.loadLevel(packageIndex, levelPackage.getLevelNames()
+                                    .size() - 1);
+                            game.enterState(Game.EDITOR_STATE);
+
+                        } else {
+                            infoText = wrongLevelSize + " 7 - 100";
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -429,6 +429,8 @@ public class MenuForEditorState extends BasicGameState {
                             inputState = 2;
                             levelSize = new Dimension(levelWidth, 0);
                             textField.setText(String.valueOf(optimalSize.height));
+                        } else {
+                            infoText = wrongLevelSize + " 7 - 100";
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -575,7 +577,9 @@ public class MenuForEditorState extends BasicGameState {
                 }
                 if (isMouseOverPackageActions[3] && !isPackageActionsDisabled[3]) { // RENAME
                     isRenamingPackage = true;
-                    textField.setText(levelPackages.get(packageIndex).getName());
+                    String name = levelPackages.get(packageIndex).getName();
+                    textField.setText(name);
+                    textField.setCursorPos(name.length());
                 }
                 if (isMouseOverPackageActions[4] && !isPackageActionsDisabled[4]) { // DELETE
                     isDeletingPackage = true;
@@ -628,8 +632,10 @@ public class MenuForEditorState extends BasicGameState {
                     }
                     if (isMouseOverLevelActions[4] && !isLevelActionsDisabled[4]) { // RENAME
                         isRenamingLevel = true;
-                        textField.setText(levelPackages.get(packageIndex).getLevelNames()
-                                .get(levelIndex));
+                        String name = levelPackages.get(packageIndex).getLevelNames()
+                                .get(levelIndex);
+                        textField.setText(name);
+                        textField.setCursorPos(name.length());
                     }
                     if (isMouseOverLevelActions[5] && !isLevelActionsDisabled[5]) { // RESIZE
                         isResizingLevel = true;

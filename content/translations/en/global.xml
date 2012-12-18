@@ -16,4 +16,5 @@
 	<translation id="of2">of</translation>
 	<translation id="PackageAlreadyExist">Package already exist</translation>
 	<translation id="LevelAlreadyExist">Level already exist</translation>
+	<translation id="WrongLevelSize">Valid level size is</translation>
 </translations>
