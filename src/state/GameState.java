@@ -29,7 +29,9 @@ public class GameState extends BasicGameState {
     private int stateId;
     private Level level = null;
     private boolean showMenu = false;
+    private boolean showGameOverMenu = false;
     private Menu menu = null;
+    private Menu gameOverMenu = null;
     private Translator translator;
     private LevelController levelController;
     private MessageBox messageBox;
@@ -46,39 +48,62 @@ public class GameState extends BasicGameState {
             throws SlickException {
         this.messageBox = new MessageBox(container);
         this.messageBox.setBackgroundColor(Color.lightGray);
+        MenuItem continueItem = new MenuItem(this.translator.translate("Continue"),
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent arg0) {
+                        GameState.this.showMenu = false;
+                        GameState.this.showGameOverMenu = false;
+                    }
+                });
+        MenuItem repeatLevel = new MenuItem(this.translator.translate("Repeat level"),
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameState.this.initLevel(container, game);
+                        GameState.this.showMenu = false;
+                        GameState.this.showGameOverMenu = false;
+                    }
+                });
+        MenuItem subMenu = new MenuItem(this.translator.translate("Sub menu"),
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameState.this.showMenu = false;
+                        GameState.this.showGameOverMenu = false;
+                        game.enterState(Game.MENU_FOR_GAME_STATE);
+                    }
+                });
+        MenuItem mainMenu = new MenuItem(this.translator.translate("Main menu"),
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameState.this.showMenu = false;
+                        GameState.this.showGameOverMenu = false;
+                        game.enterState(Game.MENU_STATE);
+                    }
+                });
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add(new MenuItem(this.translator.translate("Continue"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                GameState.this.showMenu = false;
-            }
-        }));
-        menuItems.add(new MenuItem(this.translator.translate("Repeat level"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.initLevel(container, game);
-                GameState.this.showMenu = false;
-            }
-        }));
-        menuItems.add(new MenuItem(this.translator.translate("Sub menu"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.showMenu = false;
-                game.enterState(Game.MENU_FOR_GAME_STATE);
-            }
-        }));
-        menuItems.add(new MenuItem(this.translator.translate("Main menu"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.showMenu = false;
-                game.enterState(Game.MENU_STATE);
-            }
-        }));
+        menuItems.add(continueItem);
+        menuItems.add(repeatLevel);
+        menuItems.add(subMenu);
+        menuItems.add(mainMenu);
         for (MenuItem item : menuItems) {
             item.setMargin(30);
         }
         this.menu = new Menu(menuItems, container);
         this.menu.setBackgroundColor(Color.lightGray);
+
+        List<MenuItem> gameOverMenuItems = new ArrayList<MenuItem>();
+        gameOverMenuItems.add(repeatLevel);
+        gameOverMenuItems.add(subMenu);
+        gameOverMenuItems.add(mainMenu);
+        for (MenuItem item : gameOverMenuItems) {
+            item.setMargin(30);
+        }
+        this.gameOverMenu = new Menu(gameOverMenuItems, container);
+        this.gameOverMenu.setBackgroundColor(Color.lightGray);
+
         this.initLevel(container, game);
     }
 
@@ -123,6 +148,9 @@ public class GameState extends BasicGameState {
         if (this.showMenu) {
             this.menu.render(container, game, g);
         }
+        if (this.showGameOverMenu) {
+            this.gameOverMenu.render(container, game, g);
+        }
         this.messageBox.render(container, game, g);
     }
 
@@ -134,7 +162,7 @@ public class GameState extends BasicGameState {
             this.showMenu = true;
         }
         if (this.level.isOver()) {
-            this.showMenu = true;
+            this.showGameOverMenu = true;
         }
         if (this.level.isFinished()) {
             if (this.levelController.nextLevelExist()) {
@@ -178,10 +206,12 @@ public class GameState extends BasicGameState {
                 this.levelController.updateProgress();
             }
         }
-        if (!this.showMenu) {
-            this.level.update(container, game, delta);
-        } else {
+        if (this.showMenu) {
             this.menu.update(container, game, delta);
+        } else if (this.showGameOverMenu) {
+            this.gameOverMenu.update(container, game, delta);
+        } else {
+            this.level.update(container, game, delta);
         }
         this.messageBox.update(container, game, delta);
     }
