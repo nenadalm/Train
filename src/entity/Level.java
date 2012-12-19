@@ -311,6 +311,13 @@ public class Level extends Entity implements Cloneable {
             e.printStackTrace();
         }
         this.itemsToWin = this.countItemsToWin();
+        if (this.itemsToWin == 0) {
+            try {
+                this.images.put(Item.GATE, new Image(Level.GRAPHICS + "gateOpen.png"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         this.playable = this.isValid();
     }
 
