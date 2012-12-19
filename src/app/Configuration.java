@@ -111,7 +111,7 @@ public class Configuration {
         properties.put("fullscreen", "true");
         properties.put("autoscale", "false");
         properties.put("scale", "1");
-        properties.put("refreshSpeed", "500");
+        properties.put("refreshSpeed", "350");
         return properties;
     }
 
