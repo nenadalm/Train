@@ -4,8 +4,10 @@ import java.awt.Point;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
@@ -38,6 +40,7 @@ public class Level extends Entity implements Cloneable {
     private Point trainDirectionPrepared = new Point();
     private ResourceManager resourceManager;
     private boolean playable = false;
+    private Queue<Integer> keys = new LinkedList<Integer>();
 
     public Level(int width, int height) {
         Configuration config = Configuration.getInstance();
@@ -194,18 +197,32 @@ public class Level extends Entity implements Cloneable {
         Input input = gc.getInput();
 
         if (!this.isGameOver && !this.isGameWon) {
-            if (input.isKeyDown(Keyboard.KEY_UP)) {
-                this.trainDirectionPrepared = new Point(0, -1);
-            } else if (input.isKeyDown(Keyboard.KEY_DOWN)) {
-                this.trainDirectionPrepared = new Point(0, 1);
-            } else if (input.isKeyDown(Keyboard.KEY_LEFT)) {
-                this.trainDirectionPrepared = new Point(-1, 0);
-            } else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
-                this.trainDirectionPrepared = new Point(1, 0);
+            if (input.isKeyPressed(Keyboard.KEY_UP)) {
+                this.keys.add(Keyboard.KEY_UP);
+            } else if (input.isKeyPressed(Keyboard.KEY_DOWN)) {
+                this.keys.add(Keyboard.KEY_DOWN);
+            } else if (input.isKeyPressed(Keyboard.KEY_LEFT)) {
+                this.keys.add(Keyboard.KEY_LEFT);
+            } else if (input.isKeyPressed(Keyboard.KEY_RIGHT)) {
+                this.keys.add(Keyboard.KEY_RIGHT);
             }
 
             this.time += delta;
             if (this.time >= this.interval) {
+
+                Integer key = this.keys.poll();
+                if (key != null) {
+                    if (key == Keyboard.KEY_UP) {
+                        this.trainDirectionPrepared = new Point(0, -1);
+                    } else if (key == Keyboard.KEY_DOWN) {
+                        this.trainDirectionPrepared = new Point(0, 1);
+                    } else if (key == Keyboard.KEY_LEFT) {
+                        this.trainDirectionPrepared = new Point(-1, 0);
+                    } else if (key == Keyboard.KEY_RIGHT) {
+                        this.trainDirectionPrepared = new Point(1, 0);
+                    }
+                }
+
                 this.train.setDirection(this.trainDirectionPrepared);
                 Point lastPoint = (Point) this.train.getPosition().clone();
                 this.train.update(gc, sb, delta);
