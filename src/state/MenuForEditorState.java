@@ -509,6 +509,7 @@ public class MenuForEditorState extends BasicGameState {
                 if (levelBaseIndex > 0) {
                     levelBaseIndex--;
                 }
+                levelPackage.getLevelNames().remove(levelIndex);
                 levelIndex--;
                 setLevelNameRectangles();
             }
