@@ -165,11 +165,8 @@ public class Level extends Entity implements Cloneable {
                             truck = t;
                         }
                     }
-                    switch ((int) truck.getRotation()) {
-                        case 180:
-                            image = image.getFlippedCopy(false, true);
-                            break;
-                    }
+                    image = image.getFlippedCopy(truck.isFlippedHorizontal(),
+                            truck.isFlippedVertical());
                     int origin = this.imageSize / 2;
                     image.setCenterOfRotation(origin, origin);
                     image.setRotation(truck.getRotation());
@@ -232,7 +229,8 @@ public class Level extends Entity implements Cloneable {
                         if (this.itemsToWin == 0 && this.level[newPoint.x][newPoint.y] == Item.GATE) {
                             this.isGameWon = true;
                         }
-                        this.moveTrucks(lastPoint, this.train.getRotation());
+                        this.moveTrucks(lastPoint, this.train.getRotation(),
+                                this.train.flippedHorizontal, this.train.flippedVertical);
 
                         if (this.trucks.size() == 0) {
                             this.level[lastPoint.x][lastPoint.y] = Item.EMPTY;
@@ -263,19 +261,32 @@ public class Level extends Entity implements Cloneable {
         return false;
     }
 
-    private void moveTrucks(Point moveToPosition, float applyRotation) {
+    private void moveTrucks(Point moveToPosition, float applyRotation, boolean flippedHorizontal,
+            boolean flippedVertical) {
         Point positionTemp = null;
         Truck truck = null;
         float rotationTemp;
+        boolean flippedHorizontalTemp;
+        boolean flippedVerticalTemp;
         for (int i = this.trucks.size() - 1; i >= 0; i--) {
             truck = this.trucks.get(i);
+
             positionTemp = truck.getPosition();
             rotationTemp = truck.getRotation();
+            flippedHorizontalTemp = truck.isFlippedHorizontal();
+            flippedVerticalTemp = truck.isFlippedVertical();
+
             truck.setPosition(moveToPosition);
             truck.setRotation(applyRotation);
+            truck.setFlippedHorizontal(flippedHorizontal);
+            truck.setFlippedVertical(flippedVertical);
+
             this.level[moveToPosition.x][moveToPosition.y] = Item.TRUCK;
+
             moveToPosition = positionTemp;
             applyRotation = rotationTemp;
+            flippedHorizontal = flippedHorizontalTemp;
+            flippedVertical = flippedVerticalTemp;
         }
         if (this.trucks.size() != 0) {
             this.level[positionTemp.x][positionTemp.y] = Item.EMPTY;
@@ -286,6 +297,8 @@ public class Level extends Entity implements Cloneable {
         Truck t = new Truck();
         t.setPosition(position);
         t.setRotation(this.train.getRotation());
+        t.setFlippedHorizontal(train.isFlippedHorizontal());
+        t.setFlippedVertical(train.isFlippedVertical());
         this.level[position.x][position.y] = Item.TRUCK;
         this.trucks.add(t);
     }
@@ -362,6 +375,24 @@ public class Level extends Entity implements Cloneable {
     private class Truck {
         private Point position;
         private float rotation;
+        private boolean flippedHorizontal;
+        private boolean flippedVertical;
+
+        public boolean isFlippedHorizontal() {
+            return flippedHorizontal;
+        }
+
+        public void setFlippedHorizontal(boolean flippedHorizontal) {
+            this.flippedHorizontal = flippedHorizontal;
+        }
+
+        public boolean isFlippedVertical() {
+            return flippedVertical;
+        }
+
+        public void setFlippedVertical(boolean flippedVertical) {
+            this.flippedVertical = flippedVertical;
+        }
 
         public Point getPosition() {
             return this.position;
