@@ -429,6 +429,7 @@ public class LevelController {
         String path = this.getPackagePath(packageIndex, packageName);
         File newPackage = new File(path);
         newPackage.mkdir();
+        this.loadLevels();
     }
 
     public void renamePackage(int oldIndex, String oldName, int newIndex, String newName) {
