@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -182,6 +183,11 @@ public class GameState extends BasicGameState {
                                 game.enterState(Game.MENU_STATE);
                             }
                         });
+                if (input.isKeyPressed(Keyboard.KEY_RETURN)) {
+                    this.levelController.loadNextLevel();
+                    this.initLevel(container, game);
+                    this.messageBox.close();
+                }
             } else {
                 this.messageBox
                         .showConfirm(
