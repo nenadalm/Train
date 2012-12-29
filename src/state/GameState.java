@@ -165,6 +165,11 @@ public class GameState extends BasicGameState {
         }
         if (this.level.isOver()) {
             this.showGameOverMenu = true;
+            if (input.isKeyPressed(Keyboard.KEY_RETURN)) {
+                this.initLevel(container, game);
+                this.showMenu = false;
+                this.showGameOverMenu = false;
+            }
         }
         if (this.level.isFinished()) {
             if (this.levelController.nextLevelExist()) {
