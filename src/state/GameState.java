@@ -159,7 +159,8 @@ public class GameState extends BasicGameState {
     public void update(final GameContainer container, final StateBasedGame game, int delta)
             throws SlickException {
         Input input = container.getInput();
-        if (input.isKeyPressed(Input.KEY_ESCAPE) && !this.level.isFinished()) {
+        if (input.isKeyPressed(Input.KEY_ESCAPE) && !this.level.isFinished()
+                && !this.level.isOver()) {
             this.showMenu = true;
         }
         if (this.level.isOver()) {
