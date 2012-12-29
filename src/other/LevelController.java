@@ -438,6 +438,7 @@ public class LevelController {
         path = this.getPackagePath(newIndex, newName);
         File renamedPackage = new File(path);
         beingRenamedPackage.renameTo(renamedPackage);
+        this.loadLevels();
     }
 
     public void renameLevel(int packageIndex, String packageName, int oldIndex, String oldName,
@@ -459,6 +460,7 @@ public class LevelController {
         beingDeletedPackage.delete();
 
         this.repairPackagesNames();
+        this.loadLevels();
     }
 
     public void deleteLevel(int packageIndex, String packageName, int levelIndex, String levelName) {
