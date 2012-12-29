@@ -222,6 +222,7 @@ public class MenuForGameState extends BasicGameState {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                input.clearKeyPressedRecord();
                 game.enterState(Game.GAME_STATE);
             }
         }

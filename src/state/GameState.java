@@ -208,14 +208,13 @@ public class GameState extends BasicGameState {
         }
         if (this.showMenu) {
             this.menu.update(container, game, delta);
-            input.clearKeyPressedRecord();
         } else if (this.showGameOverMenu) {
             this.gameOverMenu.update(container, game, delta);
-            input.clearKeyPressedRecord();
         } else {
             this.level.update(container, game, delta);
         }
         this.messageBox.update(container, game, delta);
+        input.clearKeyPressedRecord();
     }
 
     @Override
