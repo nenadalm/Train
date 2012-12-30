@@ -33,6 +33,7 @@ public class Level extends Entity implements Cloneable {
     private Train train;
     private boolean isGameOver = false;
     private boolean isGameWon = false;
+    private boolean isGateOpened = false;
     private List<Truck> trucks;
     private int itemsToWin = 0;
     private int originalImageSize;
@@ -194,9 +195,10 @@ public class Level extends Entity implements Cloneable {
             return;
         }
 
-        if (this.itemsToWin == 0) {
+        if (this.itemsToWin == 0 && !this.isGateOpened) {
             try {
                 this.images.put(Item.GATE, new Image(Level.GRAPHICS + "gateOpen.png"));
+                this.isGateOpened = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
