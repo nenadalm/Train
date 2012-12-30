@@ -173,6 +173,10 @@ public class GameState extends BasicGameState {
         }
         if (this.level.isFinished()) {
             if (this.levelController.nextLevelExist()) {
+                if (!this.wasFinished) {
+                    this.wasFinished = true;
+                    this.levelController.updateProgress();
+                }
                 this.messageBox.showConfirm(this.translator
                         .translate("Level was finished. Do you wanna continue to next level?"),
                         new ActionListener() {
@@ -212,10 +216,6 @@ public class GameState extends BasicGameState {
                                         game.enterState(Game.MENU_STATE);
                                     }
                                 });
-            }
-            if (!this.wasFinished) {
-                this.wasFinished = true;
-                this.levelController.updateProgress();
             }
         }
         if (this.showMenu) {
