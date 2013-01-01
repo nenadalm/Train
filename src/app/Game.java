@@ -24,7 +24,7 @@ public class Game extends StateBasedGame {
     public static final int MENU_FOR_EDITOR_STATE = 4;
     public static final int MENU_FOR_GAME_STATE = 5;
 
-    public static final String VERSION = "0.3";
+    public static final String VERSION = "0.8";
 
     public static boolean isReinitializationRequried = false;
 
