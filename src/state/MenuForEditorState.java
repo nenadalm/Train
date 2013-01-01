@@ -486,6 +486,8 @@ public class MenuForEditorState extends BasicGameState {
                             levelController.resizeLevel(packageIndex, levelIndex, levelSize.width,
                                     levelSize.height);
                             textField.setText("");
+                        } else {
+                            infoText = wrongLevelSize + " 7 - 100";
                         }
                     }
                     if (inputState == 0) {
@@ -494,6 +496,8 @@ public class MenuForEditorState extends BasicGameState {
                             inputState = 1;
                             levelSize.width = levelWidth;
                             textField.setText(String.valueOf(levelSize.height));
+                        } else {
+                            infoText = wrongLevelSize + " 7 - 100";
                         }
                     }
                 } catch (Exception e) {
