@@ -1,7 +1,5 @@
 package entity;
 
-import helper.MathHelper;
-
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -148,7 +146,7 @@ public class MessageBox extends Entity {
         int mouseY = input.getMouseY();
         this.active = -1;
         for (int i = 0; i < this.buttons.length; i++) {
-            if (MathHelper.rectangleContainsPoint(this.buttons[i], new Point(mouseX, mouseY))) {
+            if (buttons[i].contains(mouseX, mouseY)) {
                 this.active = i;
             }
         }

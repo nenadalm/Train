@@ -1,8 +1,5 @@
 package entity;
 
-import helper.MathHelper;
-
-import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -45,11 +42,10 @@ public class Menu extends Container {
         Input input = container.getInput();
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
-        Point mouse = new Point(mouseX, mouseY);
         int counter = 0;
         boolean over = false;
         for (Rectangle r : this.getLayout().getRectangles()) {
-            if (MathHelper.rectangleContainsPoint(r, mouse)) {
+            if (r.contains(mouseX, mouseY)) {
                 this.active = counter;
                 this.items.get(this.active).setColor(Color.blue);
                 over = true;
