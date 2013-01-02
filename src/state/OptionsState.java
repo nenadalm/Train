@@ -42,9 +42,8 @@ public class OptionsState extends BasicGameState {
     private DisplayMode displayModes[];
     private Dimension size;
     private Image wall, wallPreview;
-    private Input input;
-    private Point mouse;
-    private String resolutionText, languages[], yes, no, save, scaleText, sizeText;
+
+    private String resolutionText, languages[], yes, no, scaleText, sizeText;
     private Translator translator;
     private Configuration configuration;
 
@@ -134,6 +133,8 @@ public class OptionsState extends BasicGameState {
         scaleRectangle = new Rectangle();
         setScaleRectangle();
 
+        String save = translator.translate("save");
+
         saveRectangle = new Rectangle();
         saveRectangle.width = ubuntuMedium.getWidth(save);
         saveRectangle.height = ubuntuMedium.getHeight(save);
@@ -195,8 +196,8 @@ public class OptionsState extends BasicGameState {
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        input = container.getInput();
-        mouse = new Point(input.getMouseX(), input.getMouseY());
+        Input input = container.getInput();
+        Point mouse = new Point(input.getMouseX(), input.getMouseY());
 
         isMouseOverResolution = resolutionRectangle.contains(mouse);
         isMouseOverFullscreen = fullscreenRectangle.contains(mouse);
@@ -384,6 +385,5 @@ public class OptionsState extends BasicGameState {
     private void translate() {
         yes = translator.translate("yes");
         no = translator.translate("no");
-        save = translator.translate("save");
     }
 }

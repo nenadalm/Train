@@ -15,6 +15,7 @@ import org.newdawn.slick.font.effects.GradientEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import other.InteractiveLabel;
 import other.LevelController;
 import other.LevelPackage;
 import other.Translator;
@@ -26,20 +27,17 @@ public class MenuForGameState extends BasicGameState {
 
     private boolean isMouseOverPackageArrowLeft, isMouseOverPackageArrowRight,
             isMouseOverLevelArrowLeft, isMouseOverLevelArrowRight, isPackageArrowLeftDisabled,
-            isPackageArrowRightDisabled, isLevelArrowLeftDisabled, isLevelArrowRightDisabled,
-            isMouseOverReturn, isMouseOverPlay, isPlayDisabled;
+            isPackageArrowRightDisabled, isLevelArrowLeftDisabled, isLevelArrowRightDisabled;
     private int stateId, width, height, packageIndex, levelIndex;
     private Font ubuntuMedium, ubuntuLarge;
     private String progressText, showingText;
 
-    private Input input;
-    private Point mouse;
     private Translator translator;
     private byte[] progresses;
-    private Rectangle packageArrowLeft, packageArrowRight, levelArrowLeft, levelArrowRight,
-            returnRectangle, playRectangle;
+    private Rectangle packageArrowLeft, packageArrowRight, levelArrowLeft, levelArrowRight;
     private ArrayList<LevelPackage> levelPackages;
     private LevelController levelController;
+    private InteractiveLabel play, back;
 
     public MenuForGameState(int stateId) {
         this.stateId = stateId;
@@ -90,17 +88,8 @@ public class MenuForGameState extends BasicGameState {
         levelArrowRight.x = width * 3 / 4 - arrowWidth;
         levelArrowRight.y = height * 3 / 4 + levelArrowRight.height * 3 / 4;
 
-        returnRectangle = new Rectangle();
-        returnRectangle.width = ubuntuMedium.getWidth(translator.translate("back"));
-        returnRectangle.height = ubuntuMedium.getHeight(translator.translate("back"));
-        returnRectangle.x = width / 100;
-        returnRectangle.y = (int) (height - returnRectangle.height * 1.1f);
-
-        playRectangle = new Rectangle();
-        playRectangle.width = ubuntuMedium.getWidth(translator.translate("play"));
-        playRectangle.height = ubuntuMedium.getHeight(translator.translate("play"));
-        playRectangle.x = width / 2 - playRectangle.width / 2;
-        playRectangle.y = (int) (height - playRectangle.height * 1.1f);
+        initBackLabel();
+        initPlayLabel();
 
         packageIndex = 0;
         int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
@@ -132,13 +121,8 @@ public class MenuForGameState extends BasicGameState {
         g.drawString(">", width * 3 / 4 - levelArrowRight.width, height * 3 / 4);
         String text = levelPackages.get(packageIndex).getName();
         g.setFont(ubuntuMedium);
-        g.setColor((isMouseOverReturn) ? Color.red : Color.white);
-        g.drawString(translator.translate("back"), width / 100, height - returnRectangle.height
-                * 1.1f);
-        g.setColor((isPlayDisabled) ? Color.darkGray
-                : ((isMouseOverPlay) ? Color.red : Color.white));
-        g.drawString(translator.translate("play"), width / 2 - playRectangle.width / 2, height
-                - playRectangle.height * 1.1f);
+        back.render(g);
+        play.render(g);
         g.setColor(Color.white);
         g.drawString(text, width / 2 - ubuntuMedium.getWidth(text) / 2, height * 1 / 3 + height
                 / 50);
@@ -166,23 +150,23 @@ public class MenuForGameState extends BasicGameState {
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        input = container.getInput();
-        mouse = new Point(input.getMouseX(), input.getMouseY());
+        Input input = container.getInput();
+        Point mouse = new Point(input.getMouseX(), input.getMouseY());
 
         isPackageArrowLeftDisabled = packageIndex < 1;
         isPackageArrowRightDisabled = packageIndex >= levelPackages.size() - 1;
         isLevelArrowLeftDisabled = levelIndex < 1;
         isLevelArrowRightDisabled = levelIndex >= levelPackages.get(packageIndex).getLevelNames()
                 .size() - 1;
-        isPlayDisabled = levelIndex >= levelPackages.get(packageIndex).getLevelNames().size()
-                || levelIndex > progresses[packageIndex];
+        play.setEnabled(levelIndex < levelPackages.get(packageIndex).getLevelNames().size()
+                && levelIndex <= progresses[packageIndex]);
 
         isMouseOverPackageArrowLeft = packageArrowLeft.contains(mouse);
         isMouseOverPackageArrowRight = packageArrowRight.contains(mouse);
         isMouseOverLevelArrowLeft = levelArrowLeft.contains(mouse);
         isMouseOverLevelArrowRight = levelArrowRight.contains(mouse);
-        isMouseOverReturn = returnRectangle.contains(mouse);
-        isMouseOverPlay = playRectangle.contains(mouse);
+        back.setIsMouseOver(mouse);
+        play.setIsMouseOver(mouse);
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);
@@ -213,10 +197,10 @@ public class MenuForGameState extends BasicGameState {
                 levelIndex++;
                 setShowingText();
             }
-            if (isMouseOverReturn) {
+            if (back.isMouseOver()) {
                 game.enterState(Game.MENU_STATE);
             }
-            if (isMouseOverPlay && !isPlayDisabled) {
+            if (play.isMouseOver()) {
                 try {
                     levelController.loadLevel(packageIndex, levelIndex);
                 } catch (Exception e) {
@@ -245,5 +229,29 @@ public class MenuForGameState extends BasicGameState {
         showingText = String.format("%4$s %1$d %3$s %2$d", levelIndex + 1, size,
                 translator.translate((size > 1 && size < 5) ? "of2" : "of"),
                 translator.translate("showing"));
+    }
+
+    private void initBackLabel() {
+        String backText = translator.translate("back");
+        Rectangle rectangle = new Rectangle();
+        rectangle.width = ubuntuMedium.getWidth(backText);
+        rectangle.height = ubuntuMedium.getHeight(backText);
+        rectangle.x = width / 100;
+        rectangle.y = (int) (height - rectangle.height * 1.1f);
+        Point position = new Point(rectangle.x, rectangle.y);
+        back = new InteractiveLabel(backText, position, rectangle);
+        back.setColors(Color.white, Color.red, Color.darkGray);
+    }
+
+    private void initPlayLabel() {
+        String playText = translator.translate("play");
+        Rectangle rectangle = new Rectangle();
+        rectangle.width = ubuntuMedium.getWidth(playText);
+        rectangle.height = ubuntuMedium.getHeight(playText);
+        rectangle.x = width / 2 - rectangle.width / 2;
+        rectangle.y = (int) (height - rectangle.height * 1.1f);
+        Point position = new Point(rectangle.x, rectangle.y);
+        play = new InteractiveLabel(playText, position, rectangle);
+        play.setColors(Color.white, Color.red, Color.darkGray);
     }
 }

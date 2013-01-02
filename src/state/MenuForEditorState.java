@@ -34,21 +34,20 @@ public class MenuForEditorState extends BasicGameState {
 
     private Action action;
     private boolean isMouseOverPackageArrowUp, isMouseOverPackageArrowDown,
-            isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isMouseOverReturn,
-            isLevelArrowDownDisabled, isMouseOverPackageNames[], isMouseOverLevelNames[];
+            isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isLevelArrowDownDisabled,
+            isMouseOverPackageNames[], isMouseOverLevelNames[];
     private int stateId, width, height, packageIndex, levelIndex, packageBaseIndex, levelBaseIndex,
             inputState;
     private Font ubuntuSmall, ubuntuMedium;
 
     private Dimension optimalSize;
     private Rectangle packageArrowUpRectangle, packageArrowDownRectangle, levelArrowUpRectangle,
-            levelArrowDownRectangle, returnRectangle, packageNameRectangles[],
-            levelNameRectangles[];
+            levelArrowDownRectangle, packageNameRectangles[], levelNameRectangles[];
     private ArrayList<LevelPackage> levelPackages;
     private Image arrowUp, arrowDown, arrowMouseOverUp, arrowMouseOverDown, arrowDisabledUp,
             arrowDisabledDown;
     private String newLevelName, infoText;
-    private InteractiveLabel packageActions[], levelActions[];
+    private InteractiveLabel packageActions[], levelActions[], back;
     private TextField textField;
     private Translator translator;
     private Dimension levelSize;
@@ -111,12 +110,15 @@ public class MenuForEditorState extends BasicGameState {
         levelArrowDownRectangle.x = width * 7 / 12;
         levelArrowDownRectangle.y = height * 9 / 12;
 
-        returnRectangle = new Rectangle();
         String backText = translator.translate("back");
-        returnRectangle.width = ubuntuSmall.getWidth(backText);
-        returnRectangle.height = ubuntuSmall.getHeight(backText);
-        returnRectangle.x = width / 100;
-        returnRectangle.y = (int) (height - returnRectangle.height * 1.1f);
+        Rectangle rectangle = new Rectangle();
+        rectangle.width = ubuntuSmall.getWidth(backText);
+        rectangle.height = ubuntuSmall.getHeight(backText);
+        rectangle.x = width / 100;
+        rectangle.y = (int) (height - rectangle.height * 1.1f);
+        Point position = new Point(width / 100, (int) (height - rectangle.height * 1.1f));
+        back = new InteractiveLabel(backText, position, rectangle);
+        back.setColors(Color.white, Color.red, Color.white);
 
         initPackageActions();
         initLevelActions();
@@ -155,9 +157,7 @@ public class MenuForEditorState extends BasicGameState {
         g.drawString(packagesText, 0, height / 6 - ubuntuMedium.getHeight(packagesText) / 2);
         g.drawString(levelsText, width / 2, height / 6 - ubuntuMedium.getHeight(packagesText) / 2);
         g.setFont(ubuntuSmall);
-        g.setColor((isMouseOverReturn) ? Color.red : Color.white);
-        g.drawString(translator.translate("back"), width / 100, height - returnRectangle.height
-                * 1.1f);
+        back.render(g);
         for (int i = 0; i < levelPackages.size() && i < 5; i++) {
             g.setColor((packageIndex == packageBaseIndex + i) ? Color.blue
                     : ((isMouseOverPackageNames[i]) ? Color.red : Color.white));
@@ -194,13 +194,9 @@ public class MenuForEditorState extends BasicGameState {
                     - height / 24);
         }
         for (int i = 0; i < packageActions.length; i++) {
-            g.setColor((!packageActions[i].isEnabled()) ? Color.darkGray : ((packageActions[i]
-                    .isMouseOver()) ? Color.blue : Color.red));
             packageActions[i].render(g);
         }
         for (int i = 0; i < levelActions.length; i++) {
-            g.setColor((!levelActions[i].isEnabled()) ? Color.darkGray : ((levelActions[i]
-                    .isMouseOver()) ? Color.blue : Color.red));
             levelActions[i].render(g);
         }
 
@@ -266,7 +262,7 @@ public class MenuForEditorState extends BasicGameState {
         isMouseOverLevelArrowUp = levelArrowUpRectangle.contains(mouse);
         isMouseOverLevelArrowDown = levelArrowDownRectangle.contains(mouse);
 
-        isMouseOverReturn = returnRectangle.contains(mouse);
+        back.setIsMouseOver(mouse);
 
         for (int i = 0; i < packageNameRectangles.length && i < levelPackages.size(); i++) {
             isMouseOverPackageNames[i] = packageNameRectangles[i].contains(mouse);
@@ -504,7 +500,7 @@ public class MenuForEditorState extends BasicGameState {
                 levelBaseIndex++;
                 setLevelNameRectangles();
             }
-            if (isMouseOverReturn) {
+            if (back.isMouseOver()) {
                 game.enterState(Game.MENU_STATE);
             }
             if (action == Action.None) {
@@ -680,6 +676,7 @@ public class MenuForEditorState extends BasicGameState {
             Point point = new Point(width / 3 - ubuntuSmall.getWidth(packageActionTexts[i]) / 2,
                     height * (4 + i) / 13);
             packageActions[i] = new InteractiveLabel(packageActionTexts[i], point, rectangle);
+            packageActions[i].setColors(Color.red, Color.blue, Color.darkGray);
         }
     }
 
@@ -703,6 +700,7 @@ public class MenuForEditorState extends BasicGameState {
             Point point = new Point(width - width / 9 - ubuntuSmall.getWidth(levelActionTexts[i])
                     / 2, height * (3 + i) / 13);
             levelActions[i] = new InteractiveLabel(levelActionTexts[i], point, rectangle);
+            levelActions[i].setColors(Color.red, Color.blue, Color.darkGray);
         }
     }
 }
