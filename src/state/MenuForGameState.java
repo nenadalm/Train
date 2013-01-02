@@ -91,8 +91,8 @@ public class MenuForGameState extends BasicGameState {
         levelArrowRight.y = height * 3 / 4 + levelArrowRight.height * 3 / 4;
 
         returnRectangle = new Rectangle();
-        returnRectangle.width = ubuntuMedium.getWidth(translator.translate("return"));
-        returnRectangle.height = ubuntuMedium.getHeight(translator.translate("return"));
+        returnRectangle.width = ubuntuMedium.getWidth(translator.translate("back"));
+        returnRectangle.height = ubuntuMedium.getHeight(translator.translate("back"));
         returnRectangle.x = width / 100;
         returnRectangle.y = (int) (height - returnRectangle.height * 1.1f);
 
@@ -133,7 +133,7 @@ public class MenuForGameState extends BasicGameState {
         String text = levelPackages.get(packageIndex).getName();
         g.setFont(ubuntuMedium);
         g.setColor((isMouseOverReturn) ? Color.red : Color.white);
-        g.drawString(translator.translate("return"), width / 100, height - returnRectangle.height
+        g.drawString(translator.translate("back"), width / 100, height - returnRectangle.height
                 * 1.1f);
         g.setColor((isPlayDisabled) ? Color.darkGray
                 : ((isMouseOverPlay) ? Color.red : Color.white));

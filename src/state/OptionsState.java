@@ -141,7 +141,7 @@ public class OptionsState extends BasicGameState {
         saveRectangle.y = (height - saveRectangle.height) - saveRectangle.height / 6;
 
         returnRectangle = new Rectangle();
-        returnRectangle.width = ubuntuMedium.getWidth(translator.translate("return"));
+        returnRectangle.width = ubuntuMedium.getWidth(translator.translate("back"));
         returnRectangle.height = ubuntuMedium.getHeight(save);
         returnRectangle.x = (int) (width / 1.5) - returnRectangle.width / 2;
         returnRectangle.y = (height - returnRectangle.height) - returnRectangle.height / 6;
@@ -183,7 +183,7 @@ public class OptionsState extends BasicGameState {
         drawString(g, ubuntuMedium, translator.translate("save"), width / 3,
                 (height - saveRectangle.height * 3 / 4));
         g.setColor((isMouseOverReturn) ? Color.red : Color.white);
-        drawString(g, ubuntuMedium, translator.translate("return"), (int) (width / 1.5),
+        drawString(g, ubuntuMedium, translator.translate("back"), (int) (width / 1.5),
                 (height - returnRectangle.height * 3 / 4));
         g.setFont(ubuntuSmall);
         g.setColor((size.width > 7 && size.height > 7 && size.width <= 100 && size.height <= 100) ? Color.white

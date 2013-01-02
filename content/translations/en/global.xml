@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <translations>
-	<translation id="return">back</translation>
 	<translation id="of2">of</translation>
 	<translation id="PackageAlreadyExist">Package already exist</translation>
 	<translation id="LevelAlreadyExist">Level already exist</translation>
