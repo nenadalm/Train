@@ -1,7 +1,9 @@
 package state;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
@@ -13,51 +15,65 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import other.InteractiveLabel;
 import other.Translator;
 import app.Game;
+import entity.Menu;
+import entity.MenuItem;
 import factory.EffectFactory;
 import factory.FontFactory;
 
 public class MenuState extends BasicGameState {
 
-    private int stateId, width, height, trainTextWidth, trainTextHeight;
+    private int stateId, width, trainTextWidth, trainTextHeight;
     private Font ubuntuMedium, ubuntuLarge;
     private String trainText;
-    private InteractiveLabel[] items;
+    private Menu menu;
 
     public MenuState(int stateId) {
         this.stateId = stateId;
     }
 
     @Override
-    public void init(GameContainer container, StateBasedGame game) throws SlickException {
+    public void init(final GameContainer container, final StateBasedGame game)
+            throws SlickException {
+        Translator translator = Translator.getInstance();
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
+        menuItems.add(new MenuItem(translator.translate("start game"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                game.enterState(Game.MENU_FOR_GAME_STATE);
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("level editor"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                game.enterState(Game.MENU_FOR_EDITOR_STATE);
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("options"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                game.enterState(Game.OPTIONS_STATE);
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("exit"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                container.exit();
+            }
+        }));
+        for (int i = 0; i < menuItems.size() - 1; i++) {
+            menuItems.get(i).setMarginBottom(container.getHeight() / 14);
+        }
+        this.menu = new Menu(menuItems, container);
+
         FontFactory fonts = FontFactory.getInstance();
         EffectFactory effects = EffectFactory.getInstance();
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        Translator translator = Translator.getInstance();
         width = container.getWidth();
-        height = container.getHeight();
 
         ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
-
-        String[] labels = new String[4];
-        labels[0] = translator.translate("start game");
-        labels[1] = translator.translate("level editor");
-        labels[2] = translator.translate("options");
-        labels[3] = translator.translate("exit");
-
-        int distanceBetweenMenuEntries = height / 7;
-
-        items = new InteractiveLabel[4];
-        for (int i = 0; i < items.length; i++) {
-            Rectangle rectangle = new Rectangle();
-            setRectangle(rectangle, labels[i], width / 2, distanceBetweenMenuEntries * (2 + i));
-            Point position = new Point(width / 2 - rectangle.width / 2, distanceBetweenMenuEntries
-                    * (2 + i) - rectangle.height / 2);
-            items[i] = new InteractiveLabel(labels[i], position, rectangle);
-        }
 
         trainText = "Train " + Game.VERSION;
         trainTextWidth = ubuntuLarge.getWidth(trainText);
@@ -75,39 +91,19 @@ public class MenuState extends BasicGameState {
         drawString(g, ubuntuLarge, trainText, (int) (trainTextWidth / 1.75),
                 (int) (trainTextHeight / 1.5));
         g.setFont(ubuntuMedium);
-        for (int i = 0; i < items.length; i++) {
-            g.setColor((items[i].isMouseOver()) ? Color.blue : Color.red);
-            items[i].render(g);
-        }
+        this.menu.render(container, game, g);
     }
 
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         Input input = container.getInput();
-        Point mouse = new Point(input.getMouseX(), input.getMouseY());
-        for (int i = 0; i < items.length; i++) {
-            items[i].setIsMouseOver(mouse);
-        }
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             container.exit();
         }
 
-        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-            if (items[0].isMouseOver()) {
-                game.enterState(Game.MENU_FOR_GAME_STATE);
-            }
-            if (items[1].isMouseOver()) {
-                game.enterState(Game.MENU_FOR_EDITOR_STATE);
-            }
-            if (items[2].isMouseOver()) {
-                game.enterState(Game.OPTIONS_STATE);
-            }
-            if (items[3].isMouseOver()) {
-                container.exit();
-            }
-        }
+        this.menu.update(container, game, delta);
     }
 
     @Override
@@ -119,12 +115,5 @@ public class MenuState extends BasicGameState {
         int width = font.getWidth(text);
         int height = font.getHeight(text);
         g.drawString(text, x - width / 2, y - height / 2);
-    }
-
-    private void setRectangle(Rectangle rectangle, String text, int x, int y) {
-        rectangle.width = ubuntuMedium.getWidth(text);
-        rectangle.height = ubuntuMedium.getHeight(text);
-        rectangle.x = x - rectangle.width / 2;
-        rectangle.y = y - rectangle.height / 2;
     }
 }
