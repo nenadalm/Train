@@ -21,6 +21,10 @@ public class Configuration {
     private Map<String, Property> properties;
 
     private Configuration() {
+        this.loadConfiguration();
+    }
+
+    private void loadConfiguration() {
         try {
             Document document = this.getDocument();
             NodeList nodeList = document.getElementsByTagName("property");
@@ -116,7 +120,28 @@ public class Configuration {
     }
 
     public String get(String configName) {
-        return this.properties.get(configName).getValue();
+        Property property = this.properties.get(configName);
+
+        if (property == null) {
+            try {
+                String propertyValue = this.getDefaultProperties().get(configName);
+                Document document = this.getDocument();
+                NodeList properties = document.getElementsByTagName("properties");
+
+                Element prop = document.createElement("property");
+                prop.setAttribute("name", configName);
+                prop.setTextContent(propertyValue);
+
+                properties.item(0).appendChild(prop);
+                XmlHelper.saveDocument(document);
+                this.loadConfiguration();
+                property = this.properties.get(configName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return property.getValue();
     }
 
     public static Configuration getInstance() {
