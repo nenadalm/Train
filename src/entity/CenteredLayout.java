@@ -8,20 +8,22 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 
-public class Layout {
+public class CenteredLayout implements LayoutInterface {
 
     private List<Rectangle> rectangles = new ArrayList<Rectangle>();
     private Container container;
 
-    public Layout(GameContainer gameContainer, Container container) {
+    public CenteredLayout(GameContainer gameContainer, Container container) {
         this.container = container;
         this.placeMenuItems(gameContainer);
     }
 
+    @Override
     public void setContainer(Container container) {
         this.container = container;
     }
 
+    @Override
     public List<Rectangle> getRectangles() {
         return this.rectangles;
     }
@@ -101,6 +103,7 @@ public class Layout {
         this.applyItemMargin();
     }
 
+    @Override
     public void render(Graphics g) {
         int counter = 0;
         for (Child item : this.container.getChildren()) {

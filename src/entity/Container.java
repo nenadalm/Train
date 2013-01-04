@@ -8,7 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public abstract class Container extends Entity {
 
-    private Layout layout;
+    private LayoutInterface layout;
 
     protected abstract List<? extends Child> getChildren();
 
@@ -18,11 +18,11 @@ public abstract class Container extends Entity {
         this.layout.render(g);
     }
 
-    public Layout getLayout() {
+    public LayoutInterface getLayout() {
         return this.layout;
     }
 
-    public void setLayout(Layout layout) {
+    public void setLayout(LayoutInterface layout) {
         this.layout = layout;
     }
 }

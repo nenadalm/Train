@@ -27,7 +27,7 @@ public class Menu extends Container {
             item.setContainer(container);
         }
         this.items = items;
-        this.setLayout(new Layout(container, this));
+        this.setLayout(new CenteredLayout(container, this));
         this.getLayout().setContainer(this);
     }
 
