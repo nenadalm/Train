@@ -25,7 +25,7 @@ import factory.FontFactory;
 public class MenuState extends BasicGameState {
 
     private int stateId, width, trainTextWidth, trainTextHeight;
-    private Font ubuntuMedium, ubuntuLarge;
+    private Font ubuntuLarge;
     private String trainText;
     private Menu menu;
 
@@ -72,7 +72,6 @@ public class MenuState extends BasicGameState {
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         width = container.getWidth();
 
-        ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
 
         trainText = "Train " + Game.VERSION;
@@ -90,7 +89,6 @@ public class MenuState extends BasicGameState {
         g.setColor(Color.white);
         drawString(g, ubuntuLarge, trainText, (int) (trainTextWidth / 1.75),
                 (int) (trainTextHeight / 1.5));
-        g.setFont(ubuntuMedium);
         this.menu.render(container, game, g);
     }
 
