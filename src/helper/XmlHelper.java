@@ -20,8 +20,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import app.Game;
-
 public class XmlHelper {
 
     public static Document getDocument(File xml) throws ParserConfigurationException, SAXException,
@@ -35,9 +33,9 @@ public class XmlHelper {
         return document;
     }
 
-    public static void saveDocument(Document document) throws TransformerConfigurationException,
-            TransformerFactoryConfigurationError, TransformerFactoryConfigurationError,
-            TransformerException, IOException {
+    public static void saveDocument(Document document, String path)
+            throws TransformerConfigurationException, TransformerFactoryConfigurationError,
+            TransformerFactoryConfigurationError, TransformerException, IOException {
 
         StringWriter sw = new StringWriter();
         StreamResult sr = new StreamResult(sw);
@@ -50,7 +48,7 @@ public class XmlHelper {
         transformer.transform(dom, sr);
 
         String string = sw.toString();
-        FileWriter fw = new FileWriter(new File(Game.CONTENT_PATH + "config.xml"));
+        FileWriter fw = new FileWriter(new File(path));
         fw.write(string);
         fw.close();
     }

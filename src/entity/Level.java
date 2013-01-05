@@ -19,12 +19,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import other.ResourceManager;
 import app.Configuration;
-import app.Game;
 
 public class Level extends Entity implements Cloneable {
-
-    public static final String LEVELS_PATH = Game.CONTENT_PATH + "levels/";
-    private static final String GRAPHICS = Game.CONTENT_PATH + "graphics/";
 
     private Map<Item, Image> images;
     private Item[][] level;
@@ -197,7 +193,7 @@ public class Level extends Entity implements Cloneable {
 
         if (this.itemsToWin == 0 && !this.isGateOpened) {
             try {
-                this.images.put(Item.GATE, new Image(Level.GRAPHICS + "gateOpen.png"));
+                this.images.put(Item.GATE, this.resourceManager.getImage("gateOpen"));
                 this.isGateOpened = true;
             } catch (Exception e) {
                 e.printStackTrace();

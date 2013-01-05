@@ -52,7 +52,7 @@ public class Configuration {
                 }
             }
 
-            XmlHelper.saveDocument(document);
+            XmlHelper.saveDocument(document, "config.xml");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,7 +85,7 @@ public class Configuration {
     }
 
     private Document getDocument() throws Exception {
-        File file = new File(Game.CONTENT_PATH + "config.xml");
+        File file = new File("config.xml");
         if (!file.exists()) {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -101,7 +101,7 @@ public class Configuration {
                 properties.appendChild(prop);
             }
             document.appendChild(configuration);
-            XmlHelper.saveDocument(document);
+            XmlHelper.saveDocument(document, "config.xml");
             return document;
         }
         return XmlHelper.getDocument(file);
@@ -116,6 +116,9 @@ public class Configuration {
         properties.put("autoscale", "false");
         properties.put("scale", "1");
         properties.put("refreshSpeed", "350");
+        properties.put("contentPath", "content/");
+        properties.put("levelsPath", "content/levels/");
+        properties.put("graphicsPath", "content/graphics/");
         return properties;
     }
 
@@ -133,7 +136,7 @@ public class Configuration {
                 prop.setTextContent(propertyValue);
 
                 properties.item(0).appendChild(prop);
-                XmlHelper.saveDocument(document);
+                XmlHelper.saveDocument(document, "config.xml");
                 this.loadConfiguration();
                 property = this.properties.get(configName);
             } catch (Exception e) {

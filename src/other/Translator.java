@@ -11,7 +11,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import app.Configuration;
-import app.Game;
 
 public class Translator {
 
@@ -34,8 +33,9 @@ public class Translator {
     }
 
     private void loadTranslations(String fileName) throws Exception {
+        Configuration config = Configuration.getInstance();
         Map<String, String> translation = new HashMap<String, String>();
-        File file = new File(Game.CONTENT_PATH + "translations/" + this.languageCode + "/"
+        File file = new File(config.get("contentPath") + "translations/" + this.languageCode + "/"
                 + fileName + ".xml");
 
         Document document = XmlHelper.getDocument(file);

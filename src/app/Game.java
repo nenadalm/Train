@@ -15,8 +15,6 @@ import state.OptionsState;
 
 public class Game extends StateBasedGame {
 
-    public static final String CONTENT_PATH = "content/";
-
     public static final int MENU_STATE = 0;
     public static final int GAME_STATE = 1;
     public static final int EDITOR_STATE = 2;

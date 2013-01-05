@@ -8,7 +8,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.Effect;
 
-import app.Game;
+import app.Configuration;
 
 public class FontFactory {
 
@@ -35,8 +35,9 @@ public class FontFactory {
             this.type_size_effectFont.get(type).put(size, new HashMap<Effect, Font>());
         }
         if (!this.type_size_effectFont.get(type).get(size).containsKey(effect)) {
+            Configuration config = Configuration.getInstance();
             UnicodeFont font = new UnicodeFont(String.format("%1$sfonts/%2$s.ttf",
-                    Game.CONTENT_PATH, type), size, false, false);
+                    config.get("contentPath"), type), size, false, false);
             font.addGlyphs(32, 382);
             font.getEffects().add(effect);
             font.loadGlyphs();

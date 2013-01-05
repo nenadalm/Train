@@ -15,7 +15,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import app.Game;
+import app.Configuration;
 import factory.FontFactory;
 
 public class ResourceManager {
@@ -33,9 +33,10 @@ public class ResourceManager {
     }
 
     private void loadResources() {
+        Configuration config = Configuration.getInstance();
         try {
             Document document = null;
-            document = XmlHelper.getDocument(new File(Game.CONTENT_PATH + "resources.xml"));
+            document = XmlHelper.getDocument(new File(config.get("contentPath") + "resources.xml"));
 
             NodeList nodeList = document.getElementsByTagName("resource");
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -43,12 +44,12 @@ public class ResourceManager {
                 NamedNodeMap nodeMap = node.getAttributes();
                 switch (nodeMap.getNamedItem("type").getNodeValue()) {
                     case "image":
-                        this.images.put(nodeMap.getNamedItem("id").getNodeValue(), new Image(
-                                Game.CONTENT_PATH + node.getTextContent()));
+                        this.images.put(nodeMap.getNamedItem("id").getNodeValue(),
+                                new Image(config.get("contentPath") + node.getTextContent()));
                         break;
                     case "font":
-                        this.fonts.put(nodeMap.getNamedItem("id").getNodeValue(), Game.CONTENT_PATH
-                                + node.getTextContent());
+                        this.fonts.put(nodeMap.getNamedItem("id").getNodeValue(),
+                                config.get("contentPath") + node.getTextContent());
                         break;
                 }
             }

@@ -77,13 +77,14 @@ public class MenuForEditorState extends BasicGameState {
         float scale = Float.parseFloat(configuration.get("scale"));
         optimalSize = levelController.getOptimalLevelDimension(width, height, scale);
 
-        arrowUp = new Image(Game.CONTENT_PATH + "graphics/arrow.png").getScaledCopy(width / 2000f);
+        arrowUp = new Image(configuration.get("contentPath") + "graphics/arrow.png")
+                .getScaledCopy(width / 2000f);
         arrowDown = arrowUp.getFlippedCopy(false, true);
-        arrowDisabledUp = new Image(Game.CONTENT_PATH + "graphics/arrowDisabled.png")
+        arrowDisabledUp = new Image(configuration.get("contentPath") + "graphics/arrowDisabled.png")
                 .getScaledCopy(width / 2000f);
         arrowDisabledDown = arrowDisabledUp.getFlippedCopy(false, true);
-        arrowMouseOverUp = new Image(Game.CONTENT_PATH + "graphics/arrowMouseOver.png")
-                .getScaledCopy(width / 2000f);
+        arrowMouseOverUp = new Image(configuration.get("contentPath")
+                + "graphics/arrowMouseOver.png").getScaledCopy(width / 2000f);
         arrowMouseOverDown = arrowMouseOverUp.getFlippedCopy(false, true);
 
         packageArrowUpRectangle = new Rectangle();

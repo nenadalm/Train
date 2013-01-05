@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import app.Game;
+import app.Configuration;
 import entity.Level;
 import entity.Level.Item;
 
@@ -31,6 +31,7 @@ public class LevelController {
     // list of levels
     private LevelPackage[] levels;
     private byte progresses[];
+    private Configuration config;
 
     public static LevelController getInstance() {
         if (LevelController.levelController == null) {
@@ -40,6 +41,7 @@ public class LevelController {
     }
 
     private LevelController() {
+        this.config = Configuration.getInstance();
         this.loadLevels();
         this.level = new Level(0, 0);
     }
@@ -99,7 +101,7 @@ public class LevelController {
     }
 
     public byte[] getProgresses() {
-        File saveFile = new File(Game.CONTENT_PATH + "save");
+        File saveFile = new File(this.config.get("contentPath") + "save");
         try {
             if (!saveFile.exists()) {
                 saveFile.createNewFile();
@@ -123,7 +125,7 @@ public class LevelController {
             this.progresses[this.currentPackageIndex] = (byte) (this.currentLevelIndex + 1);
         }
         try {
-            FileOutputStream fos = new FileOutputStream(Game.CONTENT_PATH + "save");
+            FileOutputStream fos = new FileOutputStream(this.config.get("contentPath") + "save");
             fos.write(this.progresses);
             fos.close();
         } catch (Exception e) {
@@ -161,13 +163,13 @@ public class LevelController {
      * Load all levels with packages into this.levels
      */
     private void loadLevels() {
-        File dir = new File(Level.LEVELS_PATH);
+        File dir = new File(this.config.get("levelsPath"));
         String packageFileNames[] = dir.list();
         this.sortArrayByStartingNumbers(packageFileNames);
         ArrayList<LevelPackage> packages = new ArrayList<LevelPackage>(packageFileNames.length);
         LevelPackage levelPackages[] = new LevelPackage[packageFileNames.length];
         for (int i = 0; i < packageFileNames.length; i++) {
-            File levelPackage = new File(Level.LEVELS_PATH + packageFileNames[i]);
+            File levelPackage = new File(this.config.get("levelsPath") + packageFileNames[i]);
             String levelFileNames[] = levelPackage.list();
             this.sortArrayByStartingNumbers(levelFileNames);
             ArrayList<String> levelNames = new ArrayList<String>(levelFileNames.length);
@@ -260,7 +262,7 @@ public class LevelController {
      *            Name of level
      */
     public void removeLevel(String levelName) {
-        File file = new File(Level.LEVELS_PATH);
+        File file = new File(this.config.get("levelsPath"));
         file.delete();
         this.loadLevels();
     }
@@ -286,7 +288,7 @@ public class LevelController {
 
         try {
             // save level into file
-            File file = new File(Level.LEVELS_PATH + packageName + '/' + levelName);
+            File file = new File(this.config.get("levelsPath") + packageName + '/' + levelName);
             file.createNewFile();
             FileWriter fw = new FileWriter(file);
             fw.write(buffer.toString());
@@ -362,12 +364,13 @@ public class LevelController {
             String levelName) {
         String levelFileName = this.getLevelFileName(levelIndex, levelName);
         String packageFileName = this.getPackageFileName(packageIndex, packageName);
-        return String.format("%1$s%2$s/%3$s", Level.LEVELS_PATH, packageFileName, levelFileName);
+        return String.format("%1$s%2$s/%3$s", this.config.get("levelsPath"), packageFileName,
+                levelFileName);
     }
 
     private String getPackagePath(int packageIndex, String packageName) {
         String packageFileName = this.getPackageFileName(packageIndex, packageName);
-        return String.format("%1$s%2$s", Level.LEVELS_PATH, packageFileName);
+        return String.format("%1$s%2$s", this.config.get("levelsPath"), packageFileName);
     }
 
     /**
@@ -472,7 +475,7 @@ public class LevelController {
     }
 
     public void repairLevelsNames() {
-        File pkg = new File(Level.LEVELS_PATH);
+        File pkg = new File(this.config.get("levelsPath"));
         File packages[] = pkg.listFiles();
         Arrays.sort(packages);
         for (int i = 0; i < packages.length; i++) {
@@ -490,7 +493,7 @@ public class LevelController {
     }
 
     public void repairPackagesNames() {
-        File pkg = new File(Level.LEVELS_PATH);
+        File pkg = new File(this.config.get("levelsPath"));
         File packages[] = pkg.listFiles();
         Arrays.sort(packages);
         for (int i = 0; i < packages.length; i++) {

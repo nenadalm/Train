@@ -67,7 +67,7 @@ public class OptionsState extends BasicGameState {
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
 
         translate();
-        wall = new Image(Game.CONTENT_PATH + "graphics/wall.png");
+        wall = new Image(configuration.get("contentPath") + "graphics/wall.png");
         wallPreview = wall.getScaledCopy(scale / 512f);
 
         ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();
@@ -99,7 +99,7 @@ public class OptionsState extends BasicGameState {
             index++;
         }
 
-        File translations = new File(Game.CONTENT_PATH + "translations/");
+        File translations = new File(configuration.get("contentPath") + "translations/");
         translations.listFiles();
         ArrayList<String> names = new ArrayList<String>();
         index = 0;
