@@ -47,13 +47,14 @@ public class Menu extends Container {
         for (Rectangle r : this.getLayout().getRectangles()) {
             if (r.contains(mouseX, mouseY)) {
                 this.active = counter;
-                this.items.get(this.active).setColor(Color.blue);
+                this.items.get(counter).setColor(Color.blue);
                 over = true;
+            } else {
+                this.items.get(counter).setColor(Color.red);
             }
             counter++;
         }
         if (!over && this.active != -1) {
-            this.items.get(this.active).setColor(Color.red);
             this.active = -1;
         }
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON) && over) {
