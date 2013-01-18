@@ -48,7 +48,7 @@ public class GameState extends BasicGameState {
             throws SlickException {
         this.messageBox = new MessageBox(container);
         this.messageBox.setBackgroundColor(Color.lightGray);
-        MenuItem continueItem = new MenuItem(this.translator.translate("Continue"),
+        MenuItem continueItem = new MenuItem(this.translator.translate("game.menu.continue"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent arg0) {
@@ -56,7 +56,7 @@ public class GameState extends BasicGameState {
                         GameState.this.showGameOverMenu = false;
                     }
                 });
-        MenuItem repeatLevel = new MenuItem(this.translator.translate("Repeat level"),
+        MenuItem repeatLevel = new MenuItem(this.translator.translate("game.menu.repeat_level"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -65,7 +65,7 @@ public class GameState extends BasicGameState {
                         GameState.this.showGameOverMenu = false;
                     }
                 });
-        MenuItem subMenu = new MenuItem(this.translator.translate("Sub menu"),
+        MenuItem subMenu = new MenuItem(this.translator.translate("game.menu.sub_menu"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -74,7 +74,7 @@ public class GameState extends BasicGameState {
                         game.enterState(Game.MENU_FOR_GAME_STATE);
                     }
                 });
-        MenuItem mainMenu = new MenuItem(this.translator.translate("Main menu"),
+        MenuItem mainMenu = new MenuItem(this.translator.translate("game.menu.main_menu"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -120,8 +120,7 @@ public class GameState extends BasicGameState {
             this.level.setMarginLeft((container.getWidth() - width) / 2);
             this.level.setMarginTop((container.getHeight() - height) / 2);
             if (!this.level.isValid()) {
-                this.messageBox.showConfirm(this.translator
-                        .translate("Level is not valid. Do you wanna edit this level?"),
+                this.messageBox.showConfirm(this.translator.translate("game.level_is_invalid"),
                         new ActionListener() {
 
                             @Override
@@ -176,8 +175,8 @@ public class GameState extends BasicGameState {
                     this.wasFinished = true;
                     this.levelController.updateProgress();
                 }
-                this.messageBox.showConfirm(this.translator
-                        .translate("Level was finished. Do you wanna continue to next level?"),
+                this.messageBox.showConfirm(
+                        this.translator.translate("game.level_finished_continue"),
                         new ActionListener() {
 
                             @Override
@@ -199,23 +198,21 @@ public class GameState extends BasicGameState {
                     this.messageBox.close();
                 }
             } else {
-                this.messageBox
-                        .showConfirm(
-                                this.translator
-                                        .translate("Congratulation!!! Package was finished. Do you wanna continue?"),
-                                new ActionListener() {
+                this.messageBox.showConfirm(
+                        this.translator.translate("game.congratulation_continue"),
+                        new ActionListener() {
 
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        game.enterState(Game.MENU_FOR_GAME_STATE);
-                                    }
-                                }, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                game.enterState(Game.MENU_FOR_GAME_STATE);
+                            }
+                        }, new ActionListener() {
 
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        game.enterState(Game.MENU_STATE);
-                                    }
-                                });
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                game.enterState(Game.MENU_STATE);
+                            }
+                        });
             }
         }
         if (this.showMenu) {

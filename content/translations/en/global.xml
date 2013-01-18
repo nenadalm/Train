@@ -1,7 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<translations>
-	<translation id="of2">of</translation>
-	<translation id="PackageAlreadyExist">Package already exist</translation>
-	<translation id="LevelAlreadyExist">Level already exist</translation>
-	<translation id="WrongLevelSize">Valid level size is</translation>
-</translations>
+<xliff>
+	<file>
+		<header>
+		</header>
+		<body>
+			<trans-unit>
+				<source>editor.menu.exit_without_saving</source>
+				<target>Exit to menu without saving?</target>
+			</trans-unit>
+			<trans-unit>
+				<source>editor.message.train_and_gate_missing</source>
+				<target>Level is not playable. Train and gate are missing. Do you really want leave editor?</target>
+			</trans-unit>
+			<trans-unit>
+				<source>editor.message.train_missing</source>
+				<target>Level is not playable. Train is missing. Do you really want leave editor?</target>
+			</trans-unit>
+			<trans-unit>
+				<source>editor.message.gate_missing</source>
+				<target>Level is not playable. Gate is missing. Do you really want leave editor?</target>
+			</trans-unit>
+			<trans-unit>
+				<source>game.menu.continue</source>
+				<target>Continue</target>
+			</trans-unit>
+			<trans-unit>
+				<source>game.menu.repeat_level</source>
+				<target>Repeat level</target>
+			</trans-unit>
+			<trans-unit>
+				<source>game.menu.sub_menu</source>
+				<target>Sub menu</target>
+			</trans-unit>
+			<trans-unit>
+				<source>game.menu.main_menu</source>
+				<target>Main menu</target>
+			</trans-unit>
+			<trans-unit>
+				<source>game.level_is_invalid</source>
+				<target>Level is not valid. Do you wanna edit this level?</target>
+			</trans-unit>
+			<trans-unit>
+				<source>game.level_finished_continue</source>
+				<target>Level was finished. Do you wanna continue to next level?</target>
+			</trans-unit>
+			<trans-unit>
+				<source>game.congratulation_continue</source>
+				<target>Congratulation!!! Package was finished. Do you wanna continue?</target>
+			</trans-unit>
+			<trans-unit>
+				<source>navigation.back</source>
+				<target>back</target>
+			</trans-unit>
+			<trans-unit>
+				<source>PackageAlreadyExist</source>
+				<target>Package already exist</target>
+			</trans-unit>
+			<trans-unit>
+				<source>LevelAlreadyExist</source>
+				<target>Level already exist</target>
+			</trans-unit>
+			<trans-unit>
+				<source>WrongLevelSize</source>
+				<target>Valid level size is</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import app.Configuration;
@@ -40,12 +40,12 @@ public class Translator {
 
         Document document = XmlHelper.getDocument(file);
 
-        NodeList nodes = document.getElementsByTagName("translation");
+        NodeList nodes = document.getElementsByTagName("trans-unit");
 
         for (int i = 0; i < nodes.getLength(); i++) {
-            Node node = nodes.item(i);
-            String key = node.getAttributes().getNamedItem("id").getNodeValue();
-            String value = node.getTextContent();
+            Element transUnit = (Element) nodes.item(i);
+            String key = transUnit.getElementsByTagName("source").item(0).getTextContent();
+            String value = transUnit.getElementsByTagName("target").item(0).getTextContent();
             translation.put(key, value);
         }
 

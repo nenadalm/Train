@@ -220,14 +220,14 @@ public class MenuForGameState extends BasicGameState {
     private void setProgressText() {
         int size = levelPackages.get(packageIndex).getLevelNames().size();
         progressText = String.format("%4$s %1$d %3$s %2$d", progresses[packageIndex], size,
-                translator.translate((size > 1 && size < 5) ? "of2" : "of"),
+                translator.translate((size > 1 && size < 5) ? "of" : "of"),
                 translator.translate("completed"));
     }
 
     private void setShowingText() {
         int size = levelPackages.get(packageIndex).getLevelNames().size();
         showingText = String.format("%4$s %1$d %3$s %2$d", levelIndex + 1, size,
-                translator.translate((size > 1 && size < 5) ? "of2" : "of"),
+                translator.translate((size > 1 && size < 5) ? "of" : "of"),
                 translator.translate("showing"));
     }
 
