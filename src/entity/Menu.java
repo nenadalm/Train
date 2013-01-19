@@ -13,7 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import component.RectangleComponent;
 
 public class Menu extends Container {
-    int active = -1;
+    int active = 0;
     private List<MenuItem> items;
 
     @Override
@@ -26,6 +26,7 @@ public class Menu extends Container {
         for (MenuItem item : items) {
             item.setContainer(container);
         }
+        items.get(this.active).setColor(Color.blue);
         this.items = items;
         this.setLayout(new CenteredLayout(container, this));
         this.getLayout().setContainer(this);
@@ -42,22 +43,31 @@ public class Menu extends Container {
         Input input = container.getInput();
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
+
+        List<Rectangle> rectangles = this.getLayout().getRectangles();
+        if (input.isKeyPressed(Input.KEY_UP)) {
+            this.items.get(this.active).setColor(Color.red);
+            this.active = (this.active > 0) ? this.active - 1 : rectangles.size() - 1;
+            this.items.get(this.active).setColor(Color.blue);
+        } else if (input.isKeyPressed(Input.KEY_DOWN)) {
+            this.items.get(this.active).setColor(Color.red);
+            this.active = (this.active < rectangles.size() - 1 ? this.active + 1 : 0);
+            this.items.get(this.active).setColor(Color.blue);
+        }
+
         int counter = 0;
         boolean over = false;
         for (Rectangle r : this.getLayout().getRectangles()) {
             if (r.contains(mouseX, mouseY)) {
+                this.items.get(this.active).setColor(Color.red);
                 this.active = counter;
                 this.items.get(counter).setColor(Color.blue);
                 over = true;
-            } else {
-                this.items.get(counter).setColor(Color.red);
             }
             counter++;
         }
-        if (!over && this.active != -1) {
-            this.active = -1;
-        }
-        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON) && over) {
+        if ((input.isMousePressed(Input.MOUSE_LEFT_BUTTON) && over)
+                || input.isKeyPressed(Input.KEY_ENTER)) {
             ActionListener listener = this.items.get(this.active).getListener();
             listener.actionPerformed(null);
         }
