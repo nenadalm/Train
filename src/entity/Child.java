@@ -4,7 +4,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 
-import other.BoxModel;
 import other.ResourceManager;
 import factory.EffectFactory;
 
