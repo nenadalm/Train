@@ -51,7 +51,7 @@ public class Menu extends Container {
             this.items.get(this.active).setColor(Color.blue);
         } else if (input.isKeyPressed(Input.KEY_DOWN)) {
             this.items.get(this.active).setColor(Color.red);
-            this.active = (this.active < rectangles.size() - 1 ? this.active + 1 : 0);
+            this.active = (this.active < rectangles.size() - 1) ? this.active + 1 : 0;
             this.items.get(this.active).setColor(Color.blue);
         }
 

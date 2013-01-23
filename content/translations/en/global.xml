@@ -30,7 +30,7 @@
 			</trans-unit>
 			<trans-unit>
 				<source>game.menu.sub_menu</source>
-				<target>Sub menu</target>
+				<target>Menu</target>
 			</trans-unit>
 			<trans-unit>
 				<source>game.menu.main_menu</source>
@@ -49,8 +49,8 @@
 				<target>Congratulation!!! Package was finished. Do you wanna continue?</target>
 			</trans-unit>
 			<trans-unit>
-				<source>navigation.back</source>
-				<target>back</target>
+				<source>alternative.of</source>
+				<target>of</target>
 			</trans-unit>
 			<trans-unit>
 				<source>PackageAlreadyExist</source>

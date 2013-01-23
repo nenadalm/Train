@@ -111,7 +111,7 @@ public class MenuForEditorState extends BasicGameState {
         levelArrowDownRectangle.x = width * 7 / 12;
         levelArrowDownRectangle.y = height * 9 / 12;
 
-        String backText = translator.translate("navigation.back");
+        String backText = translator.translate("back");
         Rectangle rectangle = new Rectangle();
         rectangle.width = ubuntuSmall.getWidth(backText);
         rectangle.height = ubuntuSmall.getHeight(backText);
