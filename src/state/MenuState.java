@@ -38,25 +38,25 @@ public class MenuState extends BasicGameState {
             throws SlickException {
         Translator translator = Translator.getInstance();
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add(new MenuItem(translator.translate("start game"), new ActionListener() {
+        menuItems.add(new MenuItem(translator.translate("Menu.StartGame"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 game.enterState(Game.MENU_FOR_GAME_STATE);
             }
         }));
-        menuItems.add(new MenuItem(translator.translate("level editor"), new ActionListener() {
+        menuItems.add(new MenuItem(translator.translate("Menu.LevelEditor"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 game.enterState(Game.MENU_FOR_EDITOR_STATE);
             }
         }));
-        menuItems.add(new MenuItem(translator.translate("options"), new ActionListener() {
+        menuItems.add(new MenuItem(translator.translate("Menu.Options"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 game.enterState(Game.OPTIONS_STATE);
             }
         }));
-        menuItems.add(new MenuItem(translator.translate("exit"), new ActionListener() {
+        menuItems.add(new MenuItem(translator.translate("Menu.Exit"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 container.exit();

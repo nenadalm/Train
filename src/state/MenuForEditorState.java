@@ -63,6 +63,10 @@ public class MenuForEditorState extends BasicGameState {
         EffectFactory effects = EffectFactory.getInstance();
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         Configuration configuration = Configuration.getInstance();
+
+        float scale = Float.parseFloat(configuration.get("scale"));
+        String graphicsPath = configuration.get("graphicsPath");
+
         translator = Translator.getInstance();
         width = container.getWidth();
         height = container.getHeight();
@@ -74,17 +78,15 @@ public class MenuForEditorState extends BasicGameState {
 
         levelController = LevelController.getInstance();
         levelPackages = levelController.getLevels();
-        float scale = Float.parseFloat(configuration.get("scale"));
         optimalSize = levelController.getOptimalLevelDimension(width, height, scale);
 
-        arrowUp = new Image(configuration.get("contentPath") + "graphics/arrow.png")
-                .getScaledCopy(width / 2000f);
+        arrowUp = new Image(graphicsPath + "arrow.png").getScaledCopy(width / 2000f);
         arrowDown = arrowUp.getFlippedCopy(false, true);
-        arrowDisabledUp = new Image(configuration.get("contentPath") + "graphics/arrowDisabled.png")
+        arrowDisabledUp = new Image(graphicsPath + "arrowDisabled.png")
                 .getScaledCopy(width / 2000f);
         arrowDisabledDown = arrowDisabledUp.getFlippedCopy(false, true);
-        arrowMouseOverUp = new Image(configuration.get("contentPath")
-                + "graphics/arrowMouseOver.png").getScaledCopy(width / 2000f);
+        arrowMouseOverUp = new Image(graphicsPath + "arrowMouseOver.png")
+                .getScaledCopy(width / 2000f);
         arrowMouseOverDown = arrowMouseOverUp.getFlippedCopy(false, true);
 
         packageArrowUpRectangle = new Rectangle();
@@ -176,7 +178,7 @@ public class MenuForEditorState extends BasicGameState {
             }
         }
         String text = "";
-        String showing = translator.translate("showing"), of = translator.translate("of");
+        String showing = translator.translate("showing"), of = translator.translate("Of");
         g.setColor(Color.red);
         text = String.format("%4$s %1$d - %2$d %5$s %3$d", packageBaseIndex + 1,
                 packageBaseIndex + 5, levelPackages.size(), showing, of);
@@ -314,7 +316,7 @@ public class MenuForEditorState extends BasicGameState {
                     textField.setText("");
                     setPackageNameRectangles();
                 } else {
-                    infoText = translator.translate("PackageAlreadyExist");
+                    infoText = translator.translate("EditorMenu.PackageAlreadyExist");
                 }
             }
             if (action == Action.RenamingPackage) {
@@ -336,7 +338,7 @@ public class MenuForEditorState extends BasicGameState {
                     textField.setText("");
                     setPackageNameRectangles();
                 } else {
-                    infoText = translator.translate("PackageAlreadyExist");
+                    infoText = translator.translate("EditorMenu.PackageAlreadyExist");
                 }
             }
             if (action == Action.DeletingPackage) {
@@ -377,7 +379,8 @@ public class MenuForEditorState extends BasicGameState {
                             game.enterState(Game.EDITOR_STATE);
 
                         } else {
-                            infoText = translator.translate("WrongLevelSize") + " 7 - 100";
+                            infoText = translator.translate("EditorMenu.WrongLevelSize")
+                                    + " 7 - 100";
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -391,7 +394,8 @@ public class MenuForEditorState extends BasicGameState {
                             levelSize = new Dimension(levelWidth, 0);
                             textField.setText(String.valueOf(optimalSize.height));
                         } else {
-                            infoText = translator.translate("WrongLevelSize") + " 7 - 100";
+                            infoText = translator.translate("EditorMenu.WrongLevelSize")
+                                    + " 7 - 100";
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -412,7 +416,7 @@ public class MenuForEditorState extends BasicGameState {
                         newLevelName = name;
                         textField.setText(String.valueOf(optimalSize.width));
                     } else {
-                        infoText = translator.translate("LevelAlreadyExist");
+                        infoText = translator.translate("EditorMenu.LevelAlreadyExist");
                     }
                 }
             }
@@ -436,7 +440,7 @@ public class MenuForEditorState extends BasicGameState {
                     textField.setText("");
                     setLevelNameRectangles();
                 } else {
-                    infoText = translator.translate("LevelAlreadyExist");
+                    infoText = translator.translate("EditorMenu.LevelAlreadyExist");
                 }
             }
             if (action == Action.ResizingLevel) {
@@ -450,7 +454,8 @@ public class MenuForEditorState extends BasicGameState {
                                     levelSize.height);
                             textField.setText("");
                         } else {
-                            infoText = translator.translate("WrongLevelSize") + " 7 - 100";
+                            infoText = translator.translate("EditorMenu.WrongLevelSize")
+                                    + " 7 - 100";
                         }
                     }
                     if (inputState == 0) {
@@ -460,7 +465,8 @@ public class MenuForEditorState extends BasicGameState {
                             levelSize.width = levelWidth;
                             textField.setText(String.valueOf(levelSize.height));
                         } else {
-                            infoText = translator.translate("WrongLevelSize") + " 7 - 100";
+                            infoText = translator.translate("EditorMenu.WrongLevelSize")
+                                    + " 7 - 100";
                         }
                     }
                 } catch (Exception e) {
@@ -662,8 +668,8 @@ public class MenuForEditorState extends BasicGameState {
     private void initPackageActions() {
         String[] packageActionTexts = new String[5];
         packageActionTexts[0] = translator.translate("Create");
-        packageActionTexts[1] = translator.translate("Move Up");
-        packageActionTexts[2] = translator.translate("Move Down");
+        packageActionTexts[1] = translator.translate("MoveUp");
+        packageActionTexts[2] = translator.translate("MoveDown");
         packageActionTexts[3] = translator.translate("Rename");
         packageActionTexts[4] = translator.translate("Delete");
 
@@ -685,8 +691,8 @@ public class MenuForEditorState extends BasicGameState {
         String[] levelActionTexts = new String[7];
         levelActionTexts[0] = translator.translate("Create");
         levelActionTexts[1] = translator.translate("Edit");
-        levelActionTexts[2] = translator.translate("Move Up");
-        levelActionTexts[3] = translator.translate("Move Down");
+        levelActionTexts[2] = translator.translate("MoveUp");
+        levelActionTexts[3] = translator.translate("MoveDown");
         levelActionTexts[4] = translator.translate("Rename");
         levelActionTexts[5] = translator.translate("Resize");
         levelActionTexts[6] = translator.translate("Delete");

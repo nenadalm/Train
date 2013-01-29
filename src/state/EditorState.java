@@ -145,8 +145,7 @@ public class EditorState extends BasicGameState {
         int indexY;
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            this.messageBox.showConfirm(
-                    this.translator.translate("editor.menu.exit_without_saving"),
+            this.messageBox.showConfirm(this.translator.translate("Editor.Menu.ExitWithoutSaving"),
                     new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
@@ -285,11 +284,11 @@ public class EditorState extends BasicGameState {
                             if (this.level.findTrainPosition() == null
                                     && this.level.findGatePosition() == null) {
                                 message = this.translator
-                                        .translate("editor.message.train_and_gate_missing");
+                                        .translate("Editor.Message.TrainAndGateMissing");
                             } else if (this.level.findTrainPosition() == null) {
-                                message = this.translator.translate("editor.message.train_missing");
+                                message = this.translator.translate("Editor.Message.TrainMissing");
                             } else if (this.level.findGatePosition() == null) {
-                                message = this.translator.translate("editor.message.gate_missing");
+                                message = this.translator.translate("Editor.Message.GateMissing");
                             }
                             this.messageBox.showConfirm(message, new ActionListener() {
 

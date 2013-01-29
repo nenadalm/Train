@@ -48,7 +48,7 @@ public class GameState extends BasicGameState {
             throws SlickException {
         this.messageBox = new MessageBox(container);
         this.messageBox.setBackgroundColor(Color.lightGray);
-        MenuItem continueItem = new MenuItem(this.translator.translate("game.menu.continue"),
+        MenuItem continueItem = new MenuItem(this.translator.translate("Game.Menu.Continue"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent arg0) {
@@ -56,7 +56,7 @@ public class GameState extends BasicGameState {
                         GameState.this.showGameOverMenu = false;
                     }
                 });
-        MenuItem repeatLevel = new MenuItem(this.translator.translate("game.menu.repeat_level"),
+        MenuItem repeatLevel = new MenuItem(this.translator.translate("Game.Menu.RepeatLevel"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -65,7 +65,7 @@ public class GameState extends BasicGameState {
                         GameState.this.showGameOverMenu = false;
                     }
                 });
-        MenuItem subMenu = new MenuItem(this.translator.translate("game.menu.sub_menu"),
+        MenuItem subMenu = new MenuItem(this.translator.translate("Game.Menu.Menu"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -74,7 +74,7 @@ public class GameState extends BasicGameState {
                         game.enterState(Game.MENU_FOR_GAME_STATE);
                     }
                 });
-        MenuItem mainMenu = new MenuItem(this.translator.translate("game.menu.main_menu"),
+        MenuItem mainMenu = new MenuItem(this.translator.translate("Game.Menu.MainMenu"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -120,7 +120,7 @@ public class GameState extends BasicGameState {
             this.level.setMarginLeft((container.getWidth() - width) / 2);
             this.level.setMarginTop((container.getHeight() - height) / 2);
             if (!this.level.isValid()) {
-                this.messageBox.showConfirm(this.translator.translate("game.level_is_invalid"),
+                this.messageBox.showConfirm(this.translator.translate("Game.LevelIsInvalid"),
                         new ActionListener() {
 
                             @Override
@@ -175,8 +175,7 @@ public class GameState extends BasicGameState {
                     this.wasFinished = true;
                     this.levelController.updateProgress();
                 }
-                this.messageBox.showConfirm(
-                        this.translator.translate("game.level_finished_continue"),
+                this.messageBox.showConfirm(this.translator.translate("Game.LevelFinished"),
                         new ActionListener() {
 
                             @Override
@@ -198,8 +197,7 @@ public class GameState extends BasicGameState {
                     this.messageBox.close();
                 }
             } else {
-                this.messageBox.showConfirm(
-                        this.translator.translate("game.congratulation_continue"),
+                this.messageBox.showConfirm(this.translator.translate("Game.Congratulation"),
                         new ActionListener() {
 
                             @Override

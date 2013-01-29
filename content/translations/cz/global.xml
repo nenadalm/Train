@@ -1,229 +1,214 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿﻿<?xml version="1.0" encoding="UTF-8"?>
 <xliff>
-	<file>
-		<header>
-		</header>
-		<body>
-			<trans-unit>
-				<source>yes</source>
-				<target>ano</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Yes</source>
-				<target>Ano</target>
-			</trans-unit>
-			<trans-unit>
-				<source>no</source>
-				<target>ne</target>
-			</trans-unit>
-			<trans-unit>
-				<source>No</source>
-				<target>Ne</target>
-			</trans-unit>
-			<trans-unit>
-				<source>save</source>
-				<target>uložit</target>
-			</trans-unit>
-			<trans-unit>
-				<source>exit</source>
-				<target>ukončit</target>
-			</trans-unit>
-			<trans-unit>
-				<source>options</source>
-				<target>nastavení</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Options</source>
-				<target>Nastavení</target>
-			</trans-unit>
-			<trans-unit>
-				<source>level editor</source>
-				<target>editor levelů</target>
-			</trans-unit>
-			<trans-unit>
-				<source>start game</source>
-				<target>zahájit hru</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Resolution</source>
-				<target>Rozlišení</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Fullscreen</source>
-				<target>Celá obrazovka</target>
-			</trans-unit>
-			<trans-unit>
-				<source>back</source>
-				<target>zpět</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Language</source>
-				<target>Jazyk</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Scale</source>
-				<target>Zobrazení</target>
-			</trans-unit>
-			<trans-unit>
-				<source>name</source>
-				<target>jméno</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Name</source>
-				<target>Jméno</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Packages</source>
-				<target>Balíčky</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Levels</source>
-				<target>Levely</target>
-			</trans-unit>
-			<trans-unit>
-				<source>showing</source>
-				<target>zobrazuji</target>
-			</trans-unit>
-			<trans-unit>
-				<source>of</source>
-				<target>z</target>
-			</trans-unit>
-			<trans-unit>
-				<source>alternative.of</source>
-				<target>ze</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Create</source>
-				<target>Vytvořit</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Move Up</source>
-				<target>Nahoru</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Move Down</source>
-				<target>Dolu</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Rename</source>
-				<target>Přejmenovat</target>
-			</trans-unit>
-			<trans-unit>
-				<source>delete</source>
-				<target>vymazat</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Delete</source>
-				<target>Vymazat</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Really</source>
-				<target>Opravdu</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Edit</source>
-				<target>Upravit</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Resize</source>
-				<target>Změnit velikost</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Width</source>
-				<target>Šířka</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Height</source>
-				<target>Výška</target>
-			</trans-unit>
-			<trans-unit>
-				<source>none</source>
-				<target>není</target>
-			</trans-unit>
-			<trans-unit>
-				<source>completed</source>
-				<target>dokončeno</target>
-			</trans-unit>
-			<trans-unit>
-				<source>locked</source>
-				<target>zamčený</target>
-			</trans-unit>
-			<trans-unit>
-				<source>play</source>
-				<target>hrát</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Next level</source>
-				<target>Další level</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Main menu</source>
-				<target>Hlavní menu</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Repeat level</source>
-				<target>Opakovat level</target>
-			</trans-unit>
-			<trans-unit>
-				<source>Continue</source>
-				<target>Pokračovat</target>
-			</trans-unit>
-			<trans-unit>
-				<source>PackageAlreadyExist</source>
-				<target>Tento balíček již existuje</target>
-			</trans-unit>
-			<trans-unit>
-				<source>LevelAlreadyExist</source>
-				<target>Tento level již existuje</target>
-			</trans-unit>
-			<trans-unit>
-				<source>game.level_finished_continue</source>
-				<target>Level byl úspěšně dokončen. Chceš pokračovat do dalšího levelu?</target>
-			</trans-unit>
-			<trans-unit>
-				<source>game.congratulation_continue</source>
-				<target>Gratuluji!!! Balík byl dokončen. Chceš pokračovat?</target>
-			</trans-unit>
-			<trans-unit>
-				<source>editor.menu.exit_without_saving</source>
-				<target>Odejít do menu bez uložení?</target>
-			</trans-unit>
-			<trans-unit>
-				<source>game.menu.continue</source>
-				<target>Pokračovat</target>
-			</trans-unit>
-			<trans-unit>
-				<source>game.menu.repeat_level</source>
-				<target>Opakovat level</target>
-			</trans-unit>
-			<trans-unit>
-				<source>game.menu.sub_menu</source>
-				<target>Menu</target>
-			</trans-unit>
-			<trans-unit>
-				<source>game.menu.main_menu</source>
-				<target>Hlavní menu</target>
-			</trans-unit>
-			<trans-unit>
-				<source>WrongLevelSize</source>
-				<target>Platné rozměry levelu jsou</target>
-			</trans-unit>
-			<trans-unit>
-				<source>editor.message.train_missing</source>
-				<target>Level není hratelný. Chybí vlak. Opravdu chceš ukončit editor?</target>
-			</trans-unit>
-			<trans-unit>
-				<source>editor.message.gate_missing</source>
-				<target>Level není hratelný. Chybí brána. Opravdu chceš ukončit editor?</target>
-			</trans-unit>
-			<trans-unit>
-				<source>editor.message.train_and_gate_missing</source>
-				<target>Level není hratelný. Chybí vlak a brána. Opravdu chceš ukončit editor?</target>
-			</trans-unit>
-			<trans-unit>
-				<source>game.level_is_invalid</source>
-				<target>Level je poškozený. Chceš level editovat?</target>
-			</trans-unit>
-		</body>
-	</file>
+    <file>
+        <header>
+        </header>
+        <body>
+            <trans-unit>
+                <source>yes</source>
+                <target>ano</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Yes</source>
+                <target>Ano</target>
+            </trans-unit>
+            <trans-unit>
+                <source>no</source>
+                <target>ne</target>
+            </trans-unit>
+            <trans-unit>
+                <source>No</source>
+                <target>Ne</target>
+            </trans-unit>
+            <trans-unit>
+                <source>save</source>
+                <target>uložit</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Menu.Exit</source>
+                <target>ukončit</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Menu.Options</source>
+                <target>nastavení</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Menu.LevelEditor</source>
+                <target>editor levelů</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Menu.StartGame</source>
+                <target>zahájit hru</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Options</source>
+                <target>Nastavení</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Resolution</source>
+                <target>Rozlišení</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Fullscreen</source>
+                <target>Celá obrazovka</target>
+            </trans-unit>
+            <trans-unit>
+                <source>back</source>
+                <target>zpět</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Language</source>
+                <target>Jazyk</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Scale</source>
+                <target>Zobrazení</target>
+            </trans-unit>
+            <trans-unit>
+                <source>name</source>
+                <target>jméno</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Name</source>
+                <target>Jméno</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Packages</source>
+                <target>Balíčky</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Levels</source>
+                <target>Levely</target>
+            </trans-unit>
+            <trans-unit>
+                <source>showing</source>
+                <target>zobrazuji</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Of</source>
+                <target>z</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Alternative.Of</source>
+                <target>ze</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Create</source>
+                <target>Vytvořit</target>
+            </trans-unit>
+            <trans-unit>
+                <source>MoveUp</source>
+                <target>Nahoru</target>
+            </trans-unit>
+            <trans-unit>
+                <source>MoveDown</source>
+                <target>Dolu</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Rename</source>
+                <target>Přejmenovat</target>
+            </trans-unit>
+            <trans-unit>
+                <source>delete</source>
+                <target>vymazat</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Delete</source>
+                <target>Vymazat</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Really</source>
+                <target>Opravdu</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Edit</source>
+                <target>Upravit</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Resize</source>
+                <target>Změnit velikost</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Width</source>
+                <target>Šířka</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Height</source>
+                <target>Výška</target>
+            </trans-unit>
+            <trans-unit>
+                <source>none</source>
+                <target>není</target>
+            </trans-unit>
+            <trans-unit>
+                <source>completed</source>
+                <target>dokončeno</target>
+            </trans-unit>
+            <trans-unit>
+                <source>locked</source>
+                <target>zamčený</target>
+            </trans-unit>
+            <trans-unit>
+                <source>play</source>
+                <target>hrát</target>
+            </trans-unit>
+            <trans-unit>
+                <source>EditorMenu.PackageAlreadyExist</source>
+                <target>Tento balíček již existuje</target>
+            </trans-unit>
+            <trans-unit>
+                <source>EditorMenu.LevelAlreadyExist</source>
+                <target>Tento level již existuje</target>
+            </trans-unit>
+            <trans-unit>
+                <source>EditorMenu.WrongLevelSize</source>
+                <target>Platné rozměry levelu jsou</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Game.LevelIsInvalid</source>
+                <target>Level je poškozený. Chceš level editovat?</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Game.LevelFinished</source>
+                <target>Level byl úspěšně dokončen. Chceš pokračovat do dalšího levelu?</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Game.Congratulation</source>
+                <target>Gratuluji!!! Balík byl dokončen. Chceš pokračovat?</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Game.Menu.Continue</source>
+                <target>Pokračovat</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Game.Menu.RepeatLevel</source>
+                <target>Opakovat level</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Game.Menu.Menu</source>
+                <target>Menu</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Game.Menu.MainMenu</source>
+                <target>Hlavní menu</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Editor.Menu.ExitWithoutSaving</source>
+                <target>Odejít do menu bez uložení?</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Editor.Message.TrainMissing</source>
+                <target>Level není hratelný. Chybí vlak. Opravdu chceš ukončit editor?</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Editor.Message.GateMissing</source>
+                <target>Level není hratelný. Chybí brána. Opravdu chceš ukončit editor?</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Editor.Message.TrainAndGateMissing</source>
+                <target>Level není hratelný. Chybí vlak a brána. Opravdu chceš ukončit editor?</target>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>
+
