@@ -48,6 +48,12 @@ public class GameState extends BasicGameState {
             throws SlickException {
         this.messageBox = new MessageBox(container);
         this.messageBox.setBackgroundColor(Color.lightGray);
+        this.initMenuItems(container, game);
+        this.initGameOverMenuItems(container, game);
+        this.initLevel(container, game);
+    }
+
+    private void initMenuItems(final GameContainer container, final StateBasedGame game) {
         MenuItem continueItem = new MenuItem(this.translator.translate("Game.Menu.Continue"),
                 new ActionListener() {
                     @Override
@@ -93,6 +99,36 @@ public class GameState extends BasicGameState {
         }
         this.menu = new Menu(menuItems, container);
         this.menu.setBackgroundColor(Color.lightGray);
+    }
+
+    private void initGameOverMenuItems(final GameContainer container, final StateBasedGame game) {
+        MenuItem repeatLevel = new MenuItem(this.translator.translate("Game.Menu.RepeatLevel"),
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameState.this.initLevel(container, game);
+                        GameState.this.showMenu = false;
+                        GameState.this.showGameOverMenu = false;
+                    }
+                });
+        MenuItem subMenu = new MenuItem(this.translator.translate("Game.Menu.Menu"),
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameState.this.showMenu = false;
+                        GameState.this.showGameOverMenu = false;
+                        game.enterState(Game.MENU_FOR_GAME_STATE);
+                    }
+                });
+        MenuItem mainMenu = new MenuItem(this.translator.translate("Game.Menu.MainMenu"),
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameState.this.showMenu = false;
+                        GameState.this.showGameOverMenu = false;
+                        game.enterState(Game.MENU_STATE);
+                    }
+                });
 
         List<MenuItem> gameOverMenuItems = new ArrayList<MenuItem>();
         gameOverMenuItems.add(repeatLevel);
@@ -103,8 +139,6 @@ public class GameState extends BasicGameState {
         }
         this.gameOverMenu = new Menu(gameOverMenuItems, container);
         this.gameOverMenu.setBackgroundColor(Color.lightGray);
-
-        this.initLevel(container, game);
     }
 
     private void initLevel(GameContainer container, final StateBasedGame game) {
