@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff>
+    <file>
+        <header>
+        </header>
+        <body>
+            <trans-unit>
+                <source>Test.Translation1</source>
+                <target>Trans1</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Test.Translation2</source>
+                <target>Trans2</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
+

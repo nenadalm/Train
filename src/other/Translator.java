@@ -74,8 +74,15 @@ public class Translator {
     }
 
     public String translate(String text, String fileName) {
-        if (this.translations.containsKey(fileName)
-                && this.translations.get(fileName).containsKey(text)) {
+        if (!this.translations.containsKey(fileName)) {
+            try {
+                this.loadTranslations(fileName);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (this.translations.get(fileName).containsKey(text)) {
             return this.translations.get(fileName).get(text);
         }
 

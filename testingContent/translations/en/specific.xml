@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff>
+    <file>
+        <header>
+        </header>
+        <body>
+            <trans-unit>
+                <source>Test.TranslationSpecific</source>
+                <target>TransSpecific</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
+
