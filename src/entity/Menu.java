@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import component.RectangleComponent;
 public class Menu extends Container {
     int active = 0;
     private List<MenuItem> items;
+    Point lastMousePosition;
 
     @Override
     protected List<MenuItem> getChildren() {
@@ -30,6 +32,7 @@ public class Menu extends Container {
         this.items = items;
         this.setLayout(new CenteredLayout(container, this));
         this.getLayout().setContainer(this);
+        this.lastMousePosition = new Point();
     }
 
     @Override
@@ -59,10 +62,12 @@ public class Menu extends Container {
         boolean over = false;
         for (Rectangle r : this.getLayout().getRectangles()) {
             if (r.contains(mouseX, mouseY)) {
-                this.items.get(this.active).setColor(Color.red);
-                this.active = counter;
-                this.items.get(counter).setColor(Color.blue);
-                over = true;
+                if (this.lastMousePosition.x != mouseX || this.lastMousePosition.y != mouseY) {
+                    this.items.get(this.active).setColor(Color.red);
+                    this.active = counter;
+                    this.items.get(counter).setColor(Color.blue);
+                }
+                over = this.active == counter;
             }
             counter++;
         }
@@ -71,5 +76,6 @@ public class Menu extends Container {
             ActionListener listener = this.items.get(this.active).getListener();
             listener.actionPerformed(null);
         }
+        this.lastMousePosition.setLocation(mouseX, mouseY);
     }
 }
