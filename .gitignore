@@ -4,6 +4,7 @@
 
 config.xml
 /content/save
+/target
 
 #################
 ## Eclipse

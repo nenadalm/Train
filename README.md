@@ -17,6 +17,18 @@ Code conventions
 
 **indentation size:** 4
 
+Setup project
+-------------
+* setup [Maven][4]
+
+* install dependencies
+
+    ```$ mvn dependency:copy-dependencies```
+
+* setup Eclipse (this will automatically configure your build path)
+
+    ```$ mvn eclipse:eclipse```
+
 BSD License
 -----------
 
@@ -35,3 +47,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 [1]: http://www.oracle.com/technetwork/java/javase/overview/index.html
 [2]: http://slick.cokeandcode.com/
 [3]: http://www.bestoldgames.net/eng/old-games/vlak.php
+[4]: http://maven.apache.org/
