@@ -17,7 +17,7 @@ public class App {
             GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice gd = environment.getDefaultScreenDevice();
             DisplayMode actual = gd.getDisplayMode();
-
+            // just trying Travis
             int width = Integer.parseInt(configuration.get("width"));
             int height = Integer.parseInt(configuration.get("height"));
             boolean isFullscreen = Boolean.parseBoolean(configuration.get("fullscreen"));
