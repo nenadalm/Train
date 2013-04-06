@@ -12,6 +12,7 @@
 
 	<build>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
+		<testSourceDirectory>${basedir}/test</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>com.googlecode.mavennatives</groupId>
@@ -74,6 +75,12 @@
 			<groupId>slick</groupId>
 			<artifactId>slick</artifactId>
 			<version>1.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
