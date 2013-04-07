@@ -20,6 +20,7 @@ import org.train.app.Game;
 import org.train.entity.ImageMenuItem;
 import org.train.entity.Level;
 import org.train.entity.Level.Item;
+import org.train.entity.Menu;
 import org.train.entity.MessageBox;
 import org.train.helper.LevelHelper;
 import org.train.other.LevelController;
@@ -37,6 +38,7 @@ public class EditorState extends BasicGameState {
     private Image save;
     // menu images
     private Image itemMenu;
+    private Menu topMenu;
     private List<ImageMenuItem> imageMenuItems;
     // editor images
     private Image active;
@@ -156,6 +158,7 @@ public class EditorState extends BasicGameState {
                 }
             }
         }));
+        this.topMenu = new Menu(this.imageMenuItems, container);
     }
 
     @Override

@@ -10,20 +10,19 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
-
 import org.train.component.RectangleComponent;
 
 public class Menu extends Container {
     int active = 0;
-    private List<MenuItem> items;
+    private List<? extends MenuItem> items;
     Point lastMousePosition;
 
     @Override
-    protected List<MenuItem> getChildren() {
+    protected List<? extends MenuItem> getChildren() {
         return this.items;
     }
 
-    public Menu(List<MenuItem> items, GameContainer container) {
+    public Menu(List<? extends MenuItem> items, GameContainer container) {
         this.addComponent(new RectangleComponent());
         for (MenuItem item : items) {
             item.setContainer(container);
