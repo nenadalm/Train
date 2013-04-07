@@ -65,7 +65,7 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void init(GameContainer container, StateBasedGame game) throws SlickException {
+    public void init(GameContainer container, final StateBasedGame game) throws SlickException {
         this.translator = Translator.getInstance();
         this.messageBox = new MessageBox(container);
         this.messageBox.setBackgroundColor(Color.lightGray);
@@ -90,30 +90,70 @@ public class EditorState extends BasicGameState {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                EditorState.this.showMenu = false;
+                EditorState.this.activeItem = Item.TRAIN;
             }
         }));
         this.imageMenuItems.add(new ImageMenuItem(this.gate, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                EditorState.this.showMenu = false;
+                EditorState.this.activeItem = Item.GATE;
             }
         }));
         this.imageMenuItems.add(new ImageMenuItem(this.tree, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                EditorState.this.showMenu = false;
+                EditorState.this.activeItem = Item.TREE;
             }
         }));
         this.imageMenuItems.add(new ImageMenuItem(this.wall, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                EditorState.this.showMenu = false;
+                EditorState.this.activeItem = Item.WALL;
             }
         }));
         this.imageMenuItems.add(new ImageMenuItem(this.save, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                EditorState.this.showMenu = false;
+                if (!EditorState.this.level.isValid()) {
+                    String message = "";
+                    if (EditorState.this.level.findTrainPosition() == null
+                            && EditorState.this.level.findGatePosition() == null) {
+                        message = EditorState.this.translator
+                                .translate("Editor.Message.TrainAndGateMissing");
+                    } else if (EditorState.this.level.findTrainPosition() == null) {
+                        message = EditorState.this.translator
+                                .translate("Editor.Message.TrainMissing");
+                    } else if (EditorState.this.level.findGatePosition() == null) {
+                        message = EditorState.this.translator
+                                .translate("Editor.Message.GateMissing");
+                    }
+                    EditorState.this.messageBox.showConfirm(message, new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            EditorState.this.levelController.saveCurrentLevel();
+                            game.enterState(Game.MENU_FOR_EDITOR_STATE);
+                        }
+                    }, new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            EditorState.this.messageBox.close();
+                        }
+                    });
+                } else {
+                    EditorState.this.levelController.saveCurrentLevel();
+                    game.enterState(Game.MENU_FOR_EDITOR_STATE);
+                }
             }
         }));
     }
@@ -293,47 +333,7 @@ public class EditorState extends BasicGameState {
         if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && this.wasLeftButtonDown) {
             if (mouseY < this.itemSize) {
                 if (index >= 0 && index < this.imageMenuItems.size()) {
-                    this.showMenu = false;
-                    Image image = this.imageMenuItems.get(index).getImage();
-                    if (image == this.train) {
-                        this.activeItem = Item.TRAIN;
-                    } else if (image == this.wall) {
-                        this.activeItem = Item.WALL;
-                    } else if (image == this.gate) {
-                        this.activeItem = Item.GATE;
-                    } else if (image == this.tree) {
-                        this.activeItem = Item.TREE;
-                    } else if (image == this.save) {
-                        if (!this.level.isValid()) {
-                            String message = "";
-                            if (this.level.findTrainPosition() == null
-                                    && this.level.findGatePosition() == null) {
-                                message = this.translator
-                                        .translate("Editor.Message.TrainAndGateMissing");
-                            } else if (this.level.findTrainPosition() == null) {
-                                message = this.translator.translate("Editor.Message.TrainMissing");
-                            } else if (this.level.findGatePosition() == null) {
-                                message = this.translator.translate("Editor.Message.GateMissing");
-                            }
-                            this.messageBox.showConfirm(message, new ActionListener() {
-
-                                @Override
-                                public void actionPerformed(ActionEvent arg0) {
-                                    EditorState.this.levelController.saveCurrentLevel();
-                                    game.enterState(Game.MENU_FOR_EDITOR_STATE);
-                                }
-                            }, new ActionListener() {
-
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    EditorState.this.messageBox.close();
-                                }
-                            });
-                        } else {
-                            this.levelController.saveCurrentLevel();
-                            game.enterState(Game.MENU_FOR_EDITOR_STATE);
-                        }
-                    }
+                    this.imageMenuItems.get(index).getListener().actionPerformed(null);
                 }
             }
         }
