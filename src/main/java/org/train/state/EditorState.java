@@ -51,7 +51,6 @@ public class EditorState extends BasicGameState {
     private Point fieldPosition;
     private Level level = null;
     // states
-    private boolean wasLeftButtonDown = false;
     private ResourceManager resourceManager;
 
     private LevelController levelController;
@@ -256,7 +255,6 @@ public class EditorState extends BasicGameState {
             } else {
                 this.updateEditor(gridPosition, input);
             }
-            this.wasLeftButtonDown = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
         }
         this.messageBox.update(container, game, delta);
     }
