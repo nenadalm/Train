@@ -16,4 +16,15 @@ public class ImageMenuItem extends MenuItem {
     public Image getImage() {
         return this.image;
     }
+
+    @Override
+    public int getWidth() {
+        return this.image.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return this.image.getHeight();
+    }
+
 }

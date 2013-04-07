@@ -3,15 +3,15 @@ package org.train.entity;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
-
-import org.train.other.ResourceManager;
 import org.train.factory.EffectFactory;
+import org.train.other.ResourceManager;
 
 public abstract class Child extends BoxModel {
 
     private Color color = Color.red;
     private Font font;
     private String text;
+    private float scale;
 
     public void setContainer(GameContainer container) {
         ResourceManager resourceManager = ResourceManager.getInstance();
@@ -47,6 +47,14 @@ public abstract class Child extends BoxModel {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 
     public abstract int getWidth();

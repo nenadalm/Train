@@ -17,6 +17,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
+import org.train.entity.FlowLayout;
 import org.train.entity.ImageMenuItem;
 import org.train.entity.Level;
 import org.train.entity.Level.Item;
@@ -158,7 +159,13 @@ public class EditorState extends BasicGameState {
                 }
             }
         }));
+        for (ImageMenuItem item : this.imageMenuItems) {
+            item.setScale(this.scale);
+        }
         this.topMenu = new Menu(this.imageMenuItems, container);
+        this.topMenu.setPaddingLeft((int) (this.train.getWidth() * this.scale));
+        this.topMenu.setBackgroundColor(new Color(0, 0, 0, 0));
+        this.topMenu.setLayout(new FlowLayout(container, this.topMenu));
     }
 
     @Override
@@ -173,10 +180,7 @@ public class EditorState extends BasicGameState {
 
         if (this.showMenu) {
             this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight() * this.scale);
-            int width = (int) (this.imageMenuItems.get(0).getImage().getWidth() * this.scale);
-            for (int i = 0; i < this.imageMenuItems.size(); i++) {
-                this.imageMenuItems.get(i).getImage().draw(width + i * width, 0, this.scale);
-            }
+            this.topMenu.render(container, game, g);
         } else {
             this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight()
                     * this.scale);
@@ -248,6 +252,7 @@ public class EditorState extends BasicGameState {
 
             if (this.showMenu) {
                 this.updateMenu(game, input);
+                this.topMenu.update(container, game, delta);
             } else {
                 this.updateEditor(gridPosition, input);
             }
@@ -332,13 +337,6 @@ public class EditorState extends BasicGameState {
             this.showActive = true;
         } else {
             this.showActive = false;
-        }
-        if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && this.wasLeftButtonDown) {
-            if (mouseY < this.itemSize) {
-                if (index >= 0 && index < this.imageMenuItems.size()) {
-                    this.imageMenuItems.get(index).getListener().actionPerformed(null);
-                }
-            }
         }
     }
 
