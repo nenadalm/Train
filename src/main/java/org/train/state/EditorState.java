@@ -1,11 +1,11 @@
 package org.train.state;
 
-import org.train.helper.LevelHelper;
-
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
@@ -16,14 +16,15 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import org.train.other.LevelController;
-import org.train.other.ResourceManager;
-import org.train.other.Translator;
 import org.train.app.Game;
+import org.train.entity.ImageMenuItem;
 import org.train.entity.Level;
 import org.train.entity.Level.Item;
 import org.train.entity.MessageBox;
+import org.train.helper.LevelHelper;
+import org.train.other.LevelController;
+import org.train.other.ResourceManager;
+import org.train.other.Translator;
 
 public class EditorState extends BasicGameState {
 
@@ -36,7 +37,7 @@ public class EditorState extends BasicGameState {
     private Image save;
     // menu images
     private Image itemMenu;
-    private Image menuItems[] = null;
+    private List<ImageMenuItem> imageMenuItems;
     // editor images
     private Image active;
     private Item activeItem;
@@ -84,13 +85,37 @@ public class EditorState extends BasicGameState {
         this.levelController = LevelController.getInstance();
         this.loadLevel(container);
 
-        this.menuItems = new Image[5];
+        this.imageMenuItems = new ArrayList<ImageMenuItem>();
+        this.imageMenuItems.add(new ImageMenuItem(this.train, new ActionListener() {
 
-        this.menuItems[0] = this.train;
-        this.menuItems[1] = this.gate;
-        this.menuItems[2] = this.tree;
-        this.menuItems[3] = this.wall;
-        this.menuItems[4] = this.save;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.gate, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.tree, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.wall, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.save, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        }));
     }
 
     @Override
@@ -105,9 +130,9 @@ public class EditorState extends BasicGameState {
 
         if (this.showMenu) {
             this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight() * this.scale);
-            int width = (int) (this.menuItems[0].getWidth() * this.scale);
-            for (int i = 0; i < this.menuItems.length; i++) {
-                this.menuItems[i].draw(width + i * width, 0, this.scale);
+            int width = (int) (this.imageMenuItems.get(0).getImage().getWidth() * this.scale);
+            for (int i = 0; i < this.imageMenuItems.size(); i++) {
+                this.imageMenuItems.get(i).getImage().draw(width + i * width, 0, this.scale);
             }
         } else {
             this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight()
@@ -260,16 +285,16 @@ public class EditorState extends BasicGameState {
     private void updateMenu(final StateBasedGame game, Input input) {
         int mouseY = input.getMouseY();
         int index = this.fieldPosition.x / this.itemSize - 1;
-        if (mouseY < this.itemSize && index >= 0 && index < this.menuItems.length) {
+        if (mouseY < this.itemSize && index >= 0 && index < this.imageMenuItems.size()) {
             this.showActive = true;
         } else {
             this.showActive = false;
         }
         if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && this.wasLeftButtonDown) {
             if (mouseY < this.itemSize) {
-                if (index >= 0 && index < this.menuItems.length) {
+                if (index >= 0 && index < this.imageMenuItems.size()) {
                     this.showMenu = false;
-                    Image image = this.menuItems[index];
+                    Image image = this.imageMenuItems.get(index).getImage();
                     if (image == this.train) {
                         this.activeItem = Item.TRAIN;
                     } else if (image == this.wall) {

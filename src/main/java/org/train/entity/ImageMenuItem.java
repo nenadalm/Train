@@ -1,0 +1,19 @@
+package org.train.entity;
+
+import java.awt.event.ActionListener;
+
+import org.newdawn.slick.Image;
+
+public class ImageMenuItem extends MenuItem {
+
+    private Image image;
+
+    public ImageMenuItem(Image image, ActionListener listener) {
+        super("", listener);
+        this.image = image;
+    }
+
+    public Image getImage() {
+        return this.image;
+    }
+}
