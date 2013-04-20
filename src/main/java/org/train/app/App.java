@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
 
 import org.newdawn.slick.AppGameContainer;
 import org.picocontainer.DefaultPicoContainer;
@@ -12,11 +13,12 @@ import org.picocontainer.behaviors.Caching;
 import org.train.entity.MessageBox;
 import org.train.factory.FontFactory;
 import org.train.helper.LevelHelper;
-import org.train.loader.ConfigurationLoaderFactory;
+import org.train.loader.ConfigurationXmlLoader;
 import org.train.loader.TranslationLoaderFactory;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
+import org.train.storer.ConfigurationXmlStorer;
 
 public class App {
 
@@ -83,7 +85,9 @@ public class App {
     public void initContainer() {
         this.container = new DefaultPicoContainer(new Caching());
 
-        this.container.addComponent(ConfigurationLoaderFactory.class);
+        String configFilePath = "config.xml";
+        this.container.addComponent(new ConfigurationXmlLoader(new File(configFilePath)));
+        this.container.addComponent(new ConfigurationXmlStorer(new File(configFilePath)));
         this.container.addComponent(Configuration.class);
         Configuration config = container.getComponent(Configuration.class);
 
