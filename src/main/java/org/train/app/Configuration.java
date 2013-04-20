@@ -3,50 +3,54 @@ package org.train.app;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.train.helper.XmlHelper;
+import org.train.loader.ConfigurationLoader;
+import org.train.loader.ConfigurationLoaderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Configuration {
 
+    private ConfigurationLoaderFactory configurationLoaderFactory;
     private Map<String, ConfigurationProperty> properties;
 
-    public Configuration() {
+    public Configuration(ConfigurationLoaderFactory configurationLoaderFactory) {
+        this.configurationLoaderFactory = configurationLoaderFactory;
         this.loadConfiguration();
     }
 
     private void loadConfiguration() {
-        try {
-            Document document = this.getDocument();
-            NodeList nodeList = document.getElementsByTagName("property");
-            this.properties = new HashMap<String, ConfigurationProperty>(nodeList.getLength());
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                String key = node.getAttributes().getNamedItem("name").getNodeValue();
-                ConfigurationProperty property = new ConfigurationProperty(node.getTextContent());
-                this.properties.put(key, property);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ConfigurationLoader configLoader = this.configurationLoaderFactory.getLoader();
+        this.properties = configLoader.load();
+        this.refillDefaultProperties();
     }
 
     public void saveChanges() {
         try {
-            Document document = this.getDocument();
-            NodeList nodeList = document.getElementsByTagName("property");
+            File file = new File("config.xml");
+            if (!file.exists()) {
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                Document document = docBuilder.newDocument();
+
+                Element configuration = document.createElement("configuration");
+                Element properties = document.createElement("properties");
+                configuration.appendChild(properties);
+                document.appendChild(configuration);
+                XmlHelper.saveDocument(document, "config.xml");
+            }
+            Document document = XmlHelper.getDocument(file);
+            NodeList properties = document.getElementsByTagName("property");
 
             for (String key : this.properties.keySet()) {
                 ConfigurationProperty property = this.properties.get(key);
                 if (property.isDirty()) {
-                    this.putIntoNodeList(nodeList, key, property);
+                    this.updateNodeList(document, properties, key, property);
                 }
             }
 
@@ -57,9 +61,10 @@ public class Configuration {
         }
     }
 
-    private void putIntoNodeList(NodeList nodeList, String configName,
+    private void updateNodeList(Document document, NodeList nodeList, String configName,
             ConfigurationProperty property) {
         int i = 0;
+        boolean updated = false;
         while (i < nodeList.getLength()) {
             if (nodeList.item(i).hasAttributes()
                     && nodeList.item(i).getAttributes().getNamedItem("name") != null) {
@@ -67,10 +72,18 @@ public class Configuration {
                 if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue()
                         .equals(configName)) {
                     nodeList.item(i).setTextContent(property.getValue());
+                    updated = true;
                     break;
                 }
             }
             i++;
+        }
+
+        if (!updated) {
+            Element newProperty = document.createElement("property");
+            newProperty.setAttribute("name", configName);
+            newProperty.setTextContent(property.getValue());
+            document.getElementsByTagName("properties").item(0).appendChild(newProperty);
         }
     }
 
@@ -83,30 +96,7 @@ public class Configuration {
         this.properties.get(configName).setValue(configValue);
     }
 
-    private Document getDocument() throws Exception {
-        File file = new File("config.xml");
-        if (!file.exists()) {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.newDocument();
-
-            Element configuration = document.createElement("configuration");
-            Element properties = document.createElement("properties");
-            configuration.appendChild(properties);
-            for (Entry<String, String> property : this.getDefaultProperties().entrySet()) {
-                Element prop = document.createElement("property");
-                prop.setAttribute("name", property.getKey());
-                prop.setTextContent(property.getValue());
-                properties.appendChild(prop);
-            }
-            document.appendChild(configuration);
-            XmlHelper.saveDocument(document, "config.xml");
-            return document;
-        }
-        return XmlHelper.getDocument(file);
-    }
-
-    private Map<String, String> getDefaultProperties() {
+    private void refillDefaultProperties() {
         HashMap<String, String> properties = new HashMap<String, String>(7);
         properties.put("language", "en");
         properties.put("width", "0");
@@ -118,31 +108,16 @@ public class Configuration {
         properties.put("contentPath", "content/");
         properties.put("levelsPath", "content/levels/");
         properties.put("graphicsPath", "content/graphics/");
-        return properties;
+
+        for (String key : properties.keySet()) {
+            if (!this.properties.containsKey(key)) {
+                this.properties.put(key, new ConfigurationProperty(properties.get(key)));
+            }
+        }
     }
 
     public String get(String configName) {
         ConfigurationProperty property = this.properties.get(configName);
-
-        if (property == null) {
-            try {
-                String propertyValue = this.getDefaultProperties().get(configName);
-                Document document = this.getDocument();
-                NodeList properties = document.getElementsByTagName("properties");
-
-                Element prop = document.createElement("property");
-                prop.setAttribute("name", configName);
-                prop.setTextContent(propertyValue);
-
-                properties.item(0).appendChild(prop);
-                XmlHelper.saveDocument(document, "config.xml");
-                this.loadConfiguration();
-                property = this.properties.get(configName);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         return property.getValue();
     }
 }

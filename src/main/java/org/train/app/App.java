@@ -12,6 +12,7 @@ import org.picocontainer.behaviors.Caching;
 import org.train.entity.MessageBox;
 import org.train.factory.FontFactory;
 import org.train.helper.LevelHelper;
+import org.train.loader.ConfigurationLoaderFactory;
 import org.train.loader.TranslationLoaderFactory;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
@@ -82,6 +83,7 @@ public class App {
     public void initContainer() {
         this.container = new DefaultPicoContainer(new Caching());
 
+        this.container.addComponent(ConfigurationLoaderFactory.class);
         this.container.addComponent(Configuration.class);
         Configuration config = container.getComponent(Configuration.class);
 
