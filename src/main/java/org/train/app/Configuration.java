@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList;
 
 public class Configuration {
 
-    private Map<String, Property> properties;
+    private Map<String, ConfigurationProperty> properties;
 
     public Configuration() {
         this.loadConfiguration();
@@ -26,11 +26,11 @@ public class Configuration {
         try {
             Document document = this.getDocument();
             NodeList nodeList = document.getElementsByTagName("property");
-            this.properties = new HashMap<String, Property>(nodeList.getLength());
+            this.properties = new HashMap<String, ConfigurationProperty>(nodeList.getLength());
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
                 String key = node.getAttributes().getNamedItem("name").getNodeValue();
-                Property property = new Property(node.getTextContent());
+                ConfigurationProperty property = new ConfigurationProperty(node.getTextContent());
                 this.properties.put(key, property);
             }
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class Configuration {
             NodeList nodeList = document.getElementsByTagName("property");
 
             for (String key : this.properties.keySet()) {
-                Property property = this.properties.get(key);
+                ConfigurationProperty property = this.properties.get(key);
                 if (property.isDirty()) {
                     this.putIntoNodeList(nodeList, key, property);
                 }
@@ -57,7 +57,8 @@ public class Configuration {
         }
     }
 
-    private void putIntoNodeList(NodeList nodeList, String configName, Property property) {
+    private void putIntoNodeList(NodeList nodeList, String configName,
+            ConfigurationProperty property) {
         int i = 0;
         while (i < nodeList.getLength()) {
             if (nodeList.item(i).hasAttributes()
@@ -75,7 +76,7 @@ public class Configuration {
 
     public void set(String configName, String configValue) {
         if (!this.properties.containsKey(configName)) {
-            this.properties.put(configName, new Property(configValue));
+            this.properties.put(configName, new ConfigurationProperty(configValue));
             return;
         }
 
@@ -121,7 +122,7 @@ public class Configuration {
     }
 
     public String get(String configName) {
-        Property property = this.properties.get(configName);
+        ConfigurationProperty property = this.properties.get(configName);
 
         if (property == null) {
             try {
@@ -143,29 +144,5 @@ public class Configuration {
         }
 
         return property.getValue();
-    }
-
-    private class Property {
-
-        private String value;
-        private boolean isDirty = false;
-
-        public Property(String value) {
-            this.value = value;
-            this.isDirty = true;
-        }
-
-        public String getValue() {
-            return this.value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-            this.isDirty = true;
-        }
-
-        public boolean isDirty() {
-            return this.isDirty;
-        }
     }
 }
