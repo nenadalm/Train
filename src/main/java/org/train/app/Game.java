@@ -1,17 +1,18 @@
 package org.train.app;
 
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.StateBasedGame;
+import org.picocontainer.DefaultPicoContainer;
+import org.picocontainer.PicoContainer;
 import org.train.other.LevelController;
-import org.train.other.Translator;
+import org.train.state.BasicGameState;
 import org.train.state.EditorState;
 import org.train.state.GameState;
 import org.train.state.MenuForEditorState;
 import org.train.state.MenuForGameState;
 import org.train.state.MenuState;
 import org.train.state.OptionsState;
-
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.StateBasedGame;
 
 public class Game extends StateBasedGame {
 
@@ -26,9 +27,15 @@ public class Game extends StateBasedGame {
 
     public static boolean isReinitializationRequried = false;
 
+    private PicoContainer container;
+
     public Game(String title) {
         super(title);
-        Translator.getInstance();
+        this.setupContainer();
+    }
+
+    private void setupContainer() {
+        this.container = new DefaultPicoContainer();
     }
 
     @Override
@@ -61,20 +68,29 @@ public class Game extends StateBasedGame {
     }
 
     private org.newdawn.slick.state.GameState createState(int id) {
+        BasicGameState gameState = null;
         switch (id) {
             case Game.MENU_STATE:
-                return new MenuState(Game.MENU_STATE);
+                gameState = new MenuState(Game.MENU_STATE);
+                break;
             case Game.GAME_STATE:
-                return new GameState(Game.GAME_STATE);
+                gameState = new GameState(Game.GAME_STATE);
+                break;
             case Game.EDITOR_STATE:
-                return new EditorState(Game.EDITOR_STATE);
+                gameState = new EditorState(Game.EDITOR_STATE);
+                break;
             case Game.OPTIONS_STATE:
-                return new OptionsState(Game.OPTIONS_STATE);
+                gameState = new OptionsState(Game.OPTIONS_STATE);
+                break;
             case Game.MENU_FOR_EDITOR_STATE:
-                return new MenuForEditorState(Game.MENU_FOR_EDITOR_STATE);
+                gameState = new MenuForEditorState(Game.MENU_FOR_EDITOR_STATE);
+                break;
             case Game.MENU_FOR_GAME_STATE:
-                return new MenuForGameState(Game.MENU_FOR_GAME_STATE);
+                gameState = new MenuForGameState(Game.MENU_FOR_GAME_STATE);
+                break;
         }
-        return null;
+        gameState.setContainer(this.container);
+
+        return gameState;
     }
 }
