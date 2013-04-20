@@ -7,7 +7,7 @@ Remake of  old DOS game [Vlak][3]
 
 Used technologies
 -----------------
-[JavaSE][1], [Slick2D][2]
+[JavaSE][1], [Slick2D][2], [Maven][4], [PicoContainer][5]
 
 Code conventions
 ----------------
@@ -48,3 +48,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 [2]: http://slick.cokeandcode.com/
 [3]: http://www.bestoldgames.net/eng/old-games/vlak.php
 [4]: http://maven.apache.org/
+[5]: http://picocontainer.codehaus.org/
