@@ -19,8 +19,6 @@ import org.train.entity.Level.Item;
 
 public class LevelController {
 
-    private static LevelController levelController = null;
-
     // loaded level
     private String currentLevelFileName;
     private String currentLevelPackageName;
@@ -32,18 +30,14 @@ public class LevelController {
     private LevelPackage[] levels;
     private byte progresses[];
     private Configuration config;
+    private ResourceManager resourceManager;
 
-    public static LevelController getInstance() {
-        if (LevelController.levelController == null) {
-            LevelController.levelController = new LevelController();
-        }
-        return LevelController.levelController;
-    }
-
-    private LevelController() {
-        this.config = Configuration.getInstance();
+    public LevelController(Configuration config, ResourceManager resourceManager) {
+        this.resourceManager = resourceManager;
+        this.config = config;
         this.loadLevels();
-        this.level = new Level(0, 0);
+        this.level = new Level(0, 0, Integer.parseInt(this.config.get("refreshSpeed")),
+                resourceManager);
     }
 
     /**
@@ -356,7 +350,8 @@ public class LevelController {
             int width, int height) {
         String levelFileName = this.getLevelFileName(levelIndex, levelName);
         String packageFileName = this.getPackageFileName(packageIndex, packageName);
-        Level level = new Level(width, height);
+        Level level = new Level(width, height, Integer.parseInt(this.config.get("refreshSpeed")),
+                this.resourceManager);
         this.saveLevel(level.toArray(), levelFileName, packageFileName);
     }
 

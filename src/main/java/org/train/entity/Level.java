@@ -16,9 +16,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
-
 import org.train.other.ResourceManager;
-import org.train.app.Configuration;
 
 public class Level extends Entity implements Cloneable {
 
@@ -39,10 +37,9 @@ public class Level extends Entity implements Cloneable {
     private boolean playable = false;
     private Queue<Integer> keys = new LinkedList<Integer>();
 
-    public Level(int width, int height) {
-        Configuration config = Configuration.getInstance();
-        this.interval = Integer.valueOf(config.get("refreshSpeed"));
-        this.resourceManager = ResourceManager.getInstance();
+    public Level(int width, int height, int refreshSpeed, ResourceManager resourceManager) {
+        this.interval = refreshSpeed;
+        this.resourceManager = resourceManager;
         this.levelInit(width, height);
         this.train = new Train();
         this.trucks = new ArrayList<Truck>();
@@ -97,7 +94,8 @@ public class Level extends Entity implements Cloneable {
 
     @Override
     public Level clone() {
-        Level level = new Level(this.getWidth(), this.getHeight());
+        Level level = new Level(this.getWidth(), this.getHeight(), this.interval,
+                this.resourceManager);
         Item[][] items = new Item[this.getWidth()][];
         for (int i = 0; i < this.getWidth(); i++) {
             items[i] = (Item[]) Array.newInstance(this.level[i].getClass().getComponentType(),

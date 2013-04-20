@@ -35,7 +35,7 @@ public class Game extends StateBasedGame {
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException {
-        LevelController levelController = LevelController.getInstance();
+        LevelController levelController = this.container.getComponent(LevelController.class);
         levelController.repairPackagesNames();
         levelController.repairLevelsNames();
         MenuState menuState = new MenuState(Game.MENU_STATE);

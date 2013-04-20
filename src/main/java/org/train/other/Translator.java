@@ -14,9 +14,11 @@ public class Translator {
 
     private String languageCode;
     private Map<String, Map<String, String>> translations;
+    private Configuration config;
 
-    public Translator() {
-        this.languageCode = Configuration.getInstance().get("language");
+    public Translator(Configuration config) {
+        this.config = config;
+        this.languageCode = this.config.get("language");
         this.init();
     };
 
@@ -30,7 +32,6 @@ public class Translator {
     }
 
     private void loadTranslations(String fileName) throws Exception {
-        Configuration config = Configuration.getInstance();
         Map<String, String> translation = new HashMap<String, String>();
         File file = new File(config.get("contentPath") + "translations/" + this.languageCode + "/"
                 + fileName + ".xml");

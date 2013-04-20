@@ -51,10 +51,10 @@ public class OptionsState extends BasicGameState {
 
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
-        FontFactory fonts = FontFactory.getInstance();
+        FontFactory fonts = this.container.getComponent(FontFactory.class);
         EffectFactory effects = EffectFactory.getInstance();
         translator = this.container.getComponent(Translator.class);
-        configuration = Configuration.getInstance();
+        configuration = this.container.getComponent(Configuration.class);
         width = container.getWidth();
         height = container.getHeight();
         scale = (int) (Float.parseFloat(configuration.get("scale")) * 100);
@@ -366,7 +366,8 @@ public class OptionsState extends BasicGameState {
     }
 
     private void setScaleRectangle() {
-        size = LevelController.getInstance().getOptimalLevelDimension(width, height, scale / 100f);
+        size = this.container.getComponent(LevelController.class).getOptimalLevelDimension(width,
+                height, scale / 100f);
         sizeText = String.format("[%1$02d , %2$02d]", size.width, size.height);
         scaleText = String.format("%1$d.%2$02dx", scale / 100, scale % 100);
         wallPreview = wall.getScaledCopy(scale / 512f);

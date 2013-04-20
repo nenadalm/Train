@@ -1,7 +1,5 @@
 package org.train.other;
 
-import org.train.helper.XmlHelper;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,30 +8,30 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.Effect;
+import org.train.app.Configuration;
+import org.train.factory.FontFactory;
+import org.train.helper.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.train.app.Configuration;
-import org.train.factory.FontFactory;
-
 public class ResourceManager {
 
-    private static ResourceManager resourceManager;
     private Map<String, String> fonts;
     private FontFactory fontFactory;
     private Map<String, Image> images;
+    private Configuration config;
 
-    private ResourceManager() {
+    public ResourceManager(Configuration config, FontFactory fontFactory) {
+        this.config = config;
         this.images = new HashMap<String, Image>();
-        this.fontFactory = FontFactory.getInstance();
+        this.fontFactory = fontFactory;
         this.fonts = new HashMap<String, String>();
         this.loadResources();
     }
 
     private void loadResources() {
-        Configuration config = Configuration.getInstance();
         try {
             Document document = null;
             document = XmlHelper.getDocument(new File(config.get("contentPath") + "resources.xml"));
@@ -56,13 +54,6 @@ public class ResourceManager {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    public static ResourceManager getInstance() {
-        if (ResourceManager.resourceManager == null) {
-            ResourceManager.resourceManager = new ResourceManager();
-        }
-        return ResourceManager.resourceManager;
     }
 
     public Font getFont(String type, int size, Effect effect) throws SlickException {

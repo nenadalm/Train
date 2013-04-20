@@ -1,7 +1,5 @@
 package org.train.app;
 
-import org.train.helper.XmlHelper;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +8,7 @@ import java.util.Map.Entry;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.train.helper.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -17,10 +16,9 @@ import org.w3c.dom.NodeList;
 
 public class Configuration {
 
-    private static Configuration configuration;
     private Map<String, Property> properties;
 
-    private Configuration() {
+    public Configuration() {
         this.loadConfiguration();
     }
 
@@ -145,14 +143,6 @@ public class Configuration {
         }
 
         return property.getValue();
-    }
-
-    public static Configuration getInstance() {
-        if (Configuration.configuration == null) {
-            Configuration.configuration = new Configuration();
-        }
-
-        return Configuration.configuration;
     }
 
     private class Property {

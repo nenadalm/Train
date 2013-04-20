@@ -31,9 +31,9 @@ public class MessageBox extends Entity {
     private Color textColor = Color.red;
     private Color buttonsColor = Color.blue;
 
-    public MessageBox(GameContainer container, Translator translator) {
+    public MessageBox(GameContainer container, Translator translator,
+            ResourceManager resourceManager) {
         this.addComponent(new RectangleComponent());
-        ResourceManager resourceManager = ResourceManager.getInstance();
         this.buttons = new Rectangle[2];
         this.buttonsText = new String[2];
         this.buttonsText[0] = translator.translate("yes");

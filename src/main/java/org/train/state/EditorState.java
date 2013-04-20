@@ -62,11 +62,11 @@ public class EditorState extends BasicGameState {
 
     public EditorState(int stateId) {
         this.stateId = stateId;
-        this.resourceManager = ResourceManager.getInstance();
     }
 
     @Override
     public void init(GameContainer container, final StateBasedGame game) throws SlickException {
+        this.resourceManager = this.container.getComponent(ResourceManager.class);
         this.translator = this.container.getComponent(Translator.class);
         this.messageBox = this.container.getComponent(MessageBox.class);
         this.messageBox.setBackgroundColor(Color.lightGray);
@@ -83,7 +83,7 @@ public class EditorState extends BasicGameState {
         this.activeItem = Item.WALL;
         this.itemSize = this.active.getWidth();
 
-        this.levelController = LevelController.getInstance();
+        this.levelController = this.container.getComponent(LevelController.class);
         this.loadLevel(container);
 
         this.imageMenuItems = new ArrayList<ImageMenuItem>();
@@ -160,7 +160,7 @@ public class EditorState extends BasicGameState {
         for (ImageMenuItem item : this.imageMenuItems) {
             item.setScale(this.scale);
         }
-        this.topMenu = new Menu(this.imageMenuItems, container);
+        this.topMenu = new Menu(this.imageMenuItems, container, this.resourceManager);
         this.topMenu.setPaddingLeft((int) (this.train.getWidth() * this.scale));
         this.topMenu.setBackgroundColor(new Color(0, 0, 0, 0));
         this.topMenu.setLayout(new FlowLayout(container, this.topMenu));
@@ -262,7 +262,8 @@ public class EditorState extends BasicGameState {
         this.level = this.levelController.getCurrentLevel();
         this.trainPosition = this.level.findTrainPosition();
         this.gatePosition = this.level.findGatePosition();
-        float scale = LevelHelper.computeScale(container, this.level.getOriginalImageSize(),
+        LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
+        float scale = levelHelper.computeScale(container, this.level.getOriginalImageSize(),
                 new Dimension(this.level.getWidth(), this.level.getHeight()));
         this.level.setScale(scale);
         this.itemSize *= scale;

@@ -43,7 +43,7 @@ public class MenuForGameState extends BasicGameState {
 
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
-        FontFactory fonts = FontFactory.getInstance();
+        FontFactory fonts = this.container.getComponent(FontFactory.class);
         EffectFactory effects = EffectFactory.getInstance();
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         GradientEffect gradientEffect = effects.getGradientEffect(java.awt.Color.WHITE,
@@ -55,7 +55,7 @@ public class MenuForGameState extends BasicGameState {
         ubuntuMedium = fonts.getFont("ubuntu", width / 26, whiteEffect);
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, gradientEffect);
 
-        levelController = LevelController.getInstance();
+        levelController = this.container.getComponent(LevelController.class);
         levelPackages = levelController.getLevels();
         progresses = levelController.getProgresses();
 

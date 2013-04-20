@@ -19,6 +19,7 @@ import org.train.entity.MenuItem;
 import org.train.entity.MessageBox;
 import org.train.helper.LevelHelper;
 import org.train.other.LevelController;
+import org.train.other.ResourceManager;
 import org.train.other.Translator;
 
 public class GameState extends BasicGameState {
@@ -36,12 +37,12 @@ public class GameState extends BasicGameState {
 
     public GameState(int stateId) {
         this.stateId = stateId;
-        this.levelController = LevelController.getInstance();
     }
 
     @Override
     public void init(final GameContainer container, final StateBasedGame game)
             throws SlickException {
+        this.levelController = this.container.getComponent(LevelController.class);
         this.translator = this.container.getComponent(Translator.class);
         this.messageBox = this.container.getComponent(MessageBox.class);
         this.messageBox.setBackgroundColor(Color.lightGray);
@@ -94,7 +95,8 @@ public class GameState extends BasicGameState {
         for (MenuItem item : menuItems) {
             item.setMargin(30);
         }
-        this.menu = new Menu(menuItems, container);
+        this.menu = new Menu(menuItems, container,
+                this.container.getComponent(ResourceManager.class));
         this.menu.setBackgroundColor(Color.lightGray);
     }
 
@@ -134,7 +136,8 @@ public class GameState extends BasicGameState {
         for (MenuItem item : gameOverMenuItems) {
             item.setMargin(30);
         }
-        this.gameOverMenu = new Menu(gameOverMenuItems, container);
+        this.gameOverMenu = new Menu(gameOverMenuItems, container,
+                this.container.getComponent(ResourceManager.class));
         this.gameOverMenu.setBackgroundColor(Color.lightGray);
     }
 
@@ -143,7 +146,8 @@ public class GameState extends BasicGameState {
             this.wasFinished = false;
             this.level = this.levelController.getCurrentLevel();
             int itemSize = this.level.getOriginalImageSize();
-            float scale = LevelHelper.computeScale(container, this.level.getOriginalImageSize(),
+            LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
+            float scale = levelHelper.computeScale(container, this.level.getOriginalImageSize(),
                     new Dimension(this.level.getWidth(), this.level.getHeight()));
             this.level.setScale(scale);
             int width = this.level.getWidth() * (int) (itemSize * scale);

@@ -3,13 +3,17 @@ package org.train.helper;
 import java.awt.Dimension;
 
 import org.newdawn.slick.GameContainer;
-
 import org.train.app.Configuration;
 
 public class LevelHelper {
 
-    public static float computeScale(GameContainer container, int originalImageSize, Dimension level) {
-        Configuration config = Configuration.getInstance();
+    Configuration config;
+
+    public LevelHelper(Configuration config) {
+        this.config = config;
+    }
+
+    public float computeScale(GameContainer container, int originalImageSize, Dimension level) {
         int itemSize = originalImageSize;
         float optimalScale = 50 / (float) itemSize * Float.valueOf(config.get("scale"));
         float scale = optimalScale;

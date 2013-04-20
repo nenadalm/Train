@@ -11,6 +11,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.component.RectangleComponent;
+import org.train.other.ResourceManager;
 
 public class Menu extends Container {
     int active = 0;
@@ -22,10 +23,11 @@ public class Menu extends Container {
         return this.items;
     }
 
-    public Menu(List<? extends MenuItem> items, GameContainer container) {
+    public Menu(List<? extends MenuItem> items, GameContainer container,
+            ResourceManager resourceManager) {
         this.addComponent(new RectangleComponent());
         for (MenuItem item : items) {
-            item.setContainer(container);
+            item.setContainer(container, resourceManager);
         }
         items.get(this.active).setColor(Color.blue);
         this.items = items;

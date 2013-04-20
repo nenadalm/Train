@@ -18,6 +18,7 @@ import org.train.entity.Menu;
 import org.train.entity.MenuItem;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.other.ResourceManager;
 import org.train.other.Translator;
 
 public class MenuState extends BasicGameState {
@@ -63,9 +64,10 @@ public class MenuState extends BasicGameState {
         for (int i = 0; i < menuItems.size() - 1; i++) {
             menuItems.get(i).setMarginBottom(container.getHeight() / 14);
         }
-        this.menu = new Menu(menuItems, container);
+        this.menu = new Menu(menuItems, container,
+                this.container.getComponent(ResourceManager.class));
 
-        FontFactory fonts = FontFactory.getInstance();
+        FontFactory fonts = this.container.getComponent(FontFactory.class);
         EffectFactory effects = EffectFactory.getInstance();
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         width = container.getWidth();
