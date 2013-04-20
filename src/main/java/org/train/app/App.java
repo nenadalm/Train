@@ -86,8 +86,9 @@ public class App {
         Configuration config = container.getComponent(Configuration.class);
 
         String translationsPath = config.get("contentPath") + "translations/";
-        this.container.addComponent(new Translator(new TranslationLoaderFactory(translationsPath),
-                config.get("language")));
+        this.container.addComponent(new TranslationLoaderFactory(translationsPath));
+        this.container.addComponent(new Translator(this.container
+                .getComponent(TranslationLoaderFactory.class), config.get("language")));
 
         this.container.addComponent(new Game("Train", this.container));
         this.container.addComponent(AppGameContainer.class);
