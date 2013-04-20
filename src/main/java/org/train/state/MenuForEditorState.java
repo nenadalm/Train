@@ -14,17 +14,15 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.gui.TextField;
-import org.train.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import org.train.other.InteractiveLabel;
-import org.train.other.LevelController;
-import org.train.other.LevelPackage;
-import org.train.other.Translator;
 import org.train.app.Configuration;
 import org.train.app.Game;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.other.InteractiveLabel;
+import org.train.other.LevelController;
+import org.train.other.LevelPackage;
+import org.train.other.Translator;
 
 public class MenuForEditorState extends BasicGameState {
 
@@ -67,7 +65,7 @@ public class MenuForEditorState extends BasicGameState {
         float scale = Float.parseFloat(configuration.get("scale"));
         String graphicsPath = configuration.get("graphicsPath");
 
-        translator = Translator.getInstance();
+        translator = this.container.getComponent(Translator.class);
         width = container.getWidth();
         height = container.getHeight();
 

@@ -4,7 +4,6 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.picocontainer.DefaultPicoContainer;
-import org.picocontainer.PicoContainer;
 import org.train.other.LevelController;
 import org.train.state.BasicGameState;
 import org.train.state.EditorState;
@@ -27,15 +26,11 @@ public class Game extends StateBasedGame {
 
     public static boolean isReinitializationRequried = false;
 
-    private PicoContainer container;
+    private DefaultPicoContainer container;
 
-    public Game(String title) {
+    public Game(String title, DefaultPicoContainer container) {
         super(title);
-        this.setupContainer();
-    }
-
-    private void setupContainer() {
-        this.container = new DefaultPicoContainer();
+        this.container = container;
     }
 
     @Override
@@ -43,7 +38,9 @@ public class Game extends StateBasedGame {
         LevelController levelController = LevelController.getInstance();
         levelController.repairPackagesNames();
         levelController.repairLevelsNames();
-        this.addState(new MenuState(Game.MENU_STATE));
+        MenuState menuState = new MenuState(Game.MENU_STATE);
+        menuState.setContainer(this.container);
+        this.addState(menuState);
     }
 
     @Override
@@ -89,7 +86,9 @@ public class Game extends StateBasedGame {
                 gameState = new MenuForGameState(Game.MENU_FOR_GAME_STATE);
                 break;
         }
-        gameState.setContainer(this.container);
+        if (gameState != null) {
+            gameState.setContainer(this.container);
+        }
 
         return gameState;
     }

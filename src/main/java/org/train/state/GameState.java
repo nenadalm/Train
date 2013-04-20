@@ -1,7 +1,5 @@
 package org.train.state;
 
-import org.train.helper.LevelHelper;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,16 +11,15 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.train.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import org.train.other.LevelController;
-import org.train.other.Translator;
 import org.train.app.Game;
 import org.train.entity.Level;
 import org.train.entity.Menu;
 import org.train.entity.MenuItem;
 import org.train.entity.MessageBox;
+import org.train.helper.LevelHelper;
+import org.train.other.LevelController;
+import org.train.other.Translator;
 
 public class GameState extends BasicGameState {
 
@@ -39,14 +36,14 @@ public class GameState extends BasicGameState {
 
     public GameState(int stateId) {
         this.stateId = stateId;
-        this.translator = Translator.getInstance();
         this.levelController = LevelController.getInstance();
     }
 
     @Override
     public void init(final GameContainer container, final StateBasedGame game)
             throws SlickException {
-        this.messageBox = new MessageBox(container);
+        this.translator = this.container.getComponent(Translator.class);
+        this.messageBox = this.container.getComponent(MessageBox.class);
         this.messageBox.setBackgroundColor(Color.lightGray);
         this.initMenuItems(container, game);
         this.initGameOverMenuItems(container, game);

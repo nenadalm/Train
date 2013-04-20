@@ -12,16 +12,14 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.GradientEffect;
-import org.train.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
+import org.train.app.Game;
+import org.train.factory.EffectFactory;
+import org.train.factory.FontFactory;
 import org.train.other.InteractiveLabel;
 import org.train.other.LevelController;
 import org.train.other.LevelPackage;
 import org.train.other.Translator;
-import org.train.app.Game;
-import org.train.factory.EffectFactory;
-import org.train.factory.FontFactory;
 
 public class MenuForGameState extends BasicGameState {
 
@@ -50,7 +48,7 @@ public class MenuForGameState extends BasicGameState {
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         GradientEffect gradientEffect = effects.getGradientEffect(java.awt.Color.WHITE,
                 java.awt.Color.GRAY, 0.5f);
-        translator = Translator.getInstance();
+        translator = this.container.getComponent(Translator.class);
         width = container.getWidth();
         height = container.getHeight();
 

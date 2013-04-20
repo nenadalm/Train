@@ -5,13 +5,22 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 import org.newdawn.slick.AppGameContainer;
+import org.picocontainer.DefaultPicoContainer;
+import org.picocontainer.PicoContainer;
+import org.picocontainer.behaviors.Caching;
+import org.train.entity.MessageBox;
+import org.train.other.Translator;
 
 public class App {
+
+    private DefaultPicoContainer container;
 
     /**
      * @param args
      */
     public static void main(String[] args) {
+        App app = new App();
+        app.initContainer();
         try {
             Configuration configuration = Configuration.getInstance();
             GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -40,14 +49,27 @@ public class App {
                 height = actual.getHeight();
             }
 
-            AppGameContainer container = new AppGameContainer(new Game("Train"));
-            container.setShowFPS(false);
-            container.setTargetFrameRate(60);
-            container.setDisplayMode(width, height, isFullscreen);
-            container.start();
+            PicoContainer container = app.getContainer();
+            AppGameContainer gameContainer = container.getComponent(AppGameContainer.class);
+            gameContainer.setShowFPS(false);
+            gameContainer.setTargetFrameRate(60);
+            gameContainer.setDisplayMode(width, height, isFullscreen);
+            gameContainer.start();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public PicoContainer getContainer() {
+        return this.container;
+    }
+
+    public void initContainer() {
+        this.container = new DefaultPicoContainer(new Caching());
+        this.container.addComponent(new Game("Train", this.container));
+        this.container.addComponent(AppGameContainer.class);
+        this.container.addComponent(Translator.class);
+        this.container.addComponent(MessageBox.class);
     }
 }

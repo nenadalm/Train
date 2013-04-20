@@ -14,7 +14,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.train.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.FlowLayout;
@@ -68,8 +67,8 @@ public class EditorState extends BasicGameState {
 
     @Override
     public void init(GameContainer container, final StateBasedGame game) throws SlickException {
-        this.translator = Translator.getInstance();
-        this.messageBox = new MessageBox(container);
+        this.translator = this.container.getComponent(Translator.class);
+        this.messageBox = this.container.getComponent(MessageBox.class);
         this.messageBox.setBackgroundColor(Color.lightGray);
         this.fieldPosition = new Point();
 

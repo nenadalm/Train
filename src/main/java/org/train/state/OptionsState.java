@@ -20,15 +20,13 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
-import org.train.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import org.train.other.LevelController;
-import org.train.other.Translator;
 import org.train.app.Configuration;
 import org.train.app.Game;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.other.LevelController;
+import org.train.other.Translator;
 
 public class OptionsState extends BasicGameState {
 
@@ -55,7 +53,7 @@ public class OptionsState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = FontFactory.getInstance();
         EffectFactory effects = EffectFactory.getInstance();
-        translator = Translator.getInstance();
+        translator = this.container.getComponent(Translator.class);
         configuration = Configuration.getInstance();
         width = container.getWidth();
         height = container.getHeight();

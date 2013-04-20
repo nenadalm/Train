@@ -16,40 +16,33 @@ public class TranslatorTest {
 
     @Test
     public void testGetInstanceNotNull() {
-        Translator instance1 = Translator.getInstance();
+        Translator instance1 = new Translator();
         Assert.assertNotNull(instance1);
     }
 
     @Test
-    public void testGetInstanceSame() {
-        Translator instance1 = Translator.getInstance();
-        Translator instance2 = Translator.getInstance();
-        Assert.assertSame(instance1, instance2);
-    }
-
-    @Test
     public void testTranslateStringNotExist() {
-        Translator translator = Translator.getInstance();
+        Translator translator = new Translator();
         Assert.assertEquals("Test.TranslationNotExist",
                 translator.translate("Test.TranslationNotExist"));
     }
 
     @Test
     public void testTranslateStringExist() {
-        Translator translator = Translator.getInstance();
+        Translator translator = new Translator();
         Assert.assertEquals("Trans1", translator.translate("Test.Translation1"));
     }
 
     @Test
     public void testTranslateStringSpecificExist() {
-        Translator translator = Translator.getInstance();
+        Translator translator = new Translator();
         Assert.assertEquals("TransSpecific",
                 translator.translate("Test.TranslationSpecific", "specific"));
     }
 
     @Test
     public void testTranslateSpecificStringNotExis() {
-        Translator translator = Translator.getInstance();
+        Translator translator = new Translator();
         Assert.assertEquals("Test.TranslationSpecificNotExist",
                 translator.translate("Test.TranslationSpecificNotExist", "specific"));
     }

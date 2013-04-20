@@ -12,15 +12,13 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
-import org.train.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import org.train.other.Translator;
 import org.train.app.Game;
 import org.train.entity.Menu;
 import org.train.entity.MenuItem;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.other.Translator;
 
 public class MenuState extends BasicGameState {
 
@@ -36,7 +34,7 @@ public class MenuState extends BasicGameState {
     @Override
     public void init(final GameContainer container, final StateBasedGame game)
             throws SlickException {
-        Translator translator = Translator.getInstance();
+        Translator translator = this.container.getComponent(Translator.class);
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
         menuItems.add(new MenuItem(translator.translate("Menu.StartGame"), new ActionListener() {
             @Override

@@ -1,24 +1,21 @@
 package org.train.other;
 
-import org.train.helper.XmlHelper;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.train.app.Configuration;
+import org.train.helper.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import org.train.app.Configuration;
-
 public class Translator {
 
-    private static Translator translator;
     private String languageCode;
     private Map<String, Map<String, String>> translations;
 
-    private Translator() {
+    public Translator() {
         this.languageCode = Configuration.getInstance().get("language");
         this.init();
     };
@@ -50,14 +47,6 @@ public class Translator {
         }
 
         this.translations.put(fileName, translation);
-    }
-
-    public static Translator getInstance() {
-        if (Translator.translator == null) {
-            Translator.translator = new Translator();
-        }
-
-        return Translator.translator;
     }
 
     public String getLanguageCode() {

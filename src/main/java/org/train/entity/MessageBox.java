@@ -12,11 +12,9 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
-
+import org.train.component.RectangleComponent;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
-
-import org.train.component.RectangleComponent;
 
 public class MessageBox extends Entity {
     private String text;
@@ -33,10 +31,9 @@ public class MessageBox extends Entity {
     private Color textColor = Color.red;
     private Color buttonsColor = Color.blue;
 
-    public MessageBox(GameContainer container) {
+    public MessageBox(GameContainer container, Translator translator) {
         this.addComponent(new RectangleComponent());
         ResourceManager resourceManager = ResourceManager.getInstance();
-        Translator translator = Translator.getInstance();
         this.buttons = new Rectangle[2];
         this.buttonsText = new String[2];
         this.buttonsText[0] = translator.translate("yes");
