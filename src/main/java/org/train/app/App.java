@@ -12,6 +12,7 @@ import org.picocontainer.behaviors.Caching;
 import org.train.entity.MessageBox;
 import org.train.factory.FontFactory;
 import org.train.helper.LevelHelper;
+import org.train.loader.TranslationLoaderFactory;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
@@ -80,11 +81,17 @@ public class App {
 
     public void initContainer() {
         this.container = new DefaultPicoContainer(new Caching());
+
+        this.container.addComponent(Configuration.class);
+        Configuration config = container.getComponent(Configuration.class);
+
+        String translationsPath = config.get("contentPath") + "translations/";
+        this.container.addComponent(new Translator(new TranslationLoaderFactory(translationsPath),
+                config.get("language")));
+
         this.container.addComponent(new Game("Train", this.container));
         this.container.addComponent(AppGameContainer.class);
-        this.container.addComponent(Translator.class);
         this.container.addComponent(MessageBox.class);
-        this.container.addComponent(Configuration.class);
         this.container.addComponent(LevelController.class);
         this.container.addComponent(ResourceManager.class);
         this.container.addComponent(FontFactory.class);

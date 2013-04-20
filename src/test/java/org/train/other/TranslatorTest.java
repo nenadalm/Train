@@ -2,17 +2,16 @@ package org.train.other;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.train.app.Configuration;
+import org.train.loader.TranslationLoaderFactory;
 
 public class TranslatorTest {
 
     private Translator translator;
 
     public TranslatorTest() {
-        Configuration config = new Configuration();
-        config.set("contentPath", "testingContent/");
-        config.set("language", "en");
-        this.translator = new Translator(config);
+        TranslationLoaderFactory factory = new TranslationLoaderFactory(
+                "testingContent/translations/");
+        this.translator = new Translator(factory, "en");
     }
 
     @Test

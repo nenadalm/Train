@@ -1,53 +1,32 @@
 package org.train.other;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.train.app.Configuration;
-import org.train.helper.XmlHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.train.loader.TranslationLoader;
+import org.train.loader.TranslationLoaderFactory;
 
 public class Translator {
 
     private String languageCode;
     private Map<String, Map<String, String>> translations;
-    private Configuration config;
+    private TranslationLoaderFactory translationLoaderFactory;
 
-    public Translator(Configuration config) {
-        this.config = config;
-        this.languageCode = this.config.get("language");
+    public Translator(TranslationLoaderFactory translationLoaderFactory, String languageCode) {
+        this.translationLoaderFactory = translationLoaderFactory;
+        this.languageCode = languageCode;
         this.init();
     };
 
     private void init() {
         this.translations = new HashMap<String, Map<String, String>>();
-        try {
-            this.loadTranslations("global");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.loadTranslations("global");
     }
 
-    private void loadTranslations(String fileName) throws Exception {
-        Map<String, String> translation = new HashMap<String, String>();
-        File file = new File(config.get("contentPath") + "translations/" + this.languageCode + "/"
-                + fileName + ".xml");
-
-        Document document = XmlHelper.getDocument(file);
-
-        NodeList nodes = document.getElementsByTagName("trans-unit");
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Element transUnit = (Element) nodes.item(i);
-            String key = transUnit.getElementsByTagName("source").item(0).getTextContent();
-            String value = transUnit.getElementsByTagName("target").item(0).getTextContent();
-            translation.put(key, value);
-        }
-
-        this.translations.put(fileName, translation);
+    private void loadTranslations(String scope) {
+        TranslationLoader translationLoader = this.translationLoaderFactory.getLoader(scope,
+                this.languageCode);
+        this.translations.put(scope, translationLoader.load());
     }
 
     public String getLanguageCode() {
@@ -63,17 +42,13 @@ public class Translator {
         return this.translate(text, "global");
     }
 
-    public String translate(String text, String fileName) {
-        if (!this.translations.containsKey(fileName)) {
-            try {
-                this.loadTranslations(fileName);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+    public String translate(String text, String scope) {
+        if (!this.translations.containsKey(scope)) {
+            this.loadTranslations(scope);
         }
 
-        if (this.translations.get(fileName).containsKey(text)) {
-            return this.translations.get(fileName).get(text);
+        if (this.translations.get(scope).containsKey(text)) {
+            return this.translations.get(scope).get(text);
         }
 
         return text;
