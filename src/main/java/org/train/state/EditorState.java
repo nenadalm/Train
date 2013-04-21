@@ -29,6 +29,7 @@ import org.train.other.ResourceManager;
 import org.train.other.Translator;
 import org.train.state.listener.editor.GateSelectedListener;
 import org.train.state.listener.editor.SaveSelectedListener;
+import org.train.state.listener.editor.TestSelectedListener;
 import org.train.state.listener.editor.TrainSelectedListener;
 import org.train.state.listener.editor.TreeSelectedListener;
 import org.train.state.listener.editor.WallSelectedListener;
@@ -42,6 +43,7 @@ public class EditorState extends BasicGameState {
     private Image tree;
     private Image wall;
     private Image save;
+    private Image test;
     // menu images
     private Image itemMenu;
     private Menu topMenu;
@@ -82,6 +84,7 @@ public class EditorState extends BasicGameState {
         this.tree = this.resourceManager.getImage("tree");
         this.wall = this.resourceManager.getImage("wall");
         this.save = this.resourceManager.getImage("save");
+        this.test = this.resourceManager.getImage("try");
 
         this.itemMenu = this.resourceManager.getImage("itemMenu");
         this.active = this.resourceManager.getImage("active");
@@ -294,5 +297,6 @@ public class EditorState extends BasicGameState {
         this.imageMenuItems.add(new ImageMenuItem(this.wall, new WallSelectedListener(this)));
         this.imageMenuItems.add(new ImageMenuItem(this.save, new SaveSelectedListener(this, level,
                 this.levelController, this.translator, this.messageBox, game)));
+        this.imageMenuItems.add(new ImageMenuItem(this.test, new TestSelectedListener(this)));
     }
 }
