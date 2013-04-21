@@ -27,6 +27,11 @@ import org.train.helper.LevelHelper;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
+import org.train.state.listener.editor.GateSelectedListener;
+import org.train.state.listener.editor.SaveSelectedListener;
+import org.train.state.listener.editor.TrainSelectedListener;
+import org.train.state.listener.editor.TreeSelectedListener;
+import org.train.state.listener.editor.WallSelectedListener;
 
 public class EditorState extends BasicGameState {
 
@@ -274,76 +279,20 @@ public class EditorState extends BasicGameState {
         return this.stateId;
     }
 
+    public Menu getTopMenu() {
+        return this.topMenu;
+    }
+
+    public void setActiveItem(Item item) {
+        this.activeItem = item;
+    }
+
     private void initTopMenuListeners(final StateBasedGame game) {
-        this.imageMenuItems.add(new ImageMenuItem(this.train, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.topMenu.close();
-                EditorState.this.activeItem = Item.TRAIN;
-            }
-        }));
-        this.imageMenuItems.add(new ImageMenuItem(this.gate, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.topMenu.close();
-                EditorState.this.activeItem = Item.GATE;
-            }
-        }));
-        this.imageMenuItems.add(new ImageMenuItem(this.tree, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.topMenu.close();
-                EditorState.this.activeItem = Item.TREE;
-            }
-        }));
-        this.imageMenuItems.add(new ImageMenuItem(this.wall, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.topMenu.close();
-                EditorState.this.activeItem = Item.WALL;
-            }
-        }));
-        this.imageMenuItems.add(new ImageMenuItem(this.save, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.topMenu.close();
-                if (!EditorState.this.level.isValid()) {
-                    String message = "";
-                    if (EditorState.this.level.findTrainPosition() == null
-                            && EditorState.this.level.findGatePosition() == null) {
-                        message = EditorState.this.translator
-                                .translate("Editor.Message.TrainAndGateMissing");
-                    } else if (EditorState.this.level.findTrainPosition() == null) {
-                        message = EditorState.this.translator
-                                .translate("Editor.Message.TrainMissing");
-                    } else if (EditorState.this.level.findGatePosition() == null) {
-                        message = EditorState.this.translator
-                                .translate("Editor.Message.GateMissing");
-                    }
-                    EditorState.this.messageBox.showConfirm(message, new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent arg0) {
-                            EditorState.this.levelController.saveCurrentLevel();
-                            game.enterState(Game.MENU_FOR_EDITOR_STATE);
-                        }
-                    }, new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            EditorState.this.messageBox.close();
-                        }
-                    });
-                } else {
-                    EditorState.this.levelController.saveCurrentLevel();
-                    game.enterState(Game.MENU_FOR_EDITOR_STATE);
-                }
-            }
-        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.train, new TrainSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(this.gate, new GateSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(this.tree, new TreeSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(this.wall, new WallSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(this.save, new SaveSelectedListener(this, level,
+                this.levelController, this.translator, this.messageBox, game)));
     }
 }
