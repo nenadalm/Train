@@ -46,7 +46,6 @@ public class EditorState extends BasicGameState {
     private Item activeItem;
     // helping fields
     private int itemSize;
-    private boolean showMenu = true;
     private boolean showActive = true;
     private Point fieldPosition;
     private Level level = null;
@@ -88,76 +87,8 @@ public class EditorState extends BasicGameState {
         this.loadLevel(container);
 
         this.imageMenuItems = new ArrayList<ImageMenuItem>();
-        this.imageMenuItems.add(new ImageMenuItem(this.train, new ActionListener() {
+        this.initTopMenuListeners(game);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.showMenu = false;
-                EditorState.this.activeItem = Item.TRAIN;
-            }
-        }));
-        this.imageMenuItems.add(new ImageMenuItem(this.gate, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.showMenu = false;
-                EditorState.this.activeItem = Item.GATE;
-            }
-        }));
-        this.imageMenuItems.add(new ImageMenuItem(this.tree, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.showMenu = false;
-                EditorState.this.activeItem = Item.TREE;
-            }
-        }));
-        this.imageMenuItems.add(new ImageMenuItem(this.wall, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.showMenu = false;
-                EditorState.this.activeItem = Item.WALL;
-            }
-        }));
-        this.imageMenuItems.add(new ImageMenuItem(this.save, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditorState.this.showMenu = false;
-                if (!EditorState.this.level.isValid()) {
-                    String message = "";
-                    if (EditorState.this.level.findTrainPosition() == null
-                            && EditorState.this.level.findGatePosition() == null) {
-                        message = EditorState.this.translator
-                                .translate("Editor.Message.TrainAndGateMissing");
-                    } else if (EditorState.this.level.findTrainPosition() == null) {
-                        message = EditorState.this.translator
-                                .translate("Editor.Message.TrainMissing");
-                    } else if (EditorState.this.level.findGatePosition() == null) {
-                        message = EditorState.this.translator
-                                .translate("Editor.Message.GateMissing");
-                    }
-                    EditorState.this.messageBox.showConfirm(message, new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent arg0) {
-                            EditorState.this.levelController.saveCurrentLevel();
-                            game.enterState(Game.MENU_FOR_EDITOR_STATE);
-                        }
-                    }, new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            EditorState.this.messageBox.close();
-                        }
-                    });
-                } else {
-                    EditorState.this.levelController.saveCurrentLevel();
-                    game.enterState(Game.MENU_FOR_EDITOR_STATE);
-                }
-            }
-        }));
         for (ImageMenuItem item : this.imageMenuItems) {
             item.setScale(this.scale);
         }
@@ -166,6 +97,7 @@ public class EditorState extends BasicGameState {
         this.topMenu.setPaddingLeft((int) (this.train.getWidth() * this.scale));
         this.topMenu.setBackgroundColor(new Color(0, 0, 0, 0));
         this.topMenu.setLayout(new FlowLayout(container, this.topMenu));
+        this.topMenu.show();
     }
 
     @Override
@@ -178,13 +110,13 @@ public class EditorState extends BasicGameState {
 
         this.level.render(container, game, g);
 
-        if (this.showMenu) {
+        if (this.topMenu.isShowed()) {
             this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight() * this.scale);
-            this.topMenu.render(container, game, g);
         } else {
             this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight()
                     * this.scale);
         }
+        this.topMenu.render(container, game, g);
         if (this.showActive) {
             this.active.draw(this.fieldPosition.x, this.fieldPosition.y, this.active.getWidth()
                     * this.scale, this.active.getHeight() * this.scale);
@@ -233,10 +165,7 @@ public class EditorState extends BasicGameState {
         }
 
         if (!this.messageBox.isShowed()) {
-            if (this.messageBox.isShowed()) {
-                return;
-            }
-            if (this.showMenu) {
+            if (this.topMenu.isShowed()) {
                 indexX = mouseX / this.itemSize;
                 indexY = mouseY / this.itemSize;
                 offsetX = 0;
@@ -250,12 +179,12 @@ public class EditorState extends BasicGameState {
             this.fieldPosition.setLocation(offsetX + width, offsetY + height);
             Point gridPosition = new Point(indexX, indexY);
 
-            if (this.showMenu) {
+            if (this.topMenu.isShowed()) {
                 this.updateMenu(game, input);
-                this.topMenu.update(container, game, delta);
             } else {
                 this.updateEditor(gridPosition, input);
             }
+            this.topMenu.update(container, game, delta);
         }
         this.messageBox.update(container, game, delta);
     }
@@ -311,10 +240,10 @@ public class EditorState extends BasicGameState {
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
         if (mouseY < 10) {
-            this.showMenu = !this.showMenu;
+            this.topMenu.show();
         }
         if (input.isKeyPressed(Keyboard.KEY_E)) {
-            this.showMenu = !this.showMenu;
+            this.topMenu.show();
         }
         if (this.isCursorInLevelArea(mouseX, mouseY)) {
             this.showActive = true;
@@ -345,4 +274,76 @@ public class EditorState extends BasicGameState {
         return this.stateId;
     }
 
+    private void initTopMenuListeners(final StateBasedGame game) {
+        this.imageMenuItems.add(new ImageMenuItem(this.train, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditorState.this.topMenu.close();
+                EditorState.this.activeItem = Item.TRAIN;
+            }
+        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.gate, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditorState.this.topMenu.close();
+                EditorState.this.activeItem = Item.GATE;
+            }
+        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.tree, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditorState.this.topMenu.close();
+                EditorState.this.activeItem = Item.TREE;
+            }
+        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.wall, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditorState.this.topMenu.close();
+                EditorState.this.activeItem = Item.WALL;
+            }
+        }));
+        this.imageMenuItems.add(new ImageMenuItem(this.save, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditorState.this.topMenu.close();
+                if (!EditorState.this.level.isValid()) {
+                    String message = "";
+                    if (EditorState.this.level.findTrainPosition() == null
+                            && EditorState.this.level.findGatePosition() == null) {
+                        message = EditorState.this.translator
+                                .translate("Editor.Message.TrainAndGateMissing");
+                    } else if (EditorState.this.level.findTrainPosition() == null) {
+                        message = EditorState.this.translator
+                                .translate("Editor.Message.TrainMissing");
+                    } else if (EditorState.this.level.findGatePosition() == null) {
+                        message = EditorState.this.translator
+                                .translate("Editor.Message.GateMissing");
+                    }
+                    EditorState.this.messageBox.showConfirm(message, new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            EditorState.this.levelController.saveCurrentLevel();
+                            game.enterState(Game.MENU_FOR_EDITOR_STATE);
+                        }
+                    }, new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            EditorState.this.messageBox.close();
+                        }
+                    });
+                } else {
+                    EditorState.this.levelController.saveCurrentLevel();
+                    game.enterState(Game.MENU_FOR_EDITOR_STATE);
+                }
+            }
+        }));
+    }
 }

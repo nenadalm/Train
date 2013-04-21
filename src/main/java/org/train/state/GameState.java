@@ -27,8 +27,6 @@ public class GameState extends BasicGameState {
 
     private int stateId;
     private Level level = null;
-    private boolean showMenu = false;
-    private boolean showGameOverMenu = false;
     private Menu menu = null;
     private Menu gameOverMenu = null;
     private Translator translator;
@@ -50,6 +48,8 @@ public class GameState extends BasicGameState {
         this.initMenuItems(container, game);
         this.initGameOverMenuItems(container, game);
         this.initLevel(container, game);
+        this.menu.close();
+        this.gameOverMenu.close();
     }
 
     private void initMenuItems(final GameContainer container, final StateBasedGame game) {
@@ -57,8 +57,8 @@ public class GameState extends BasicGameState {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent arg0) {
-                        GameState.this.showMenu = false;
-                        GameState.this.showGameOverMenu = false;
+                        GameState.this.menu.close();
+                        GameState.this.gameOverMenu.close();
                     }
                 });
         MenuItem repeatLevel = new MenuItem(this.translator.translate("Game.Menu.RepeatLevel"),
@@ -66,16 +66,16 @@ public class GameState extends BasicGameState {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         GameState.this.initLevel(container, game);
-                        GameState.this.showMenu = false;
-                        GameState.this.showGameOverMenu = false;
+                        GameState.this.menu.close();
+                        GameState.this.gameOverMenu.close();
                     }
                 });
         MenuItem subMenu = new MenuItem(this.translator.translate("Game.Menu.Menu"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        GameState.this.showMenu = false;
-                        GameState.this.showGameOverMenu = false;
+                        GameState.this.menu.close();
+                        GameState.this.gameOverMenu.close();
                         game.enterState(Game.MENU_FOR_GAME_STATE);
                     }
                 });
@@ -83,8 +83,8 @@ public class GameState extends BasicGameState {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        GameState.this.showMenu = false;
-                        GameState.this.showGameOverMenu = false;
+                        GameState.this.menu.close();
+                        GameState.this.gameOverMenu.close();
                         game.enterState(Game.MENU_STATE);
                     }
                 });
@@ -108,16 +108,16 @@ public class GameState extends BasicGameState {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         GameState.this.initLevel(container, game);
-                        GameState.this.showMenu = false;
-                        GameState.this.showGameOverMenu = false;
+                        GameState.this.menu.close();
+                        GameState.this.gameOverMenu.close();
                     }
                 });
         MenuItem subMenu = new MenuItem(this.translator.translate("Game.Menu.Menu"),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        GameState.this.showMenu = false;
-                        GameState.this.showGameOverMenu = false;
+                        GameState.this.menu.close();
+                        GameState.this.gameOverMenu.close();
                         game.enterState(Game.MENU_FOR_GAME_STATE);
                     }
                 });
@@ -125,8 +125,8 @@ public class GameState extends BasicGameState {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        GameState.this.showMenu = false;
-                        GameState.this.showGameOverMenu = false;
+                        GameState.this.menu.close();
+                        GameState.this.gameOverMenu.close();
                         game.enterState(Game.MENU_STATE);
                     }
                 });
@@ -182,12 +182,8 @@ public class GameState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         this.level.render(container, game, g);
-        if (this.showMenu) {
-            this.menu.render(container, game, g);
-        }
-        if (this.showGameOverMenu) {
-            this.gameOverMenu.render(container, game, g);
-        }
+        this.menu.render(container, game, g);
+        this.gameOverMenu.render(container, game, g);
         this.messageBox.render(container, game, g);
     }
 
@@ -195,16 +191,16 @@ public class GameState extends BasicGameState {
     public void update(final GameContainer container, final StateBasedGame game, int delta)
             throws SlickException {
         Input input = container.getInput();
-        if (!this.showMenu && input.isKeyPressed(Input.KEY_ESCAPE) && !this.level.isFinished()
-                && !this.level.isOver()) {
-            this.showMenu = true;
+        if (!this.menu.isShowed() && input.isKeyPressed(Input.KEY_ESCAPE)
+                && !this.level.isFinished() && !this.level.isOver()) {
+            this.menu.show();
         }
         if (this.level.isOver()) {
-            this.showGameOverMenu = true;
+            this.gameOverMenu.show();
             if (input.isKeyPressed(Input.KEY_ENTER) || input.isKeyPressed(Input.KEY_NUMPADENTER)) {
                 this.initLevel(container, game);
-                this.showMenu = false;
-                this.showGameOverMenu = false;
+                this.menu.close();
+                this.gameOverMenu.show();
             }
         }
         if (this.level.isFinished()) {
@@ -251,14 +247,13 @@ public class GameState extends BasicGameState {
                         });
             }
         }
-        if (this.showMenu) {
-            this.menu.update(container, game, delta);
+        this.menu.update(container, game, delta);
+        this.gameOverMenu.update(container, game, delta);
+        if (this.menu.isShowed()) {
             if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-                this.showMenu = false;
+                this.menu.close();
             }
-        } else if (this.showGameOverMenu) {
-            this.gameOverMenu.update(container, game, delta);
-        } else {
+        } else if (!this.gameOverMenu.isShowed()) {
             this.level.update(container, game, delta);
         }
         this.messageBox.update(container, game, delta);

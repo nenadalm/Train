@@ -18,6 +18,7 @@ public class Menu extends Container {
     int active = 0;
     private List<? extends MenuItem> items;
     Point lastMousePosition;
+    private boolean show = true;
 
     @Override
     protected List<? extends MenuItem> getChildren() {
@@ -45,12 +46,20 @@ public class Menu extends Container {
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
+        if (!this.show) {
+            return;
+        }
+
         g.setColor(Color.lightGray);
         super.render(container, game, g);
     }
 
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) {
+        if (!this.show) {
+            return;
+        }
+
         Input input = container.getInput();
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
@@ -85,5 +94,17 @@ public class Menu extends Container {
             listener.actionPerformed(null);
         }
         this.lastMousePosition.setLocation(mouseX, mouseY);
+    }
+
+    public boolean isShowed() {
+        return this.show;
+    }
+
+    public void show() {
+        this.show = true;
+    }
+
+    public void close() {
+        this.show = false;
     }
 }
