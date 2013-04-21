@@ -16,17 +16,18 @@ public class FlowLayout extends BaseLayout {
 
     @Override
     public void render(Graphics g) {
-        int counter = 0;
         for (Child child : this.container.getChildren()) {
-            Rectangle r = this.rectangles.get(counter);
-            ImageMenuItem item = ((ImageMenuItem) child);
-            item.getImage().draw(r.getX(), r.getY(), item.getScale());
-            counter++;
+            child.render(g);
         }
     }
 
     private void placeMenuItems(GameContainer gameContainer) {
         this.calculateRectangles(gameContainer);
+        int counter = 0;
+        for (Child c : this.container.getChildren()) {
+            c.setRectangle(this.rectangles.get(counter));
+            counter++;
+        }
     }
 
     private void calculateRectangles(GameContainer container) {
