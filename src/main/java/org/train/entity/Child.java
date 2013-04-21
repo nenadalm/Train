@@ -1,44 +1,14 @@
 package org.train.entity;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Font;
-import org.newdawn.slick.GameContainer;
-import org.train.factory.EffectFactory;
-import org.train.other.ResourceManager;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 
 public abstract class Child extends BoxModel {
 
     private Color color = Color.red;
-    private Font font;
-    private String text;
     private float scale;
-
-    public void setContainer(GameContainer container, ResourceManager resourceManager,
-            EffectFactory effectFactory) {
-        int fontWidth = container.getWidth() / 20;
-        try {
-            this.font = resourceManager.getFont("ubuntu", fontWidth,
-                    effectFactory.getColorEffect(java.awt.Color.white));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String getText() {
-        return this.text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Font getFont() {
-        return this.font;
-    }
-
-    public void setFont(Font font) {
-        this.font = font;
-    }
+    protected Rectangle rectangle;
 
     public Color getColor() {
         return color;
@@ -55,6 +25,16 @@ public abstract class Child extends BoxModel {
     public void setScale(float scale) {
         this.scale = scale;
     }
+
+    public Rectangle getRectangle() {
+        return this.rectangle;
+    }
+
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
+    }
+
+    public abstract void render(Graphics g);
 
     public abstract int getWidth();
 

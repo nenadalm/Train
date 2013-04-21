@@ -3,12 +3,16 @@ package org.train.entity;
 import java.awt.event.ActionListener;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
+import org.newdawn.slick.Graphics;
 
 public class MenuItem extends Child {
 
     private boolean isEnabled;
     private ActionListener listener;
     private Color active, disabled;
+    private String text;
+    private Font font;
 
     public MenuItem(String text, ActionListener listener) {
         this.setText(text);
@@ -33,6 +37,22 @@ public class MenuItem extends Child {
         return this.disabled;
     }
 
+    public String getText() {
+        return this.text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Font getFont() {
+        return this.font;
+    }
+
+    public void setFont(Font font) {
+        this.font = font;
+    }
+
     @Override
     public int getWidth() {
         return this.getFont().getWidth(this.getText());
@@ -50,5 +70,12 @@ public class MenuItem extends Child {
 
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
+    }
+
+    @Override
+    public void render(Graphics g) {
+        g.setFont(this.getFont());
+        g.setColor(this.getColor());
+        g.drawString(this.getText(), this.rectangle.getX(), this.rectangle.getY());
     }
 }

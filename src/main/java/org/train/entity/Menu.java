@@ -27,8 +27,14 @@ public class Menu extends Container {
     public Menu(List<? extends MenuItem> items, GameContainer container,
             ResourceManager resourceManager, EffectFactory effectFactory) {
         this.addComponent(new RectangleComponent());
-        for (MenuItem item : items) {
-            item.setContainer(container, resourceManager, effectFactory);
+
+        try {
+            for (MenuItem item : items) {
+                item.setFont(resourceManager.getFont("ubuntu", container.getWidth() / 20,
+                        effectFactory.getColorEffect(java.awt.Color.white)));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         items.get(this.active).setColor(Color.blue);
         this.items = items;

@@ -16,6 +16,11 @@ public class CenteredLayout implements LayoutInterface {
     public CenteredLayout(GameContainer gameContainer, Container container) {
         this.container = container;
         this.placeMenuItems(gameContainer);
+        int counter = 0;
+        for (Child c : this.container.getChildren()) {
+            c.setRectangle(this.rectangles.get(counter));
+            counter++;
+        }
     }
 
     @Override
@@ -105,13 +110,8 @@ public class CenteredLayout implements LayoutInterface {
 
     @Override
     public void render(Graphics g) {
-        int counter = 0;
         for (Child item : this.container.getChildren()) {
-            g.setFont(item.getFont());
-            g.setColor(item.getColor());
-            g.drawString(item.getText(), this.rectangles.get(counter).getX(),
-                    this.rectangles.get(counter).getY());
-            counter++;
+            item.render(g);
         }
     }
 }
