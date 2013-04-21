@@ -7,7 +7,7 @@ import org.train.app.Configuration;
 
 public class LevelHelper {
 
-    Configuration config;
+    private Configuration config;
 
     public LevelHelper(Configuration config) {
         this.config = config;

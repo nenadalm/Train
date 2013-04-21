@@ -22,6 +22,7 @@ import org.train.entity.Level;
 import org.train.entity.Level.Item;
 import org.train.entity.Menu;
 import org.train.entity.MessageBox;
+import org.train.factory.EffectFactory;
 import org.train.helper.LevelHelper;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
@@ -160,7 +161,8 @@ public class EditorState extends BasicGameState {
         for (ImageMenuItem item : this.imageMenuItems) {
             item.setScale(this.scale);
         }
-        this.topMenu = new Menu(this.imageMenuItems, container, this.resourceManager);
+        this.topMenu = new Menu(this.imageMenuItems, container, this.resourceManager,
+                this.container.getComponent(EffectFactory.class));
         this.topMenu.setPaddingLeft((int) (this.train.getWidth() * this.scale));
         this.topMenu.setBackgroundColor(new Color(0, 0, 0, 0));
         this.topMenu.setLayout(new FlowLayout(container, this.topMenu));

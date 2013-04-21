@@ -65,10 +65,11 @@ public class MenuState extends BasicGameState {
             menuItems.get(i).setMarginBottom(container.getHeight() / 14);
         }
         this.menu = new Menu(menuItems, container,
-                this.container.getComponent(ResourceManager.class));
+                this.container.getComponent(ResourceManager.class),
+                this.container.getComponent(EffectFactory.class));
 
         FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = EffectFactory.getInstance();
+        EffectFactory effects = this.container.getComponent(EffectFactory.class);
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         width = container.getWidth();
 

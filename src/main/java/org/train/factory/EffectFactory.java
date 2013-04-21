@@ -9,20 +9,12 @@ import org.newdawn.slick.font.effects.GradientEffect;
 
 public class EffectFactory {
 
-    private static EffectFactory factory;
     private Map<Color, ColorEffect> colorEffect;
     private Map<Color, Map<Color, Map<Float, GradientEffect>>> gradientEffect;
 
-    private EffectFactory() {
+    public EffectFactory() {
         this.colorEffect = new HashMap<Color, ColorEffect>();
         this.gradientEffect = new HashMap<Color, Map<Color, Map<Float, GradientEffect>>>();
-    }
-
-    public static EffectFactory getInstance() {
-        if (EffectFactory.factory == null) {
-            EffectFactory.factory = new EffectFactory();
-        }
-        return EffectFactory.factory;
     }
 
     public ColorEffect getColorEffect(Color c) {

@@ -17,6 +17,7 @@ import org.train.entity.Level;
 import org.train.entity.Menu;
 import org.train.entity.MenuItem;
 import org.train.entity.MessageBox;
+import org.train.factory.EffectFactory;
 import org.train.helper.LevelHelper;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
@@ -96,7 +97,8 @@ public class GameState extends BasicGameState {
             item.setMargin(30);
         }
         this.menu = new Menu(menuItems, container,
-                this.container.getComponent(ResourceManager.class));
+                this.container.getComponent(ResourceManager.class),
+                this.container.getComponent(EffectFactory.class));
         this.menu.setBackgroundColor(Color.lightGray);
     }
 
@@ -137,7 +139,8 @@ public class GameState extends BasicGameState {
             item.setMargin(30);
         }
         this.gameOverMenu = new Menu(gameOverMenuItems, container,
-                this.container.getComponent(ResourceManager.class));
+                this.container.getComponent(ResourceManager.class),
+                this.container.getComponent(EffectFactory.class));
         this.gameOverMenu.setBackgroundColor(Color.lightGray);
     }
 

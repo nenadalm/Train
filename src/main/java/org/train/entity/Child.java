@@ -13,8 +13,8 @@ public abstract class Child extends BoxModel {
     private String text;
     private float scale;
 
-    public void setContainer(GameContainer container, ResourceManager resourceManager) {
-        EffectFactory effectFactory = EffectFactory.getInstance();
+    public void setContainer(GameContainer container, ResourceManager resourceManager,
+            EffectFactory effectFactory) {
         int fontWidth = container.getWidth() / 20;
         try {
             this.font = resourceManager.getFont("ubuntu", fontWidth,

@@ -58,7 +58,7 @@ public class MenuForEditorState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = EffectFactory.getInstance();
+        EffectFactory effects = this.container.getComponent(EffectFactory.class);
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         Configuration configuration = this.container.getComponent(Configuration.class);
 

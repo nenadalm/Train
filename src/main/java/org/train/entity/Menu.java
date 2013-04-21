@@ -11,6 +11,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.component.RectangleComponent;
+import org.train.factory.EffectFactory;
 import org.train.other.ResourceManager;
 
 public class Menu extends Container {
@@ -24,10 +25,10 @@ public class Menu extends Container {
     }
 
     public Menu(List<? extends MenuItem> items, GameContainer container,
-            ResourceManager resourceManager) {
+            ResourceManager resourceManager, EffectFactory effectFactory) {
         this.addComponent(new RectangleComponent());
         for (MenuItem item : items) {
-            item.setContainer(container, resourceManager);
+            item.setContainer(container, resourceManager, effectFactory);
         }
         items.get(this.active).setColor(Color.blue);
         this.items = items;

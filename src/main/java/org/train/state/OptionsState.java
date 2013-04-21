@@ -52,7 +52,7 @@ public class OptionsState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = EffectFactory.getInstance();
+        EffectFactory effects = this.container.getComponent(EffectFactory.class);
         translator = this.container.getComponent(Translator.class);
         configuration = this.container.getComponent(Configuration.class);
         width = container.getWidth();

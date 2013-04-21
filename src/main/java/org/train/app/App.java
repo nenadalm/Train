@@ -11,6 +11,7 @@ import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.PicoContainer;
 import org.picocontainer.behaviors.Caching;
 import org.train.entity.MessageBox;
+import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
 import org.train.helper.LevelHelper;
 import org.train.loader.ConfigurationXmlLoader;
@@ -102,6 +103,7 @@ public class App {
         this.container.addComponent(LevelController.class);
         this.container.addComponent(ResourceManager.class);
         this.container.addComponent(FontFactory.class);
+        this.container.addComponent(EffectFactory.class);
         this.container.addComponent(LevelHelper.class);
     }
 }

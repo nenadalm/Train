@@ -44,7 +44,7 @@ public class MenuForGameState extends BasicGameState {
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = EffectFactory.getInstance();
+        EffectFactory effects = this.container.getComponent(EffectFactory.class);
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         GradientEffect gradientEffect = effects.getGradientEffect(java.awt.Color.WHITE,
                 java.awt.Color.GRAY, 0.5f);
