@@ -377,43 +377,4 @@ public class Level extends Entity implements Cloneable {
         }
         return null;
     }
-
-    private class Truck {
-        private Point position;
-        private float rotation;
-        private boolean flippedHorizontal;
-        private boolean flippedVertical;
-
-        public boolean isFlippedHorizontal() {
-            return flippedHorizontal;
-        }
-
-        public void setFlippedHorizontal(boolean flippedHorizontal) {
-            this.flippedHorizontal = flippedHorizontal;
-        }
-
-        public boolean isFlippedVertical() {
-            return flippedVertical;
-        }
-
-        public void setFlippedVertical(boolean flippedVertical) {
-            this.flippedVertical = flippedVertical;
-        }
-
-        public Point getPosition() {
-            return this.position;
-        }
-
-        public void setPosition(Point position) {
-            this.position = position;
-        }
-
-        public float getRotation() {
-            return this.rotation;
-        }
-
-        public void setRotation(float rotation) {
-            this.rotation = rotation;
-        }
-    }
 }
