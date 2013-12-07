@@ -1,6 +1,5 @@
 package org.train.state;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -201,16 +200,12 @@ public class EditorState extends BasicGameState {
         this.level = this.levelController.getCurrentLevel();
         this.trainPosition = this.level.findTrainPosition();
         this.gatePosition = this.level.findGatePosition();
+
         LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
-        float scale = levelHelper.computeScale(container, this.level.getOriginalImageSize(),
-                new Dimension(this.level.getWidth(), this.level.getHeight()));
-        this.level.setScale(scale);
-        this.itemSize *= scale;
-        this.scale = scale;
-        int width = this.level.getWidth() * (this.itemSize);
-        int height = this.level.getHeight() * (this.itemSize);
-        this.level.setMarginLeft((container.getWidth() - width) / 2);
-        this.level.setMarginTop((container.getHeight() - height) / 2);
+        levelHelper.adjustLevelToContainer(container, level);
+
+        this.itemSize *= this.level.getScale();
+        this.scale = this.level.getScale();
     }
 
     private void setItemPosition(Point gridPosition) {

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import org.newdawn.slick.GameContainer;
 import org.train.app.Configuration;
+import org.train.entity.Level;
 
 public class LevelHelper {
 
@@ -30,5 +31,15 @@ public class LevelHelper {
             scale = (scaleWidth < optimalScale) ? scaleWidth : scaleHeight;
         }
         return scale;
+    }
+
+    public void adjustLevelToContainer(GameContainer container, Level level) {
+        float scale = this.computeScale(container, level.getOriginalImageSize(), new Dimension(
+                level.getWidth(), level.getHeight()));
+        level.setScale(scale);
+        int width = level.getWidth() * (int) (level.getOriginalImageSize() * scale);
+        int height = level.getHeight() * (int) (level.getOriginalImageSize() * scale);
+        level.setMarginLeft((container.getWidth() - width) / 2);
+        level.setMarginTop((container.getHeight() - height) / 2);
     }
 }

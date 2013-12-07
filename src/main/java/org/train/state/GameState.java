@@ -1,6 +1,5 @@
 package org.train.state;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -121,15 +120,10 @@ public class GameState extends BasicGameState {
         try {
             this.wasFinished = false;
             this.level = this.levelController.getCurrentLevel();
-            int itemSize = this.level.getOriginalImageSize();
+
             LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
-            float scale = levelHelper.computeScale(container, this.level.getOriginalImageSize(),
-                    new Dimension(this.level.getWidth(), this.level.getHeight()));
-            this.level.setScale(scale);
-            int width = this.level.getWidth() * (int) (itemSize * scale);
-            int height = this.level.getHeight() * (int) (itemSize * scale);
-            this.level.setMarginLeft((container.getWidth() - width) / 2);
-            this.level.setMarginTop((container.getHeight() - height) / 2);
+            levelHelper.adjustLevelToContainer(container, level);
+
             if (!this.level.isValid()) {
                 this.messageBox.showConfirm(this.translator.translate("Game.LevelIsInvalid"),
                         new ActionListener() {
