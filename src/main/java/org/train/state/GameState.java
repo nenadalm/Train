@@ -191,14 +191,9 @@ public class GameState extends BasicGameState {
     public void update(final GameContainer container, final StateBasedGame game, int delta)
             throws SlickException {
         Input input = container.getInput();
-        if (!this.menu.isShowed() && input.isKeyPressed(Input.KEY_ESCAPE)
-                && !this.level.isFinished() && !this.level.isOver()) {
-            this.menu.show();
-        }
         if (this.level.isOver()) {
             this.gameOverMenu.show();
-        }
-        if (this.level.isFinished()) {
+        } else if (this.level.isFinished()) {
             if (this.levelController.nextLevelExist()) {
                 if (!this.wasFinished) {
                     this.wasFinished = true;
@@ -241,7 +236,10 @@ public class GameState extends BasicGameState {
                             }
                         });
             }
+        } else if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            this.menu.show();
         }
+
         this.menu.update(container, game, delta);
         this.gameOverMenu.update(container, game, delta);
         if (this.menu.isShowed()) {
