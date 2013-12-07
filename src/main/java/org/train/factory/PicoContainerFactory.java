@@ -14,6 +14,7 @@ import org.train.helper.LevelHelper;
 import org.train.loader.ConfigurationXmlLoader;
 import org.train.loader.TranslationLoaderFactory;
 import org.train.menu.MenuBuilder;
+import org.train.other.Display;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
@@ -43,6 +44,7 @@ public class PicoContainerFactory {
         container.addComponent(FontFactory.class);
         container.addComponent(EffectFactory.class);
         container.addComponent(LevelHelper.class);
+        container.addComponent(Display.class);
         container.as(Characteristics.NO_CACHE).addComponent(MenuBuilder.class);
 
         return container;
