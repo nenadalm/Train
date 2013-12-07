@@ -3,8 +3,6 @@ package org.train.state;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -15,12 +13,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.Level;
 import org.train.entity.Menu;
-import org.train.entity.MenuItem;
 import org.train.entity.MessageBox;
-import org.train.factory.EffectFactory;
 import org.train.helper.LevelHelper;
+import org.train.menu.MenuBuilder;
 import org.train.other.LevelController;
-import org.train.other.ResourceManager;
 import org.train.other.Translator;
 
 public class GameState extends BasicGameState {
@@ -53,34 +49,33 @@ public class GameState extends BasicGameState {
     }
 
     private void initMenuItems(final GameContainer container, final StateBasedGame game) {
-        MenuItem continueItem = new MenuItem(this.translator.translate("Game.Menu.Continue"),
-                new ActionListener() {
+        MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
+        menuBuilder
+                .addMenuItem(this.translator.translate("Game.Menu.Continue"), new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent arg0) {
                         GameState.this.menu.close();
                         GameState.this.gameOverMenu.close();
                     }
-                });
-        MenuItem repeatLevel = new MenuItem(this.translator.translate("Game.Menu.RepeatLevel"),
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        GameState.this.initLevel(container, game);
-                        GameState.this.menu.close();
-                        GameState.this.gameOverMenu.close();
-                    }
-                });
-        MenuItem subMenu = new MenuItem(this.translator.translate("Game.Menu.Menu"),
-                new ActionListener() {
+                })
+                .addMenuItem(this.translator.translate("Game.Menu.RepeatLevel"),
+                        new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GameState.this.initLevel(container, game);
+                                GameState.this.menu.close();
+                                GameState.this.gameOverMenu.close();
+                            }
+                        })
+                .addMenuItem(this.translator.translate("Game.Menu.Menu"), new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         GameState.this.menu.close();
                         GameState.this.gameOverMenu.close();
                         game.enterState(Game.MENU_FOR_GAME_STATE);
                     }
-                });
-        MenuItem mainMenu = new MenuItem(this.translator.translate("Game.Menu.MainMenu"),
-                new ActionListener() {
+                })
+                .addMenuItem(this.translator.translate("Game.Menu.MainMenu"), new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         GameState.this.menu.close();
@@ -88,41 +83,30 @@ public class GameState extends BasicGameState {
                         game.enterState(Game.MENU_STATE);
                     }
                 });
-        List<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add(continueItem);
-        menuItems.add(repeatLevel);
-        menuItems.add(subMenu);
-        menuItems.add(mainMenu);
-        for (MenuItem item : menuItems) {
-            item.setMargin(30);
-        }
-        this.menu = new Menu(menuItems, container,
-                this.container.getComponent(ResourceManager.class),
-                this.container.getComponent(EffectFactory.class));
-        this.menu.setBackgroundColor(Color.lightGray);
+        this.menu = menuBuilder.getMenu();
     }
 
     private void initGameOverMenuItems(final GameContainer container, final StateBasedGame game) {
-        MenuItem repeatLevel = new MenuItem(this.translator.translate("Game.Menu.RepeatLevel"),
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        GameState.this.initLevel(container, game);
-                        GameState.this.menu.close();
-                        GameState.this.gameOverMenu.close();
-                    }
-                });
-        MenuItem subMenu = new MenuItem(this.translator.translate("Game.Menu.Menu"),
-                new ActionListener() {
+        MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
+        menuBuilder
+                .addMenuItem(this.translator.translate("Game.Menu.RepeatLevel"),
+                        new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GameState.this.initLevel(container, game);
+                                GameState.this.menu.close();
+                                GameState.this.gameOverMenu.close();
+                            }
+                        })
+                .addMenuItem(this.translator.translate("Game.Menu.Menu"), new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         GameState.this.menu.close();
                         GameState.this.gameOverMenu.close();
                         game.enterState(Game.MENU_FOR_GAME_STATE);
                     }
-                });
-        MenuItem mainMenu = new MenuItem(this.translator.translate("Game.Menu.MainMenu"),
-                new ActionListener() {
+                })
+                .addMenuItem(this.translator.translate("Game.Menu.MainMenu"), new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         GameState.this.menu.close();
@@ -130,18 +114,7 @@ public class GameState extends BasicGameState {
                         game.enterState(Game.MENU_STATE);
                     }
                 });
-
-        List<MenuItem> gameOverMenuItems = new ArrayList<MenuItem>();
-        gameOverMenuItems.add(repeatLevel);
-        gameOverMenuItems.add(subMenu);
-        gameOverMenuItems.add(mainMenu);
-        for (MenuItem item : gameOverMenuItems) {
-            item.setMargin(30);
-        }
-        this.gameOverMenu = new Menu(gameOverMenuItems, container,
-                this.container.getComponent(ResourceManager.class),
-                this.container.getComponent(EffectFactory.class));
-        this.gameOverMenu.setBackgroundColor(Color.lightGray);
+        this.gameOverMenu = menuBuilder.getMenu();
     }
 
     private void initLevel(GameContainer container, final StateBasedGame game) {

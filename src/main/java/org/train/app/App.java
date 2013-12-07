@@ -7,6 +7,7 @@ import java.awt.GraphicsEnvironment;
 import java.io.File;
 
 import org.newdawn.slick.AppGameContainer;
+import org.picocontainer.Characteristics;
 import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.PicoContainer;
 import org.picocontainer.behaviors.Caching;
@@ -16,6 +17,7 @@ import org.train.factory.FontFactory;
 import org.train.helper.LevelHelper;
 import org.train.loader.ConfigurationXmlLoader;
 import org.train.loader.TranslationLoaderFactory;
+import org.train.menu.MenuBuilder;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
@@ -105,5 +107,6 @@ public class App {
         this.container.addComponent(FontFactory.class);
         this.container.addComponent(EffectFactory.class);
         this.container.addComponent(LevelHelper.class);
+        this.container.as(Characteristics.NO_CACHE).addComponent(MenuBuilder.class);
     }
 }
