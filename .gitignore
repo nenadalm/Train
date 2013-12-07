@@ -4,8 +4,8 @@
 
 config.xml
 /content/save
-/target
-
+target/*
+!target/site
 #################
 ## Eclipse
 #################

@@ -4,36 +4,19 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.io.File;
 
 import org.newdawn.slick.AppGameContainer;
-import org.picocontainer.Characteristics;
-import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.PicoContainer;
-import org.picocontainer.behaviors.Caching;
-import org.train.entity.MessageBox;
-import org.train.factory.EffectFactory;
-import org.train.factory.FontFactory;
-import org.train.helper.LevelHelper;
-import org.train.loader.ConfigurationXmlLoader;
-import org.train.loader.TranslationLoaderFactory;
-import org.train.menu.MenuBuilder;
-import org.train.other.LevelController;
-import org.train.other.ResourceManager;
-import org.train.other.Translator;
-import org.train.storer.ConfigurationXmlStorer;
+import org.train.factory.PicoContainerFactory;
 
 public class App {
-
-    private DefaultPicoContainer container;
 
     /**
      * @param args
      */
     public static void main(String[] args) {
         App app = new App();
-        app.initContainer();
-        PicoContainer container = app.getContainer();
+        PicoContainer container = new PicoContainerFactory().create();
 
         Configuration configuration = container.getComponent(Configuration.class);
 
@@ -79,34 +62,5 @@ public class App {
         }
 
         return new Dimension(width, height);
-    }
-
-    public PicoContainer getContainer() {
-        return this.container;
-    }
-
-    public void initContainer() {
-        this.container = new DefaultPicoContainer(new Caching());
-
-        String configFilePath = "config.xml";
-        this.container.addComponent(new ConfigurationXmlLoader(new File(configFilePath)));
-        this.container.addComponent(new ConfigurationXmlStorer(new File(configFilePath)));
-        this.container.addComponent(Configuration.class);
-        Configuration config = container.getComponent(Configuration.class);
-
-        String translationsPath = config.get("contentPath") + "translations/";
-        this.container.addComponent(new TranslationLoaderFactory(translationsPath));
-        this.container.addComponent(new Translator(this.container
-                .getComponent(TranslationLoaderFactory.class), config.get("language")));
-
-        this.container.addComponent(new Game("Train", this.container));
-        this.container.addComponent(AppGameContainer.class);
-        this.container.addComponent(MessageBox.class);
-        this.container.addComponent(LevelController.class);
-        this.container.addComponent(ResourceManager.class);
-        this.container.addComponent(FontFactory.class);
-        this.container.addComponent(EffectFactory.class);
-        this.container.addComponent(LevelHelper.class);
-        this.container.as(Characteristics.NO_CACHE).addComponent(MenuBuilder.class);
     }
 }
