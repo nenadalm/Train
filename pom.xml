@@ -113,7 +113,7 @@
 		<dependency>
 			<groupId>slick</groupId>
 			<artifactId>slick</artifactId>
-			<version>1.8.2</version>
+			<version>237</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.picocontainer</groupId>
