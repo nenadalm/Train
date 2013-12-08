@@ -12,6 +12,7 @@ import org.train.state.MenuForEditorState;
 import org.train.state.MenuForGameState;
 import org.train.state.MenuState;
 import org.train.state.OptionsState;
+import org.train.state.TestGameState;
 
 public class Game extends StateBasedGame {
 
@@ -21,6 +22,7 @@ public class Game extends StateBasedGame {
     public static final int OPTIONS_STATE = 3;
     public static final int MENU_FOR_EDITOR_STATE = 4;
     public static final int MENU_FOR_GAME_STATE = 5;
+    public static final int TEST_GAME_STATE = 6;
 
     public static final String VERSION = "0.8";
 
@@ -53,7 +55,8 @@ public class Game extends StateBasedGame {
             } else {
                 org.newdawn.slick.state.GameState state = this.getState(id);
                 if ((Game.isReinitializationRequried || id == Game.GAME_STATE
-                        || id == Game.EDITOR_STATE || id == Game.MENU_FOR_GAME_STATE || id == Game.OPTIONS_STATE)) {
+                        || id == Game.EDITOR_STATE || id == Game.MENU_FOR_GAME_STATE
+                        || id == Game.OPTIONS_STATE || id == Game.TEST_GAME_STATE)) {
                     state.init(this.getContainer(), this);
                 }
             }
@@ -85,6 +88,8 @@ public class Game extends StateBasedGame {
             case Game.MENU_FOR_GAME_STATE:
                 gameState = new MenuForGameState(Game.MENU_FOR_GAME_STATE);
                 break;
+            case Game.TEST_GAME_STATE:
+                gameState = new TestGameState(Game.TEST_GAME_STATE);
         }
         if (gameState != null) {
             gameState.setContainer(this.container);

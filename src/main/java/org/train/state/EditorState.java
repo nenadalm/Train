@@ -275,6 +275,6 @@ public class EditorState extends BasicGameState {
         this.imageMenuItems.add(new ImageMenuItem(wall, new WallSelectedListener(this)));
         this.imageMenuItems.add(new ImageMenuItem(save, new SaveSelectedListener(this, level,
                 this.levelController, this.translator, messageBox, game)));
-        this.imageMenuItems.add(new ImageMenuItem(test, new TestSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(test, new TestSelectedListener(this, game)));
     }
 }
