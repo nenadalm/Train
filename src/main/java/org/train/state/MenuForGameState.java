@@ -26,7 +26,7 @@ public class MenuForGameState extends BasicGameState {
     private boolean isMouseOverPackageArrowLeft, isMouseOverPackageArrowRight,
             isMouseOverLevelArrowLeft, isMouseOverLevelArrowRight, isPackageArrowLeftDisabled,
             isPackageArrowRightDisabled, isLevelArrowLeftDisabled, isLevelArrowRightDisabled;
-    private int stateId, width, height, packageIndex, levelIndex;
+    private int width, height, packageIndex, levelIndex;
     private Font ubuntuMedium, ubuntuLarge;
     private String progressText, showingText;
 
@@ -38,7 +38,7 @@ public class MenuForGameState extends BasicGameState {
     private InteractiveLabel play, back;
 
     public MenuForGameState(int stateId) {
-        this.stateId = stateId;
+        super(stateId);
     }
 
     @Override
@@ -208,11 +208,6 @@ public class MenuForGameState extends BasicGameState {
                 game.enterState(Game.GAME_STATE);
             }
         }
-    }
-
-    @Override
-    public int getID() {
-        return this.stateId;
     }
 
     private void setProgressText() {

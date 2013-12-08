@@ -20,7 +20,6 @@ import org.train.other.Translator;
 
 public class GameState extends BasicGameState {
 
-    private int stateId;
     private Level level = null;
     private Menu menu = null;
     private Menu gameOverMenu = null;
@@ -30,7 +29,7 @@ public class GameState extends BasicGameState {
     private boolean wasFinished = false;
 
     public GameState(int stateId) {
-        this.stateId = stateId;
+        super(stateId);
     }
 
     @Override
@@ -219,10 +218,4 @@ public class GameState extends BasicGameState {
         this.messageBox.update(container, game, delta);
         input.clearKeyPressedRecord();
     }
-
-    @Override
-    public int getID() {
-        return this.stateId;
-    }
-
 }

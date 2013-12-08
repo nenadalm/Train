@@ -23,13 +23,13 @@ import org.train.other.Translator;
 
 public class MenuState extends BasicGameState {
 
-    private int stateId, width, trainTextWidth, trainTextHeight;
+    private int width, trainTextWidth, trainTextHeight;
     private Font ubuntuLarge;
     private String trainText;
     private Menu menu;
 
     public MenuState(int stateId) {
-        this.stateId = stateId;
+        super(stateId);
     }
 
     @Override
@@ -103,11 +103,6 @@ public class MenuState extends BasicGameState {
         }
 
         this.menu.update(container, game, delta);
-    }
-
-    @Override
-    public int getID() {
-        return this.stateId;
     }
 
     private void drawString(Graphics g, Font font, String text, float x, float y) {

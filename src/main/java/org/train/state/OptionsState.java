@@ -33,7 +33,7 @@ public class OptionsState extends BasicGameState {
     private boolean isMouseOverReturn, isMouseOverSave, isMouseOverResolution,
             isMouseOverFullscreen, isMouseOverLanguage, isMouseOverAutoscale, isMouseOverScale,
             isFullscreen, isAutoscale, isHolding;
-    private int stateId, width, height, languageIndex, modeIndex, scale, holdCounter;
+    private int width, height, languageIndex, modeIndex, scale, holdCounter;
     private Font ubuntuSmall, ubuntuMedium, ubuntuLarge;
     private Rectangle saveRectangle, returnRectangle, resolutionRectangle, fullscreenRectangle,
             languageRectangle, autoscaleRectangle, scaleRectangle;
@@ -46,7 +46,7 @@ public class OptionsState extends BasicGameState {
     private Configuration configuration;
 
     public OptionsState(int stateId) {
-        this.stateId = stateId;
+        super(stateId);
     }
 
     @Override
@@ -303,11 +303,6 @@ public class OptionsState extends BasicGameState {
         if (!isHolding) {
             holdCounter = 0;
         }
-    }
-
-    @Override
-    public int getID() {
-        return stateId;
     }
 
     private void saveOptions(GameContainer container, StateBasedGame game) {

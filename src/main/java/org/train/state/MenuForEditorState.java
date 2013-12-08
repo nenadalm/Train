@@ -34,7 +34,7 @@ public class MenuForEditorState extends BasicGameState {
     private boolean isMouseOverPackageArrowUp, isMouseOverPackageArrowDown,
             isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isLevelArrowDownDisabled,
             isMouseOverPackageNames[], isMouseOverLevelNames[];
-    private int stateId, width, height, packageIndex, levelIndex, packageBaseIndex, levelBaseIndex,
+    private int width, height, packageIndex, levelIndex, packageBaseIndex, levelBaseIndex,
             inputState;
     private Font ubuntuSmall, ubuntuMedium;
 
@@ -52,7 +52,7 @@ public class MenuForEditorState extends BasicGameState {
     private LevelController levelController;
 
     public MenuForEditorState(int stateId) {
-        this.stateId = stateId;
+        super(stateId);
     }
 
     @Override
@@ -619,11 +619,6 @@ public class MenuForEditorState extends BasicGameState {
                 }
             }
         }
-    }
-
-    @Override
-    public int getID() {
-        return this.stateId;
     }
 
     private void drawString(Graphics g, Font font, String text, float x, float y) {

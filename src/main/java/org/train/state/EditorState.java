@@ -35,7 +35,6 @@ import org.train.state.listener.editor.WallSelectedListener;
 
 public class EditorState extends BasicGameState {
 
-    private int stateId;
     // menu images
     private Image itemMenu;
     private Menu topMenu;
@@ -58,7 +57,7 @@ public class EditorState extends BasicGameState {
     private Point trainPosition = null;
 
     public EditorState(int stateId) {
-        this.stateId = stateId;
+        super(stateId);
     }
 
     @Override
@@ -252,11 +251,6 @@ public class EditorState extends BasicGameState {
         } else {
             this.showActive = false;
         }
-    }
-
-    @Override
-    public int getID() {
-        return this.stateId;
     }
 
     public Menu getTopMenu() {
