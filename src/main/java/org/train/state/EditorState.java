@@ -36,13 +36,6 @@ import org.train.state.listener.editor.WallSelectedListener;
 public class EditorState extends BasicGameState {
 
     private int stateId;
-    // game images
-    private Image train;
-    private Image gate;
-    private Image tree;
-    private Image wall;
-    private Image save;
-    private Image test;
     // menu images
     private Image itemMenu;
     private Menu topMenu;
@@ -77,13 +70,6 @@ public class EditorState extends BasicGameState {
         this.messageBox.setBackgroundColor(Color.lightGray);
         this.fieldPosition = new Point();
 
-        this.train = this.resourceManager.getImage("train");
-        this.gate = this.resourceManager.getImage("gate");
-        this.tree = this.resourceManager.getImage("tree");
-        this.wall = this.resourceManager.getImage("wall");
-        this.save = this.resourceManager.getImage("save");
-        this.test = this.resourceManager.getImage("try");
-
         this.itemMenu = this.resourceManager.getImage("itemMenu");
         this.active = this.resourceManager.getImage("active");
         this.activeItem = Item.WALL;
@@ -92,14 +78,14 @@ public class EditorState extends BasicGameState {
         this.loadLevel(container);
 
         this.imageMenuItems = new ArrayList<ImageMenuItem>();
-        this.initTopMenuListeners(game);
+        this.initTopMenuListeners(game, this.resourceManager);
 
         for (ImageMenuItem item : this.imageMenuItems) {
             item.setScale(this.scale);
         }
         this.topMenu = new Menu(this.imageMenuItems, container, this.resourceManager,
                 this.container.getComponent(EffectFactory.class));
-        this.topMenu.setPaddingLeft((int) (this.train.getWidth() * this.scale));
+        this.topMenu.setPaddingLeft((int) (this.active.getWidth() * this.scale));
         this.topMenu.setBackgroundColor(new Color(0, 0, 0, 0));
         this.topMenu.setLayout(new FlowLayout(container, this.topMenu));
         this.topMenu.show();
@@ -283,13 +269,20 @@ public class EditorState extends BasicGameState {
         this.activeItem = item;
     }
 
-    private void initTopMenuListeners(final StateBasedGame game) {
-        this.imageMenuItems.add(new ImageMenuItem(this.train, new TrainSelectedListener(this)));
-        this.imageMenuItems.add(new ImageMenuItem(this.gate, new GateSelectedListener(this)));
-        this.imageMenuItems.add(new ImageMenuItem(this.tree, new TreeSelectedListener(this)));
-        this.imageMenuItems.add(new ImageMenuItem(this.wall, new WallSelectedListener(this)));
-        this.imageMenuItems.add(new ImageMenuItem(this.save, new SaveSelectedListener(this, level,
-                this.levelController, this.translator, this.messageBox, game)));
-        this.imageMenuItems.add(new ImageMenuItem(this.test, new TestSelectedListener(this)));
+    private void initTopMenuListeners(final StateBasedGame game, ResourceManager resourceManager) {
+        Image train = this.resourceManager.getImage("train");
+        Image gate = this.resourceManager.getImage("gate");
+        Image tree = this.resourceManager.getImage("tree");
+        Image wall = this.resourceManager.getImage("wall");
+        Image save = this.resourceManager.getImage("save");
+        Image test = this.resourceManager.getImage("try");
+
+        this.imageMenuItems.add(new ImageMenuItem(train, new TrainSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(gate, new GateSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(tree, new TreeSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(wall, new WallSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(save, new SaveSelectedListener(this, level,
+                this.levelController, this.translator, messageBox, game)));
+        this.imageMenuItems.add(new ImageMenuItem(test, new TestSelectedListener(this)));
     }
 }
