@@ -51,7 +51,6 @@ public class EditorState extends BasicGameState {
     private ResourceManager resourceManager;
 
     private LevelController levelController;
-    float scale = 1;
     private MessageBox messageBox;
     private Translator translator;
 
@@ -81,11 +80,11 @@ public class EditorState extends BasicGameState {
         this.initTopMenuListeners(game, this.resourceManager);
 
         for (ImageMenuItem item : this.imageMenuItems) {
-            item.setScale(this.scale);
+            item.setScale(this.level.getScale());
         }
         this.topMenu = new Menu(this.imageMenuItems, container, this.resourceManager,
                 this.container.getComponent(EffectFactory.class));
-        this.topMenu.setPaddingLeft((int) (this.active.getWidth() * this.scale));
+        this.topMenu.setPaddingLeft((int) (this.active.getWidth() * this.level.getScale()));
         this.topMenu.setBackgroundColor(new Color(0, 0, 0, 0));
         this.topMenu.setLayout(new FlowLayout(container, this.topMenu));
         this.topMenu.show();
@@ -102,15 +101,16 @@ public class EditorState extends BasicGameState {
         this.level.render(container, game, g);
 
         if (this.topMenu.isShowed()) {
-            this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight() * this.scale);
+            this.itemMenu.draw(0, 0, container.getWidth(),
+                    this.itemMenu.getHeight() * this.level.getScale());
         } else {
             this.itemMenu.draw(0, -this.level.getImageSize(), container.getWidth(),
-                    this.itemMenu.getHeight() * this.scale);
+                    this.itemMenu.getHeight() * this.level.getScale());
         }
         this.topMenu.render(container, game, g);
         if (this.showActive) {
             this.active.draw(this.fieldPosition.x, this.fieldPosition.y, this.active.getWidth()
-                    * this.scale, this.active.getHeight() * this.scale);
+                    * this.level.getScale(), this.active.getHeight() * this.level.getScale());
         }
         this.messageBox.render(container, game, g);
     }
@@ -188,8 +188,6 @@ public class EditorState extends BasicGameState {
 
         LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
         levelHelper.adjustLevelToContainer(container, level);
-
-        this.scale = this.level.getScale();
     }
 
     private void setItemPosition(Point gridPosition) {
