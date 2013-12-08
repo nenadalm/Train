@@ -51,7 +51,6 @@ public class EditorState extends BasicGameState {
     private Image active;
     private Item activeItem;
     // helping fields
-    private int itemSize;
     private boolean showActive = true;
     private Point fieldPosition;
     private Level level = null;
@@ -88,7 +87,6 @@ public class EditorState extends BasicGameState {
         this.itemMenu = this.resourceManager.getImage("itemMenu");
         this.active = this.resourceManager.getImage("active");
         this.activeItem = Item.WALL;
-        this.itemSize = this.active.getWidth();
 
         this.levelController = this.container.getComponent(LevelController.class);
         this.loadLevel(container);
@@ -120,8 +118,8 @@ public class EditorState extends BasicGameState {
         if (this.topMenu.isShowed()) {
             this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight() * this.scale);
         } else {
-            this.itemMenu.draw(0, -this.itemSize, container.getWidth(), this.itemMenu.getHeight()
-                    * this.scale);
+            this.itemMenu.draw(0, -this.level.getImageSize(), container.getWidth(),
+                    this.itemMenu.getHeight() * this.scale);
         }
         this.topMenu.render(container, game, g);
         if (this.showActive) {
@@ -136,8 +134,9 @@ public class EditorState extends BasicGameState {
         int offsetY = this.level.getMarginTop();
         int levelWidth = this.level.getWidth();
         int levelHeight = this.level.getHeight();
-        if (mouseX > offsetX && mouseY > offsetY && mouseX < offsetX + this.itemSize * levelWidth
-                && mouseY < offsetY + this.itemSize * levelHeight) {
+        if (mouseX > offsetX && mouseY > offsetY
+                && mouseX < offsetX + this.level.getImageSize() * levelWidth
+                && mouseY < offsetY + this.level.getImageSize() * levelHeight) {
             return true;
         }
         return false;
@@ -173,16 +172,16 @@ public class EditorState extends BasicGameState {
 
         if (!this.messageBox.isShowed()) {
             if (this.topMenu.isShowed()) {
-                indexX = mouseX / this.itemSize;
-                indexY = mouseY / this.itemSize;
+                indexX = mouseX / this.level.getImageSize();
+                indexY = mouseY / this.level.getImageSize();
                 offsetX = 0;
                 offsetY = 0;
             } else {
-                indexX = (mouseX - offsetX) / this.itemSize;
-                indexY = (mouseY - offsetY) / this.itemSize;
+                indexX = (mouseX - offsetX) / this.level.getImageSize();
+                indexY = (mouseY - offsetY) / this.level.getImageSize();
             }
-            int width = indexX * this.itemSize;
-            int height = indexY * this.itemSize;
+            int width = indexX * this.level.getImageSize();
+            int height = indexY * this.level.getImageSize();
             this.fieldPosition.setLocation(offsetX + width, offsetY + height);
             Point gridPosition = new Point(indexX, indexY);
 
@@ -204,7 +203,6 @@ public class EditorState extends BasicGameState {
         LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
         levelHelper.adjustLevelToContainer(container, level);
 
-        this.itemSize *= this.level.getScale();
         this.scale = this.level.getScale();
     }
 
@@ -264,8 +262,8 @@ public class EditorState extends BasicGameState {
 
     private void updateMenu(final StateBasedGame game, Input input) {
         int mouseY = input.getMouseY();
-        int index = this.fieldPosition.x / this.itemSize - 1;
-        if (mouseY < this.itemSize && index >= 0 && index < this.imageMenuItems.size()) {
+        int index = this.fieldPosition.x / this.level.getImageSize() - 1;
+        if (mouseY < this.level.getImageSize() && index >= 0 && index < this.imageMenuItems.size()) {
             this.showActive = true;
         } else {
             this.showActive = false;
