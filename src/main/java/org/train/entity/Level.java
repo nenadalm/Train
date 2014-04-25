@@ -1,7 +1,6 @@
 package org.train.entity;
 
 import java.awt.Point;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,12 +15,17 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
+import org.train.collection.LevelItemsStorage;
 import org.train.other.ResourceManager;
 
 public class Level extends Entity implements Cloneable {
 
     private Map<Item, Image> images;
+    /** @deprecated use levelItem instead */
+    @Deprecated
     private Item[][] level;
+    private LevelItem[][] levelItems;
+    private LevelItemsStorage levelItemsStorage;
     private int interval = 500;
     private float time = 0;
     private Train train;
@@ -38,12 +42,13 @@ public class Level extends Entity implements Cloneable {
     private Queue<Integer> keys = new LinkedList<Integer>();
 
     public Level(int width, int height, int refreshSpeed, ResourceManager resourceManager) {
+        this.levelItemsStorage = new LevelItemsStorage();
         this.interval = refreshSpeed;
         this.resourceManager = resourceManager;
-        this.levelInit(width, height);
-        this.train = new Train();
         this.trucks = new ArrayList<Truck>();
         this.loadImages();
+        this.train = new Train(this.images.get(Item.TRAIN), Item.TRAIN);
+        this.levelInit(width, height);
     }
 
     public Map<Item, Image> getImages() {
@@ -66,16 +71,19 @@ public class Level extends Entity implements Cloneable {
 
     @Override
     public int getWidth() {
-        return this.level.length;
+        return this.levelItems.length;
     }
 
     public void setItem(Point position, Item item) {
-        this.level[position.x][position.y] = item;
+        LevelItem levelItem = new LevelItem(this.images.get(item), item);
+        levelItem.setPosition(this.getItemPosition(position));
+        levelItem.setScale(this.getScale());
+        this.levelItems[position.x][position.y] = levelItem;
     }
 
     @Override
     public int getHeight() {
-        return this.level[0].length;
+        return this.levelItems[0].length;
     }
 
     public int getOriginalImageSize() {
@@ -90,17 +98,18 @@ public class Level extends Entity implements Cloneable {
     public void setScale(float scale) {
         super.setScale(scale);
         this.imageSize = (int) (this.originalImageSize * scale);
+        this.setArray(this.level);
     }
 
     @Override
     public Level clone() {
         Level level = new Level(this.getWidth(), this.getHeight(), this.interval,
                 this.resourceManager);
-        Item[][] items = new Item[this.getWidth()][];
-        for (int i = 0; i < this.getWidth(); i++) {
-            items[i] = (Item[]) Array.newInstance(this.level[i].getClass().getComponentType(),
-                    this.level[i].length);
-            System.arraycopy(this.level[i], 0, items[i], 0, this.level[i].length);
+        Item[][] items = new Item[this.levelItems.length][this.levelItems[0].length];
+        for (int i = 0; i < this.levelItems.length; i++) {
+            for (int j = 0; j < this.levelItems[0].length; j++) {
+                items[i][j] = this.levelItems[i][j].getType();
+            }
         }
         level.setArray(items);
         return level;
@@ -125,6 +134,7 @@ public class Level extends Entity implements Cloneable {
                 this.level[i][j] = Item.EMPTY;
             }
         }
+        this.setArray(this.level);
     }
 
     public enum Item {
@@ -144,33 +154,12 @@ public class Level extends Entity implements Cloneable {
     @Override
     public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
         gr.setColor(Color.red);
-        gr.drawRect(this.getMarginLeft(), this.getMarginTop(), this.level.length * this.imageSize
-                - gr.getLineWidth(), this.level[0].length * this.imageSize - gr.getLineWidth());
-        Image image = null;
-        for (int i = 0; i < this.level.length; i++) {
-            for (int j = 0; j < this.level[0].length; j++) {
-                image = this.images.get(this.level[i][j]);
-                if (this.level[i][j] == Item.TRAIN) {
-                    image = image.getFlippedCopy(this.train.isFlippedHorizontal(),
-                            this.train.isFlippedVertical());
-                    int origin = this.imageSize / 2;
-                    image.setCenterOfRotation(origin, origin);
-                    image.setRotation(this.train.getRotation());
-                } else if (this.level[i][j] == Item.TRUCK) {
-                    Truck truck = null;
-                    for (Truck t : this.trucks) {
-                        if (t.getPosition().x == i && t.getPosition().y == j) {
-                            truck = t;
-                        }
-                    }
-                    image = image.getFlippedCopy(truck.isFlippedHorizontal(),
-                            truck.isFlippedVertical());
-                    int origin = this.imageSize / 2;
-                    image.setCenterOfRotation(origin, origin);
-                    image.setRotation(truck.getRotation());
-                }
-                image.draw(this.getMarginLeft() + i * this.imageSize, this.getMarginTop() + j
-                        * this.imageSize, this.getScale());
+        gr.drawRect(this.getMarginLeft(), this.getMarginTop(), this.levelItems.length
+                * this.imageSize - gr.getLineWidth(), this.levelItems[0].length * this.imageSize
+                - gr.getLineWidth());
+        for (int i = 0; i < this.levelItems.length; i++) {
+            for (int j = 0; j < this.levelItems[0].length; j++) {
+                this.levelItems[i][j].render(gc, sb, gr);
             }
         }
     }
@@ -191,7 +180,8 @@ public class Level extends Entity implements Cloneable {
 
         if (this.itemsToWin == 0 && !this.isGateOpened) {
             try {
-                this.images.put(Item.GATE, this.resourceManager.getImage("gateOpen"));
+                this.levelItemsStorage.findGate().setImage(
+                        this.resourceManager.getImage("gateOpen"));
                 this.isGateOpened = true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -228,29 +218,34 @@ public class Level extends Entity implements Cloneable {
                 }
 
                 this.train.setDirection(this.trainDirectionPrepared);
-                Point lastPoint = (Point) this.train.getPosition().clone();
-                this.train.update(gc, sb, delta);
-                Point newPoint = this.train.getPosition();
+                Point lastPoint = this.levelItemsStorage.findTrainCoordinates();
+                Point newPoint = new Point(lastPoint.x + this.trainDirectionPrepared.x, lastPoint.y
+                        + this.trainDirectionPrepared.y);
 
-                if (this.trainCrashed()) {
+                if (this.trainCrashed(newPoint)) {
                     this.doCrash();
                 } else {
-                    if (this.level[newPoint.x][newPoint.y] == Item.TREE) {
+                    if (this.levelItems[newPoint.x][newPoint.y].getType() == Item.TREE) {
                         this.addTruck(lastPoint);
                         this.itemsToWin--;
                     } else {
-                        if (this.itemsToWin == 0 && this.level[newPoint.x][newPoint.y] == Item.GATE) {
+                        if (this.itemsToWin == 0
+                                && this.levelItems[newPoint.x][newPoint.y].getType() == Item.GATE) {
                             this.isGameWon = true;
                         }
                         this.moveTrucks(lastPoint, this.train.getRotation(),
                                 this.train.flippedHorizontal, this.train.flippedVertical);
 
                         if (this.trucks.size() == 0) {
-                            this.level[lastPoint.x][lastPoint.y] = Item.EMPTY;
+                            LevelItem empty = new LevelItem(this.images.get(Item.EMPTY), Item.EMPTY);
+                            empty.setPosition(this.getItemPosition(lastPoint));
+                            empty.setScale(this.getScale());
+                            this.levelItems[lastPoint.x][lastPoint.y] = empty;
                         }
                     }
-                    this.train.setPosition(newPoint);
-                    this.level[newPoint.x][newPoint.y] = Item.TRAIN;
+                    this.train.setPosition(this.getItemPosition(newPoint));
+                    this.train.setScale(this.getScale());
+                    this.levelItems[newPoint.x][newPoint.y] = this.train;
                 }
 
                 this.time = 0;
@@ -258,17 +253,16 @@ public class Level extends Entity implements Cloneable {
         }
     }
 
-    private boolean trainCrashed() {
-        Point newPoint = this.train.getPosition();
-        if (newPoint.x < 0 || newPoint.y < 0 || newPoint.x > this.level.length - 1
-                || newPoint.y > this.level[0].length - 1) {
+    private boolean trainCrashed(Point newPoint) {
+        if (newPoint.x < 0 || newPoint.y < 0 || newPoint.x > this.levelItems.length - 1
+                || newPoint.y > this.levelItems[0].length - 1) {
             return true;
         }
-        if (this.level[newPoint.x][newPoint.y] == Item.WALL
-                || this.level[newPoint.x][newPoint.y] == Item.TRUCK) {
+        if (this.levelItems[newPoint.x][newPoint.y].getType() == Item.WALL
+                || this.levelItems[newPoint.x][newPoint.y].getType() == Item.TRUCK) {
             return true;
         }
-        if (this.level[newPoint.x][newPoint.y] == Item.GATE && this.itemsToWin != 0) {
+        if (this.levelItems[newPoint.x][newPoint.y].getType() == Item.GATE && this.itemsToWin != 0) {
             return true;
         }
         return false;
@@ -289,35 +283,41 @@ public class Level extends Entity implements Cloneable {
             flippedHorizontalTemp = truck.isFlippedHorizontal();
             flippedVerticalTemp = truck.isFlippedVertical();
 
-            truck.setPosition(moveToPosition);
+            truck.setPosition(this.getItemPosition(moveToPosition));
             truck.setRotation(applyRotation);
             truck.setFlippedHorizontal(flippedHorizontal);
             truck.setFlippedVertical(flippedVertical);
 
-            this.level[moveToPosition.x][moveToPosition.y] = Item.TRUCK;
+            this.levelItems[moveToPosition.x][moveToPosition.y] = truck;
 
-            moveToPosition = positionTemp;
+            moveToPosition = this.getItemCoordinates(positionTemp);
             applyRotation = rotationTemp;
             flippedHorizontal = flippedHorizontalTemp;
             flippedVertical = flippedVerticalTemp;
         }
         if (this.trucks.size() != 0) {
-            this.level[positionTemp.x][positionTemp.y] = Item.EMPTY;
+            LevelItem empty = new LevelItem(this.images.get(Item.EMPTY), Item.EMPTY);
+            empty.setPosition(this.getItemPosition(moveToPosition));
+            empty.setScale(this.getScale());
+            Point coordinates = this.getItemCoordinates(positionTemp);
+            this.levelItems[coordinates.x][coordinates.y] = empty;
         }
     }
 
     private void addTruck(Point position) {
-        Truck t = new Truck();
-        t.setPosition(position);
+
+        Truck t = new Truck(this.images.get(Item.TRUCK), Item.TRUCK);
+        t.setScale(this.getScale());
+        t.setPosition(this.getItemPosition(position));
         t.setRotation(this.train.getRotation());
         t.setFlippedHorizontal(train.isFlippedHorizontal());
         t.setFlippedVertical(train.isFlippedVertical());
-        this.level[position.x][position.y] = Item.TRUCK;
+        this.levelItems[position.x][position.y] = t;
         this.trucks.add(t);
     }
 
     private void doCrash() {
-        this.images.put(Item.TRAIN, this.resourceManager.getImage("trainCrash"));
+        this.train.setImage(this.resourceManager.getImage("trainCrash"));
         this.isGameOver = true;
     }
 
@@ -326,55 +326,72 @@ public class Level extends Entity implements Cloneable {
     }
 
     public Item[][] toArray() {
-        return this.level;
+        Item[][] items = new Item[this.levelItems.length][this.levelItems[0].length];
+        for (int i = 0; i < items.length; i++) {
+            for (int j = 0; j < items[0].length; j++) {
+                items[i][j] = this.levelItems[i][j].getType();
+            }
+        }
+
+        return items;
     }
 
     public void setArray(Item[][] array) {
         this.level = array;
+        this.levelItems = new LevelItem[array.length][array[0].length];
+        this.levelItemsStorage.setLevelItems(this.levelItems);
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[0].length; j++) {
+                this.levelItems[i][j] = new LevelItem(this.images.get(array[i][j]), array[i][j]);
+                this.levelItems[i][j].setPosition(this.getItemPosition(new Point(i, j)));
+                this.levelItems[i][j].setScale(this.getScale());
+            }
+        }
+
         try {
-            this.train.setPosition(this.findTrainPosition());
+            this.train.setPosition(this.levelItemsStorage.findTrainCoordinates());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.itemsToWin = this.countItemsToWin();
+        this.itemsToWin = this.levelItemsStorage.getConsumableItemsCount();
         this.playable = this.isValid();
     }
 
-    private int countItemsToWin() {
-        int counter = 0;
-        for (int i = 0; i < this.level.length; i++) {
-            for (int j = 0; j < this.level[0].length; j++) {
-                if (this.level[i][j] == Item.TREE) {
-                    counter++;
-                }
-            }
-        }
-        return counter;
+    private Point getItemCoordinates(Point position) {
+        return new Point((position.x - this.getMarginLeft()) / this.imageSize,
+                (position.y - this.getMarginTop()) / this.imageSize);
+    }
+
+    private Point getItemPosition(Point coordinates) {
+        return new Point(new Point(this.getMarginLeft() + coordinates.x * this.imageSize,
+                this.getMarginTop() + coordinates.y * this.imageSize));
+    }
+
+    @Override
+    public void setMarginTop(int marginTop) {
+        super.setMarginTop(marginTop);
+        this.setArray(this.level);
+    }
+
+    @Override
+    public void setMarginLeft(int marginLeft) {
+        super.setMarginLeft(marginLeft);
+        this.setArray(this.level);
     }
 
     public boolean isValid() {
-        if (this.findGatePosition() != null && this.findTrainPosition() != null) {
+        if (this.levelItemsStorage.findGateCoordinates() != null
+                && this.levelItemsStorage.findTrainCoordinates() != null) {
             return true;
         }
         return false;
     }
 
     public Point findTrainPosition() {
-        return this.findItemPosition(Item.TRAIN);
+        return this.levelItemsStorage.findTrainCoordinates();
     }
 
     public Point findGatePosition() {
-        return this.findItemPosition(Item.GATE);
-    }
-
-    private Point findItemPosition(Item item) {
-        for (int i = 0; i < this.level.length; i++) {
-            for (int j = 0; j < this.level[0].length; j++) {
-                if (this.level[i][j] == item) {
-                    return new Point(i, j);
-                }
-            }
-        }
-        return null;
+        return this.levelItemsStorage.findGateCoordinates();
     }
 }

@@ -36,7 +36,7 @@ public class LevelController {
         this.resourceManager = resourceManager;
         this.config = config;
         this.loadLevels();
-        this.level = new Level(0, 0, Integer.parseInt(this.config.get("refreshSpeed")),
+        this.level = new Level(1, 1, Integer.parseInt(this.config.get("refreshSpeed")),
                 resourceManager);
     }
 
@@ -48,6 +48,10 @@ public class LevelController {
     public Level getCurrentLevel() {
         this.levelClone = this.level.clone();
         return this.levelClone;
+    }
+
+    public Level getCurrentLevelModified() {
+        return this.levelClone.clone();
     }
 
     public Dimension getOptimalLevelDimension(int screenWidth, int screenHeight, float scale) {

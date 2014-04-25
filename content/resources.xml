@@ -21,4 +21,10 @@
 
 	<!-- fonts -->
 	<resource type="font" id="ubuntu">fonts/ubuntu.ttf</resource>
+
+	<!-- trucks -->
+	<resource type="truck" id="treeTruck">
+		<truck image="treeTruck"/>
+		<item image="tree"/>
+	</resource>
 </resources>

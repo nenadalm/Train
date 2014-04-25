@@ -54,9 +54,10 @@ public class Game extends StateBasedGame {
                 this.addState(state);
             } else {
                 org.newdawn.slick.state.GameState state = this.getState(id);
-                if ((Game.isReinitializationRequried || id == Game.GAME_STATE
-                        || id == Game.EDITOR_STATE || id == Game.MENU_FOR_GAME_STATE
-                        || id == Game.OPTIONS_STATE || id == Game.TEST_GAME_STATE)) {
+                if ((Game.isReinitializationRequried
+                        || id == Game.GAME_STATE
+                        || (id == Game.EDITOR_STATE && this.getCurrentStateID() != Game.TEST_GAME_STATE)
+                        || id == Game.MENU_FOR_GAME_STATE || id == Game.OPTIONS_STATE || id == Game.TEST_GAME_STATE)) {
                     state.init(this.getContainer(), this);
                 }
             }

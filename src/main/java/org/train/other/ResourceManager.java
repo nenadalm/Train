@@ -4,17 +4,15 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.Effect;
 import org.train.app.Configuration;
 import org.train.factory.FontFactory;
-import org.train.helper.XmlHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class ResourceManager {
 
@@ -26,6 +24,7 @@ public class ResourceManager {
     public ResourceManager(Configuration config, FontFactory fontFactory) {
         this.config = config;
         this.images = new HashMap<String, Image>();
+
         this.fontFactory = fontFactory;
         this.fonts = new HashMap<String, String>();
         this.loadResources();
@@ -33,23 +32,19 @@ public class ResourceManager {
 
     private void loadResources() {
         try {
-            Document document = null;
-            document = XmlHelper.getDocument(new File(config.get("contentPath") + "resources.xml"));
+            SAXReader reader = new SAXReader();
+            Document document = reader.read(new File(config.get("contentPath") + "resources.xml"));
 
-            NodeList nodeList = document.getElementsByTagName("resource");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                NamedNodeMap nodeMap = node.getAttributes();
-                switch (nodeMap.getNamedItem("type").getNodeValue()) {
-                    case "image":
-                        this.images.put(nodeMap.getNamedItem("id").getNodeValue(),
-                                new Image(config.get("contentPath") + node.getTextContent()));
-                        break;
-                    case "font":
-                        this.fonts.put(nodeMap.getNamedItem("id").getNodeValue(),
-                                config.get("contentPath") + node.getTextContent());
-                        break;
-                }
+            for (Object el : document.selectNodes("/resources/resource[@type='image']")) {
+                Element imageEl = (Element) el;
+                this.images.put(imageEl.attributeValue("id"), new Image(config.get("contentPath")
+                        + imageEl.getText()));
+            }
+
+            for (Object el : document.selectNodes("/resources/resource[@type='font']")) {
+                Element fontEl = (Element) el;
+                this.fonts.put(fontEl.attributeValue("id"),
+                        config.get("contentPath") + fontEl.getText());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
