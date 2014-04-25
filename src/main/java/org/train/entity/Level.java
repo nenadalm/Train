@@ -21,9 +21,6 @@ import org.train.other.ResourceManager;
 public class Level extends Entity implements Cloneable {
 
     private Map<Item, Image> images;
-    /** @deprecated use levelItem instead */
-    @Deprecated
-    private Item[][] level;
     private LevelItem[][] levelItems;
     private LevelItemsStorage levelItemsStorage;
     private int interval = 500;
@@ -98,7 +95,7 @@ public class Level extends Entity implements Cloneable {
     public void setScale(float scale) {
         super.setScale(scale);
         this.imageSize = (int) (this.originalImageSize * scale);
-        this.setArray(this.level);
+        this.setArray(this.toArray());
     }
 
     @Override
@@ -128,13 +125,13 @@ public class Level extends Entity implements Cloneable {
     }
 
     private void levelInit(int width, int height) {
-        this.level = new Item[width][height];
-        for (int i = 0; i < this.level.length; i++) {
-            for (int j = 0; j < this.level[0].length; j++) {
-                this.level[i][j] = Item.EMPTY;
+        Item[][] level = new Item[width][height];
+        for (int i = 0; i < level.length; i++) {
+            for (int j = 0; j < level[0].length; j++) {
+                level[i][j] = Item.EMPTY;
             }
         }
-        this.setArray(this.level);
+        this.setArray(level);
     }
 
     public enum Item {
@@ -337,7 +334,6 @@ public class Level extends Entity implements Cloneable {
     }
 
     public void setArray(Item[][] array) {
-        this.level = array;
         this.levelItems = new LevelItem[array.length][array[0].length];
         this.levelItemsStorage.setLevelItems(this.levelItems);
         for (int i = 0; i < array.length; i++) {
@@ -370,13 +366,13 @@ public class Level extends Entity implements Cloneable {
     @Override
     public void setMarginTop(int marginTop) {
         super.setMarginTop(marginTop);
-        this.setArray(this.level);
+        this.setArray(this.toArray());
     }
 
     @Override
     public void setMarginLeft(int marginLeft) {
         super.setMarginLeft(marginLeft);
-        this.setArray(this.level);
+        this.setArray(this.toArray());
     }
 
     public boolean isValid() {
