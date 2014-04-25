@@ -316,7 +316,7 @@ public class LevelController {
             case 'G':
                 return Item.GATE;
             case 'T':
-                return Item.TREE;
+                return Item.ITEM;
             case 'V':
                 return Item.TRAIN;
             case 'E':

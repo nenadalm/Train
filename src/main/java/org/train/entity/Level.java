@@ -116,7 +116,7 @@ public class Level extends Entity implements Cloneable {
         this.images = new HashMap<Item, Image>(6);
         this.images.put(Item.WALL, this.resourceManager.getImage("wall"));
         this.images.put(Item.GATE, this.resourceManager.getImage("gate"));
-        this.images.put(Item.TREE, this.resourceManager.getImage("tree"));
+        this.images.put(Item.ITEM, this.resourceManager.getImage("tree"));
         this.images.put(Item.TRAIN, this.resourceManager.getImage("train"));
         this.images.put(Item.EMPTY, this.resourceManager.getImage("empty"));
         this.images.put(Item.TRUCK, this.resourceManager.getImage("treeTruck"));
@@ -135,7 +135,7 @@ public class Level extends Entity implements Cloneable {
     }
 
     public enum Item {
-        WALL('W'), GATE('G'), TREE('T'), TRAIN('V'), EMPTY('E'), TRUCK('R');
+        WALL('W'), GATE('G'), ITEM('T'), TRAIN('V'), EMPTY('E'), TRUCK('R');
 
         char c;
 
@@ -222,7 +222,7 @@ public class Level extends Entity implements Cloneable {
                 if (this.trainCrashed(newPoint)) {
                     this.doCrash();
                 } else {
-                    if (this.levelItems[newPoint.x][newPoint.y].getType() == Item.TREE) {
+                    if (this.levelItems[newPoint.x][newPoint.y].getType() == Item.ITEM) {
                         this.addTruck(lastPoint);
                         this.itemsToWin--;
                     } else {

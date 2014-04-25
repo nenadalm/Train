@@ -14,6 +14,6 @@ public class TreeSelectedListener extends ItemSelectedListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
-        this.editorState.setActiveItem(Item.TREE);
+        this.editorState.setActiveItem(Item.ITEM);
     }
 }

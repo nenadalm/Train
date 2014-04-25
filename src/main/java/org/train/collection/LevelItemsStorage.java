@@ -20,7 +20,7 @@ public class LevelItemsStorage {
         int counter = 0;
         for (int i = 0; i < this.levelItems.length; i++) {
             for (int j = 0; j < this.levelItems[0].length; j++) {
-                if (this.levelItems[i][j].getType() == Item.TREE) {
+                if (this.levelItems[i][j].getType() == Item.ITEM) {
                     counter++;
                 }
             }
