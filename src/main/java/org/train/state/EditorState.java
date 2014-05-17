@@ -54,6 +54,7 @@ public class EditorState extends BasicGameState {
     private LevelController levelController;
     private MessageBox messageBox;
     private Translator translator;
+    private boolean wasTopMenuShowed = false;
 
     private Point gatePosition = null;
     private Point trainPosition = null;
@@ -174,7 +175,9 @@ public class EditorState extends BasicGameState {
 
             if (this.topMenu.isShowed()) {
                 this.updateMenu(game, input);
-            } else {
+                this.wasTopMenuShowed = true;
+            } else if (!this.wasTopMenuShowed || !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+                this.wasTopMenuShowed = false;
                 this.updateEditor(gridPosition, input);
             }
             this.topMenu.update(container, game, delta);

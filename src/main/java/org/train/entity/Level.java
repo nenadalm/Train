@@ -129,7 +129,6 @@ public class Level extends Entity implements Cloneable {
         this.images.put(Item.ITEM, this.resourceManager.getImage("tree"));
         this.images.put(Item.TRAIN, this.resourceManager.getImage("train"));
         this.images.put(Item.EMPTY, this.resourceManager.getImage("empty"));
-        this.images.put(Item.TRUCK, this.resourceManager.getImage("treeTruck"));
         this.imageSize = this.images.get(Item.WALL).getWidth();
         this.originalImageSize = this.imageSize;
     }
@@ -168,9 +167,10 @@ public class Level extends Entity implements Cloneable {
                 this.levelItemsStorage.getLevelItems().length * this.imageSize - gr.getLineWidth(),
                 this.levelItemsStorage.getLevelItems()[0].length * this.imageSize
                         - gr.getLineWidth());
-        for (int i = 0; i < this.levelItemsStorage.getLevelItems().length; i++) {
-            for (int j = 0; j < this.levelItemsStorage.getLevelItems()[0].length; j++) {
-                this.levelItemsStorage.getLevelItems()[i][j].render(gc, sb, gr);
+
+        for (LevelItem[] row : this.levelItemsStorage.getLevelItems()) {
+            for (LevelItem col : row) {
+                col.render(gc, sb, gr);
             }
         }
     }
@@ -189,46 +189,17 @@ public class Level extends Entity implements Cloneable {
             return;
         }
 
-        if (this.itemsToWin == 0 && !this.isGateOpened) {
-            try {
-                this.levelItemsStorage.findGate().setImage(
-                        this.resourceManager.getImage("gateOpen"));
-                this.isGateOpened = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        this.openGateIfItemsAreJustCollected();
 
         Input input = gc.getInput();
 
         if (!this.isGameOver && !this.isGameWon) {
-            if (input.isKeyPressed(Keyboard.KEY_UP)) {
-                this.keys.add(Keyboard.KEY_UP);
-            } else if (input.isKeyPressed(Keyboard.KEY_DOWN)) {
-                this.keys.add(Keyboard.KEY_DOWN);
-            } else if (input.isKeyPressed(Keyboard.KEY_LEFT)) {
-                this.keys.add(Keyboard.KEY_LEFT);
-            } else if (input.isKeyPressed(Keyboard.KEY_RIGHT)) {
-                this.keys.add(Keyboard.KEY_RIGHT);
-            }
+            this.storeMovementKeysInQueue(input);
 
             this.time += delta;
             if (this.time >= this.interval) {
+                this.changeTrainDirectionBasedOnKeysInQueue();
 
-                Integer key = this.keys.poll();
-                if (key != null) {
-                    if (key == Keyboard.KEY_UP) {
-                        this.trainDirectionPrepared = new Point(0, -1);
-                    } else if (key == Keyboard.KEY_DOWN) {
-                        this.trainDirectionPrepared = new Point(0, 1);
-                    } else if (key == Keyboard.KEY_LEFT) {
-                        this.trainDirectionPrepared = new Point(-1, 0);
-                    } else if (key == Keyboard.KEY_RIGHT) {
-                        this.trainDirectionPrepared = new Point(1, 0);
-                    }
-                }
-
-                this.train.setDirection(this.trainDirectionPrepared);
                 Point lastPoint = this.levelItemsStorage.findTrainCoordinates();
                 Point newPoint = new Point(lastPoint.x + this.trainDirectionPrepared.x, lastPoint.y
                         + this.trainDirectionPrepared.y);
@@ -236,33 +207,75 @@ public class Level extends Entity implements Cloneable {
                 if (this.trainCrashed(newPoint)) {
                     this.doCrash();
                 } else {
-                    if (this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y].getType() == Item.ITEM) {
-                        this.addTruck(lastPoint,
-                                this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y]);
-                        this.itemsToWin--;
-                    } else {
-                        if (this.itemsToWin == 0
-                                && this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y]
-                                        .getType() == Item.GATE) {
-                            this.isGameWon = true;
-                        }
-                        this.moveTrucks(lastPoint, this.train.getRotation(),
-                                this.train.flippedHorizontal, this.train.flippedVertical);
-
-                        if (this.trucks.size() == 0) {
-                            LevelItem empty = new LevelItem("empty", this.images.get(Item.EMPTY),
-                                    Item.EMPTY);
-                            empty.setPosition(this.getItemPosition(lastPoint));
-                            empty.setScale(this.getScale());
-                            this.levelItemsStorage.getLevelItems()[lastPoint.x][lastPoint.y] = empty;
-                        }
-                    }
-                    this.train.setPosition(this.getItemPosition(newPoint));
-                    this.train.setScale(this.getScale());
-                    this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y] = this.train;
+                    this.moveTrain(lastPoint, newPoint);
                 }
 
                 this.time = 0;
+            }
+        }
+    }
+
+    private void moveTrain(Point lastPoint, Point newPoint) {
+        if (this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y].getType() == Item.ITEM) {
+            this.addTruck(lastPoint, this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y]);
+            this.itemsToWin--;
+        } else {
+            if (this.itemsToWin == 0
+                    && this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y].getType() == Item.GATE) {
+                this.isGameWon = true;
+            }
+            this.moveTrucks(lastPoint, this.train.getRotation(), this.train.flippedHorizontal,
+                    this.train.flippedVertical);
+
+            if (this.trucks.size() == 0) {
+                LevelItem empty = new LevelItem("empty", this.images.get(Item.EMPTY), Item.EMPTY);
+                empty.setPosition(this.getItemPosition(lastPoint));
+                empty.setScale(this.getScale());
+                this.levelItemsStorage.getLevelItems()[lastPoint.x][lastPoint.y] = empty;
+            }
+        }
+        this.train.setPosition(this.getItemPosition(newPoint));
+        this.train.setScale(this.getScale());
+        this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y] = this.train;
+    }
+
+    private void changeTrainDirectionBasedOnKeysInQueue() {
+        Integer key = this.keys.poll();
+        if (key != null) {
+            if (key == Keyboard.KEY_UP) {
+                this.trainDirectionPrepared = new Point(0, -1);
+            } else if (key == Keyboard.KEY_DOWN) {
+                this.trainDirectionPrepared = new Point(0, 1);
+            } else if (key == Keyboard.KEY_LEFT) {
+                this.trainDirectionPrepared = new Point(-1, 0);
+            } else if (key == Keyboard.KEY_RIGHT) {
+                this.trainDirectionPrepared = new Point(1, 0);
+            }
+        }
+
+        this.train.setDirection(this.trainDirectionPrepared);
+    }
+
+    private void storeMovementKeysInQueue(Input input) {
+        if (input.isKeyPressed(Keyboard.KEY_UP)) {
+            this.keys.add(Keyboard.KEY_UP);
+        } else if (input.isKeyPressed(Keyboard.KEY_DOWN)) {
+            this.keys.add(Keyboard.KEY_DOWN);
+        } else if (input.isKeyPressed(Keyboard.KEY_LEFT)) {
+            this.keys.add(Keyboard.KEY_LEFT);
+        } else if (input.isKeyPressed(Keyboard.KEY_RIGHT)) {
+            this.keys.add(Keyboard.KEY_RIGHT);
+        }
+    }
+
+    private void openGateIfItemsAreJustCollected() {
+        if (this.itemsToWin == 0 && !this.isGateOpened) {
+            try {
+                this.levelItemsStorage.findGate().setImage(
+                        this.resourceManager.getImage("gateOpen"));
+                this.isGateOpened = true;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
