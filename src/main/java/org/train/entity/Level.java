@@ -70,11 +70,15 @@ public class Level extends Entity implements Cloneable {
         return this.levelItemsStorage.getLevelItems().length;
     }
 
-    public void setItem(Point position, Item item) {
-        LevelItem levelItem = new LevelItem("", this.images.get(item), item);
-        levelItem.setPosition(this.getItemPosition(position));
-        levelItem.setScale(this.getScale());
-        this.levelItemsStorage.getLevelItems()[position.x][position.y] = levelItem;
+    public void setLevelItem(LevelItem levelItem, Point position) {
+        try {
+            LevelItem clonedItem = (LevelItem) levelItem.clone();
+            clonedItem.setPosition(this.getItemPosition(position));
+            clonedItem.setScale(this.getScale());
+            this.levelItemsStorage.getLevelItems()[position.x][position.y] = clonedItem;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

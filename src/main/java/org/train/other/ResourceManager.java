@@ -62,6 +62,10 @@ public class ResourceManager {
         }
     }
 
+    public Map<String, Truck> getTrucks() {
+        return trucks;
+    }
+
     public Truck getTruck(String name) {
         return this.trucks.get(name);
     }

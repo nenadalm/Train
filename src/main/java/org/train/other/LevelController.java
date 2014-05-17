@@ -290,7 +290,15 @@ public class LevelController {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < level[0].length; i++) {
             for (int j = 0; j < level.length; j++) {
-                buffer.append(level[j][i].getType().getChar() + ":" + level[j][i].getName());
+                buffer.append(level[j][i].getType().getChar());
+
+                if (level[j][i].getName().length() > 0) {
+                    buffer.append(":" + level[j][i].getName());
+                }
+
+                if (j < level.length - 1) {
+                    buffer.append(" ");
+                }
             }
             buffer.append("\n");
         }

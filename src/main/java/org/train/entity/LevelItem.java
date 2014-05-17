@@ -5,7 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class LevelItem extends Entity {
+public class LevelItem extends Entity implements Cloneable {
     protected Image image;
     private Level.Item type;
     private String name;
@@ -33,5 +33,10 @@ public class LevelItem extends Entity {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return new LevelItem(this.name, this.image, this.type);
     }
 }

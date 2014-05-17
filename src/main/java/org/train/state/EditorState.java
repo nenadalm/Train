@@ -19,10 +19,12 @@ import org.train.entity.FlowLayout;
 import org.train.entity.ImageMenuItem;
 import org.train.entity.Level;
 import org.train.entity.Level.Item;
+import org.train.entity.LevelItem;
 import org.train.entity.Menu;
 import org.train.entity.MessageBox;
 import org.train.factory.EffectFactory;
 import org.train.helper.LevelHelper;
+import org.train.model.Truck;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
@@ -41,7 +43,7 @@ public class EditorState extends BasicGameState {
     private List<ImageMenuItem> imageMenuItems;
     // editor images
     private Image active;
-    private Item activeItem;
+    private LevelItem activeItem;
     // helping fields
     private boolean showActive = true;
     private Point fieldPosition;
@@ -70,7 +72,7 @@ public class EditorState extends BasicGameState {
 
         this.itemMenu = this.resourceManager.getImage("itemMenu");
         this.active = this.resourceManager.getImage("active");
-        this.activeItem = Item.WALL;
+        this.activeItem = new LevelItem("wall", this.resourceManager.getImage("wall"), Item.WALL);
 
         this.levelController = this.container.getComponent(LevelController.class);
         this.loadLevel(container);
@@ -201,23 +203,23 @@ public class EditorState extends BasicGameState {
             default:
         }
         // load position
-        switch (this.activeItem) {
+        switch (this.activeItem.getType()) {
             case TRAIN:
                 if (this.trainPosition != null) {
-                    this.level.setItem(this.trainPosition, Item.EMPTY);
+                    this.level.setLevelItem(this.activeItem, this.trainPosition);
                 }
                 this.trainPosition = gridPosition;
                 break;
             case GATE:
                 if (this.gatePosition != null) {
-                    this.level.setItem(this.gatePosition, Item.EMPTY);
+                    this.level.setLevelItem(this.activeItem, this.gatePosition);
                 }
                 this.gatePosition = gridPosition;
                 break;
             default:
                 break;
         }
-        this.level.setItem(gridPosition, this.activeItem);
+        this.level.setLevelItem(this.activeItem, gridPosition);
     }
 
     private void updateEditor(Point gridPosition, Input input) {
@@ -238,7 +240,9 @@ public class EditorState extends BasicGameState {
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
                 this.setItemPosition(gridPosition);
             } else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
-                this.level.setItem(gridPosition, Item.EMPTY);
+                this.level.setLevelItem(
+                        new LevelItem("empty", this.resourceManager.getImage("empty"), Item.EMPTY),
+                        gridPosition);
             }
         }
     }
@@ -257,22 +261,27 @@ public class EditorState extends BasicGameState {
         return this.topMenu;
     }
 
-    public void setActiveItem(Item item) {
+    public void setActiveItem(LevelItem item) {
         this.activeItem = item;
     }
 
     private void initTopMenuListeners(final StateBasedGame game, ResourceManager resourceManager) {
         Image train = this.resourceManager.getImage("train");
         Image gate = this.resourceManager.getImage("gate");
-        Image tree = this.resourceManager.getImage("tree");
         Image wall = this.resourceManager.getImage("wall");
         Image save = this.resourceManager.getImage("save");
         Image test = this.resourceManager.getImage("try");
 
-        this.imageMenuItems.add(new ImageMenuItem(train, new TrainSelectedListener(this)));
-        this.imageMenuItems.add(new ImageMenuItem(gate, new GateSelectedListener(this)));
-        this.imageMenuItems.add(new ImageMenuItem(tree, new TreeSelectedListener(this)));
-        this.imageMenuItems.add(new ImageMenuItem(wall, new WallSelectedListener(this)));
+        this.imageMenuItems.add(new ImageMenuItem(train, new TrainSelectedListener(this, train)));
+        this.imageMenuItems.add(new ImageMenuItem(gate, new GateSelectedListener(this, gate)));
+
+        for (String name : this.resourceManager.getTrucks().keySet()) {
+            Truck t = this.resourceManager.getTrucks().get(name);
+            this.imageMenuItems.add(new ImageMenuItem(t.getItem(), new TreeSelectedListener(this,
+                    name, t.getItem())));
+        }
+
+        this.imageMenuItems.add(new ImageMenuItem(wall, new WallSelectedListener(this, wall)));
         this.imageMenuItems.add(new ImageMenuItem(save, new SaveSelectedListener(this, level,
                 this.levelController, this.translator, messageBox, game)));
         this.imageMenuItems.add(new ImageMenuItem(test, new TestSelectedListener(this, game)));

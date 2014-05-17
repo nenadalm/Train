@@ -1,11 +1,11 @@
 W W W W W W W W W W W W W W W W W W W W
 W E E E E E E E E E E E E E E E E E E W
-W E E T E E E E E W E E E E E E E E E W
-W E T T T E E E E W E E E T E T E E E W
-W E T T T E E E E W E E T E T E T E E W
-W E T T T E E E E W E E E T E T E E E W
-W E E T E E E E E G E E T E T E T E E W
-W E E E E E E E E W E E E T E T E E E W
+W E E T:diamond E E E E E W E E E E E E E E E W
+W E T:diamond T:diamond T:diamond E E E E W E E E T:tree E T:tree E E E W
+W E T:diamond T:tree T:diamond E E E E W E E T:tree E T:tree E T:tree E E W
+W E T:diamond T:diamond T:diamond E E E E W E E E T:tree E T:tree E E E W
+W E E T:diamond E E E E E G E E T:tree E T:tree E T:tree E E W
+W E E E E E E E E W E E E T:tree E T:tree E E E W
 W E E E E E E E E W E E E E E E E E E W
 W E E V E E E E E W E E E E E E E E E W
 W E E E E E E E E W E E E E E E E E E W
