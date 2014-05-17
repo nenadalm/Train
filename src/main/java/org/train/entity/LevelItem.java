@@ -8,10 +8,12 @@ import org.newdawn.slick.state.StateBasedGame;
 public class LevelItem extends Entity {
     protected Image image;
     private Level.Item type;
+    private String name;
 
-    public LevelItem(Image image, Level.Item type) {
+    public LevelItem(String name, Image image, Level.Item type) {
         this.image = image;
         this.type = type;
+        this.name = name;
     }
 
     @Override
@@ -27,5 +29,9 @@ public class LevelItem extends Entity {
 
     public Level.Item getType() {
         return type;
+    }
+
+    public String getName() {
+        return name;
     }
 }

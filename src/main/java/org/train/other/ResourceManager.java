@@ -13,9 +13,11 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.Effect;
 import org.train.app.Configuration;
 import org.train.factory.FontFactory;
+import org.train.model.Truck;
 
 public class ResourceManager {
 
+    private Map<String, Truck> trucks;
     private Map<String, String> fonts;
     private FontFactory fontFactory;
     private Map<String, Image> images;
@@ -24,6 +26,7 @@ public class ResourceManager {
     public ResourceManager(Configuration config, FontFactory fontFactory) {
         this.config = config;
         this.images = new HashMap<String, Image>();
+        this.trucks = new HashMap<String, Truck>();
 
         this.fontFactory = fontFactory;
         this.fonts = new HashMap<String, String>();
@@ -46,9 +49,21 @@ public class ResourceManager {
                 this.fonts.put(fontEl.attributeValue("id"),
                         config.get("contentPath") + fontEl.getText());
             }
+
+            for (Object el : document.selectNodes("/resources/resource[@type='truck']")) {
+                Element truckEl = (Element) el;
+                String truckImg = truckEl.element("truck").attributeValue("image");
+                String itemImg = truckEl.element("item").attributeValue("image");
+                this.trucks.put(truckEl.attributeValue("id"), new Truck(this.getImage(truckImg),
+                        this.getImage(itemImg)));
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public Truck getTruck(String name) {
+        return this.trucks.get(name);
     }
 
     public Font getFont(String type, int size, Effect effect) throws SlickException {

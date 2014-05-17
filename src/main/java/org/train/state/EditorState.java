@@ -191,7 +191,7 @@ public class EditorState extends BasicGameState {
 
     private void setItemPosition(Point gridPosition) {
         // remove position
-        Item item = this.level.toArray()[gridPosition.x][gridPosition.y];
+        Item item = this.level.getLevelItems()[gridPosition.x][gridPosition.y].getType();
         switch (item) {
             case TRAIN:
                 this.trainPosition = null;

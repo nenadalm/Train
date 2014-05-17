@@ -9,7 +9,7 @@ public class Truck extends LevelItem {
     private boolean flippedVertical;
 
     public Truck(Image image, Item type) {
-        super(image, type);
+        super("", image, type);
         this.original = image;
     }
 

@@ -16,6 +16,14 @@
 	<resource type="image" id="trainCrash">graphics/trainCrash.png</resource>
 	<resource type="image" id="tree">graphics/tree.png</resource>
 	<resource type="image" id="treeTruck">graphics/treeTruck.png</resource>
+	<resource type="image" id="cherry">graphics/cherry.png</resource>
+	<resource type="image" id="cherryTruck">graphics/cherryTruck.png</resource>
+	<resource type="image" id="apple">graphics/apple.png</resource>
+	<resource type="image" id="appleTruck">graphics/appleTruck.png</resource>
+	<resource type="image" id="diamond">graphics/diamond.png</resource>
+	<resource type="image" id="diamondTruck">graphics/diamondTruck.png</resource>
+	<resource type="image" id="lake">graphics/lake.png</resource>
+	<resource type="image" id="lakeTruck">graphics/lakeTruck.png</resource>
 	<resource type="image" id="try">graphics/try.png</resource>
 	<resource type="image" id="wall">graphics/wall.png</resource>
 
@@ -23,23 +31,23 @@
 	<resource type="font" id="ubuntu">fonts/ubuntu.ttf</resource>
 
 	<!-- trucks -->
-	<resource type="truck" id="treeTruck">
+	<resource type="truck" id="tree">
 		<truck image="treeTruck"/>
 		<item image="tree"/>
 	</resource>
-	<resource type="truck" id="cherryTruck">
+	<resource type="truck" id="cherry">
 		<truck image="cherryTruck"/>
 		<item image="cherry"/>
 	</resource>
-	<resource type="truck" id="appleTruck">
+	<resource type="truck" id="apple">
 		<truck image="appleTruck"/>
 		<item image="apple"/>
 	</resource>
-	<resource type="truck" id="diamondTruck">
+	<resource type="truck" id="diamond">
 		<truck image="diamondTruck"/>
 		<item image="diamond"/>
 	</resource>
-	<resource type="truck" id="lakeTruck">
+	<resource type="truck" id="lake">
 		<truck image="lakeTruck"/>
 		<item image="lake"/>
 	</resource>

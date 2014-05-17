@@ -11,11 +11,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.newdawn.slick.Image;
 import org.train.app.Configuration;
 import org.train.entity.Level;
 import org.train.entity.Level.Item;
+import org.train.entity.LevelItem;
+import org.train.model.Truck;
 
 public class LevelController {
 
@@ -86,16 +91,11 @@ public class LevelController {
             throw new Exception("Cannot read from file '" + file.getAbsolutePath() + "'.");
         }
 
-        if (!this.levelIsValid(lines)) {
-            throw new Exception("Format of level is invalid. File: '" + file.getAbsolutePath()
-                    + "'");
-        }
-
         this.currentLevelIndex = levelIndex;
         this.currentPackageIndex = packageIndex;
         this.currentLevelFileName = this.getLevelFileName(levelIndex, levelName);
         this.currentLevelPackageName = this.getPackageFileName(packageIndex, packageName);
-        this.level.setArray(this.getArrayFromLines(lines));
+        this.level.setLevelItems(this.getLevelItemsFromLines(lines));
     }
 
     public byte[] getProgresses() {
@@ -139,22 +139,6 @@ public class LevelController {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    /**
-     * Check, if all lines have same length.
-     * 
-     * @param lines
-     * @return
-     */
-    private boolean levelIsValid(List<String> lines) {
-        int width = lines.get(0).length();
-        for (int i = 1; i < lines.size(); i++) {
-            if (lines.get(i).length() != width) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -215,22 +199,49 @@ public class LevelController {
         return fileName.replaceFirst(".*?_", "");
     }
 
-    /**
-     * Returns array of items from lines of file of level.
-     * 
-     * @param lines
-     * @return
-     */
-    private Item[][] getArrayFromLines(List<String> lines) {
-        int width = lines.get(0).length();
-        Item level[][] = new Item[width][lines.size()];
-        for (int i = 0; i < lines.size(); i++) {
-            for (int j = 0; j < width; j++) {
-                level[j][i] = this.getItemFromLetter(lines.get(i).charAt(j));
+    private LevelItem[][] getLevelItemsFromLines(List<String> lines) {
+        Map<Item, Image> images = new HashMap<Item, Image>(6);
+        images.put(Item.WALL, this.resourceManager.getImage("wall"));
+        images.put(Item.GATE, this.resourceManager.getImage("gate"));
+        images.put(Item.ITEM, this.resourceManager.getImage("tree"));
+        images.put(Item.TRAIN, this.resourceManager.getImage("train"));
+        images.put(Item.EMPTY, this.resourceManager.getImage("empty"));
+        images.put(Item.TRUCK, this.resourceManager.getImage("treeTruck"));
+
+        int rows = lines.size();
+        int cols = lines.get(0).split(" ").length;
+
+        LevelItem[][] levelItems = new LevelItem[cols][rows];
+        for (int i = 0; i < rows; i++) {
+            String[] lineItems = lines.get(i).split(" ");
+            for (int j = 0; j < cols; j++) {
+                Item type = this.getItemFromLetter(lineItems[j].charAt(0));
+                String[] typeName = lineItems[j].split(":");
+                String name = "";
+                if (typeName.length > 1) {
+                    name = typeName[1];
+                }
+
+                Image img = null;
+                if (type == Item.ITEM) {
+                    Truck t = null;
+
+                    t = this.resourceManager.getTruck(name);
+
+                    if (t == null) {
+                        name = "tree";
+                        t = this.resourceManager.getTruck(name);
+                    }
+                    img = t.getItem();
+                } else {
+                    img = images.get(type);
+                }
+
+                levelItems[j][i] = new LevelItem(name, img, type);
             }
         }
 
-        return level;
+        return levelItems;
     }
 
     /**
@@ -273,13 +284,13 @@ public class LevelController {
      * @param levelName
      *            Name of file
      */
-    public void saveLevel(Item[][] level, String levelName, String packageName) {
+    public void saveLevel(LevelItem[][] level, String levelName, String packageName) {
 
         // load level into string buffer
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < level[0].length; i++) {
             for (int j = 0; j < level.length; j++) {
-                buffer.append(level[j][i].getChar());
+                buffer.append(level[j][i].getType().getChar() + ":" + level[j][i].getName());
             }
             buffer.append("\n");
         }
@@ -298,7 +309,7 @@ public class LevelController {
     }
 
     public void saveCurrentLevel() {
-        Item level[][] = this.levelClone.toArray();
+        LevelItem level[][] = this.levelClone.getLevelItems();
         this.saveLevel(level, this.currentLevelFileName, this.currentLevelPackageName);
     }
 
@@ -322,7 +333,7 @@ public class LevelController {
             case 'E':
                 return Item.EMPTY;
         }
-        return Item.EMPTY;
+        return Item.ITEM;
     }
 
     /**
@@ -356,7 +367,7 @@ public class LevelController {
         String packageFileName = this.getPackageFileName(packageIndex, packageName);
         Level level = new Level(width, height, Integer.parseInt(this.config.get("refreshSpeed")),
                 this.resourceManager);
-        this.saveLevel(level.toArray(), levelFileName, packageFileName);
+        this.saveLevel(level.getLevelItems(), levelFileName, packageFileName);
     }
 
     private String getLevelPath(int packageIndex, String packageName, int levelIndex,
@@ -390,19 +401,20 @@ public class LevelController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Item levelArray[][] = this.level.toArray();
-        Item newArray[][] = new Item[width][height];
-        for (int i = 0; i < newArray.length; i++) {
-            for (int j = 0; j < newArray[0].length; j++) {
+        LevelItem levelArray[][] = this.level.getLevelItems();
+        LevelItem newLevelItems[][] = new LevelItem[width][height];
+        for (int i = 0; i < newLevelItems.length; i++) {
+            for (int j = 0; j < newLevelItems[0].length; j++) {
                 if (levelArray.length > i && levelArray[0].length > j) {
-                    newArray[i][j] = levelArray[i][j];
+                    newLevelItems[i][j] = levelArray[i][j];
                 } else {
-                    newArray[i][j] = Item.EMPTY;
+                    newLevelItems[i][j] = new LevelItem("empty",
+                            this.resourceManager.getImage("empty"), Item.EMPTY);
                 }
             }
         }
 
-        this.getCurrentLevel().setArray(newArray);
+        this.getCurrentLevel().setLevelItems(newLevelItems);
         this.saveCurrentLevel();
     }
 

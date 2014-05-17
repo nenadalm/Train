@@ -12,7 +12,7 @@ public class Train extends LevelItem {
     boolean flippedVertical = false;
 
     public Train(Image image, Level.Item type) {
-        super(image, type);
+        super("", image, type);
         this.original = image;
         this.addComponent(new MoveComponent());
     }
