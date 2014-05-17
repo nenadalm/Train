@@ -20,6 +20,10 @@ import org.train.other.ResourceManager;
 
 public class Level extends Entity implements Cloneable {
 
+    private int levelIndex;
+    private int packageIndex;
+    private String levelName;
+    private String packageName;
     private Map<Item, Image> images;
     private LevelItemsStorage levelItemsStorage;
     private int interval = 500;
@@ -71,14 +75,10 @@ public class Level extends Entity implements Cloneable {
     }
 
     public void setLevelItem(LevelItem levelItem, Point position) {
-        try {
-            LevelItem clonedItem = (LevelItem) levelItem.clone();
-            clonedItem.setPosition(this.getItemPosition(position));
-            clonedItem.setScale(this.getScale());
-            this.levelItemsStorage.getLevelItems()[position.x][position.y] = clonedItem;
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+        LevelItem clonedItem = (LevelItem) levelItem.clone();
+        clonedItem.setPosition(this.getItemPosition(position));
+        clonedItem.setScale(this.getScale());
+        this.levelItemsStorage.getLevelItems()[position.x][position.y] = clonedItem;
     }
 
     @Override
@@ -103,17 +103,22 @@ public class Level extends Entity implements Cloneable {
 
     @Override
     public Level clone() {
-        Level level = new Level(this.getWidth(), this.getHeight(), this.interval,
-                this.resourceManager);
         LevelItem[][] levelItems = new LevelItem[this.levelItemsStorage.getLevelItems().length][this.levelItemsStorage
                 .getLevelItems()[0].length];
-
         for (int i = 0; i < this.levelItemsStorage.getLevelItems().length; i++) {
             for (int j = 0; j < this.levelItemsStorage.getLevelItems()[0].length; j++) {
-                levelItems[i][j] = this.levelItemsStorage.getLevelItems()[i][j];
+                levelItems[i][j] = (LevelItem) this.levelItemsStorage.getLevelItems()[i][j].clone();
             }
         }
-        level.setLevelItems(this.getLevelItems());
+
+        Level level = new Level(this.getWidth(), this.getHeight(), this.interval,
+                this.resourceManager);
+        level.setLevelIndex(this.levelIndex);
+        level.setPackageIndex(this.packageIndex);
+        level.setLevelName(this.levelName);
+        level.setPackageName(this.packageName);
+        level.setLevelItems(levelItems);
+
         return level;
     }
 
@@ -397,5 +402,37 @@ public class Level extends Entity implements Cloneable {
 
     public Point findGatePosition() {
         return this.levelItemsStorage.findGateCoordinates();
+    }
+
+    public int getLevelIndex() {
+        return levelIndex;
+    }
+
+    public void setLevelIndex(int levelIndex) {
+        this.levelIndex = levelIndex;
+    }
+
+    public int getPackageIndex() {
+        return packageIndex;
+    }
+
+    public void setPackageIndex(int packageIndex) {
+        this.packageIndex = packageIndex;
+    }
+
+    public String getLevelName() {
+        return levelName;
+    }
+
+    public void setLevelName(String levelName) {
+        this.levelName = levelName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }

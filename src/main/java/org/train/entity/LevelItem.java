@@ -36,7 +36,7 @@ public class LevelItem extends Entity implements Cloneable {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         return new LevelItem(this.name, this.image, this.type);
     }
 }

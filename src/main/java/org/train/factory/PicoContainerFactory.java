@@ -11,6 +11,7 @@ import org.train.app.Configuration;
 import org.train.app.Game;
 import org.train.entity.MessageBox;
 import org.train.helper.LevelHelper;
+import org.train.level.LevelManager;
 import org.train.loader.ConfigurationXmlLoader;
 import org.train.loader.TranslationLoaderFactory;
 import org.train.menu.MenuBuilder;
@@ -45,6 +46,8 @@ public class PicoContainerFactory {
         container.addComponent(EffectFactory.class);
         container.addComponent(LevelHelper.class);
         container.addComponent(Display.class);
+        container.addComponent(LevelManager.class);
+
         container.as(Characteristics.NO_CACHE).addComponent(MenuBuilder.class);
 
         return container;
