@@ -27,4 +27,20 @@
 		<truck image="treeTruck"/>
 		<item image="tree"/>
 	</resource>
+	<resource type="truck" id="cherryTruck">
+		<truck image="cherryTruck"/>
+		<item image="cherry"/>
+	</resource>
+	<resource type="truck" id="appleTruck">
+		<truck image="appleTruck"/>
+		<item image="apple"/>
+	</resource>
+	<resource type="truck" id="diamondTruck">
+		<truck image="diamondTruck"/>
+		<item image="diamond"/>
+	</resource>
+	<resource type="truck" id="lakeTruck">
+		<truck image="lakeTruck"/>
+		<item image="lake"/>
+	</resource>
 </resources>
