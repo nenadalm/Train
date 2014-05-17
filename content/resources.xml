@@ -24,6 +24,8 @@
 	<resource type="image" id="diamondTruck">graphics/diamondTruck.png</resource>
 	<resource type="image" id="lake">graphics/lake.png</resource>
 	<resource type="image" id="lakeTruck">graphics/lakeTruck.png</resource>
+	<resource type="image" id="elephant">graphics/elephant.png</resource>
+	<resource type="image" id="elephantTruck">graphics/elephantTruck.png</resource>
 	<resource type="image" id="try">graphics/try.png</resource>
 	<resource type="image" id="wall">graphics/wall.png</resource>
 
@@ -50,5 +52,9 @@
 	<resource type="truck" id="lake">
 		<truck image="lakeTruck"/>
 		<item image="lake"/>
+	</resource>
+	<resource type="truck" id="elephant">
+		<truck image="elephantTruck"/>
+		<item image="elephant"/>
 	</resource>
 </resources>
