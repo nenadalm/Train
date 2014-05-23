@@ -51,13 +51,13 @@ public class MenuForEditorState extends BasicGameState {
     private Image arrowUp, arrowDown, arrowMouseOverUp, arrowMouseOverDown, arrowDisabledUp,
             arrowDisabledDown;
     private String newLevelName, infoText;
-    private InteractiveLabel levelActions[], back;
+    private InteractiveLabel back;
     private TextField textField;
     private Translator translator;
     private Dimension levelSize;
     private LevelController levelController;
 
-    private Menu packageMenu;
+    private Menu packageMenu, levelMenu;
 
     public MenuForEditorState(int stateId) {
         super(stateId);
@@ -130,7 +130,7 @@ public class MenuForEditorState extends BasicGameState {
         back.setColors(Color.white, Color.red, Color.white);
 
         initPackageActions();
-        initLevelActions();
+        initLevelActions(game);
 
         packageIndex = -1;
         packageBaseIndex = 0;
@@ -203,9 +203,7 @@ public class MenuForEditorState extends BasicGameState {
                     - height / 24);
         }
         this.packageMenu.render(container, game, g);
-        for (int i = 0; i < levelActions.length; i++) {
-            levelActions[i].render(g);
-        }
+        this.levelMenu.render(container, game, g);
 
         Image arrowImageToBeDrawn = (packageBaseIndex == 0) ? arrowDisabledUp
                 : ((isMouseOverPackageArrowUp) ? arrowMouseOverUp : arrowUp);
@@ -256,15 +254,26 @@ public class MenuForEditorState extends BasicGameState {
         this.packageMenu.getMenuItems().get(4).setEnabled(packageIndex >= 0);
         this.packageMenu.update(container, game, delta);
 
-        levelActions[0].setEnabled(packageIndex >= 0
-                && levelPackages.get(packageIndex).getLevelNames().size() < 100);
-        levelActions[1].setEnabled(packageIndex >= 0 && levelIndex >= 0);
-        levelActions[2].setEnabled(packageIndex >= 0 && levelIndex >= 1);
-        levelActions[3].setEnabled(packageIndex >= 0 && levelIndex >= 0
-                && levelIndex < levelPackages.get(packageIndex).getLevelNames().size() - 1);
-        levelActions[4].setEnabled(packageIndex >= 0 && levelIndex >= 0);
-        levelActions[5].setEnabled(packageIndex >= 0 && levelIndex >= 0);
-        levelActions[6].setEnabled(packageIndex >= 0 && levelIndex >= 0);
+        this.levelMenu
+                .getMenuItems()
+                .get(0)
+                .setEnabled(
+                        packageIndex >= 0
+                                && levelPackages.get(packageIndex).getLevelNames().size() < 100);
+        this.levelMenu.getMenuItems().get(1).setEnabled(packageIndex >= 0 && levelIndex >= 0);
+        this.levelMenu.getMenuItems().get(2).setEnabled(packageIndex >= 0 && levelIndex >= 1);
+        this.levelMenu
+                .getMenuItems()
+                .get(3)
+                .setEnabled(
+                        packageIndex >= 0
+                                && levelIndex >= 0
+                                && levelIndex < levelPackages.get(packageIndex).getLevelNames()
+                                        .size() - 1);
+        this.levelMenu.getMenuItems().get(4).setEnabled(packageIndex >= 0 && levelIndex >= 0);
+        this.levelMenu.getMenuItems().get(5).setEnabled(packageIndex >= 0 && levelIndex >= 0);
+        this.levelMenu.getMenuItems().get(6).setEnabled(packageIndex >= 0 && levelIndex >= 0);
+        this.levelMenu.update(container, game, delta);
 
         isMouseOverPackageArrowUp = packageArrowUpRectangle.contains(mouse);
         isMouseOverPackageArrowDown = packageArrowDownRectangle.contains(mouse);
@@ -281,9 +290,6 @@ public class MenuForEditorState extends BasicGameState {
             for (int i = 0; i < levelNameRectangles.length
                     && i < levelPackages.get(packageIndex).getLevelNames().size(); i++) {
                 isMouseOverLevelNames[i] = levelNameRectangles[i].contains(mouse);
-            }
-            for (int i = 0; i < levelActions.length; i++) {
-                levelActions[i].setIsMouseOver(mouse);
             }
         }
 
@@ -531,60 +537,6 @@ public class MenuForEditorState extends BasicGameState {
                             levelIndex = levelBaseIndex + i;
                         }
                     }
-                    if (levelActions[0].isMouseOver() && levelActions[0].isEnabled()) { // CREATE
-                        action = Action.CreatingLevel;
-                        inputState = 0;
-                    }
-                    if (levelActions[1].isMouseOver() && levelActions[1].isEnabled()) { // EDIT
-                        try {
-                            levelController.loadLevel(packageIndex, levelIndex);
-                            game.enterState(Game.EDITOR_STATE);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (levelActions[2].isMouseOver() && levelActions[2].isEnabled()) { // MOVEUP
-                        LevelPackage levelPackage = levelPackages.get(packageIndex);
-                        String firstName = levelPackage.getLevelNames().get(levelIndex);
-                        String secondName = levelPackage.getLevelNames().get(levelIndex - 1);
-                        String level = levelPackage.getLevelNames().remove(levelIndex - 1);
-                        levelPackage.getLevelNames().add(levelIndex, level);
-
-                        levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                                .getName(), levelIndex, firstName, levelIndex - 1, firstName);
-                        levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                                .getName(), levelIndex - 1, secondName, levelIndex, secondName);
-                        levelIndex--;
-                    }
-                    if (levelActions[3].isMouseOver() && levelActions[3].isEnabled()) { // MOVEDOWN
-                        LevelPackage levelPackage = levelPackages.get(packageIndex);
-                        String firstName = levelPackage.getLevelNames().get(levelIndex);
-                        String secondName = levelPackage.getLevelNames().get(levelIndex + 1);
-                        String level = levelPackage.getLevelNames().remove(levelIndex);
-                        levelPackage.getLevelNames().add(levelIndex + 1, level);
-
-                        levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                                .getName(), levelIndex, firstName, levelIndex + 1, firstName);
-                        levelController.renameLevel(packageIndex, levelPackages.get(packageIndex)
-                                .getName(), levelIndex + 1, secondName, levelIndex, secondName);
-                        levelIndex++;
-                    }
-                    if (levelActions[4].isMouseOver() && levelActions[4].isEnabled()) { // RENAME
-                        action = Action.RenamingLevel;
-                        String name = levelPackages.get(packageIndex).getLevelNames()
-                                .get(levelIndex);
-                        textField.setText(name);
-                        textField.setCursorPos(name.length());
-                    }
-                    if (levelActions[5].isMouseOver() && levelActions[5].isEnabled()) { // RESIZE
-                        action = Action.ResizingLevel;
-                        inputState = 0;
-                        levelSize = levelController.getLevelSize(packageIndex, levelIndex);
-                        textField.setText(String.valueOf(levelSize.width));
-                    }
-                    if (levelActions[6].isMouseOver() && levelActions[6].isEnabled()) { // DELETE
-                        action = Action.DeletingLevel;
-                    }
                 }
             }
         }
@@ -689,27 +641,94 @@ public class MenuForEditorState extends BasicGameState {
         this.packageMenu.disableKeyboard();
     }
 
-    private void initLevelActions() {
-        String[] levelActionTexts = new String[7];
-        levelActionTexts[0] = translator.translate("Create");
-        levelActionTexts[1] = translator.translate("Edit");
-        levelActionTexts[2] = translator.translate("MoveUp");
-        levelActionTexts[3] = translator.translate("MoveDown");
-        levelActionTexts[4] = translator.translate("Rename");
-        levelActionTexts[5] = translator.translate("Resize");
-        levelActionTexts[6] = translator.translate("Delete");
+    private void initLevelActions(final StateBasedGame game) {
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
+        menuItems.add(new MenuItem(translator.translate("Create"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                action = Action.CreatingLevel;
+                inputState = 0;
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("Edit"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    levelController.loadLevel(packageIndex, levelIndex);
+                    game.enterState(Game.EDITOR_STATE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("MoveUp"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                LevelPackage levelPackage = levelPackages.get(packageIndex);
+                String firstName = levelPackage.getLevelNames().get(levelIndex);
+                String secondName = levelPackage.getLevelNames().get(levelIndex - 1);
+                String level = levelPackage.getLevelNames().remove(levelIndex - 1);
+                levelPackage.getLevelNames().add(levelIndex, level);
 
-        levelActions = new InteractiveLabel[7];
-        for (int i = 0; i < levelActions.length; i++) {
-            Rectangle rectangle = new Rectangle();
-            rectangle.width = ubuntuSmall.getWidth(levelActionTexts[i]);
-            rectangle.height = ubuntuSmall.getHeight(levelActionTexts[i]);
-            rectangle.x = width - width / 9 - rectangle.width / 2;
-            rectangle.y = height * (3 + i) / 13;
-            Point point = new Point(width - width / 9 - ubuntuSmall.getWidth(levelActionTexts[i])
-                    / 2, height * (3 + i) / 13);
-            levelActions[i] = new InteractiveLabel(levelActionTexts[i], point, rectangle);
-            levelActions[i].setColors(Color.red, Color.blue, Color.darkGray);
+                levelController.renameLevel(packageIndex,
+                        levelPackages.get(packageIndex).getName(), levelIndex, firstName,
+                        levelIndex - 1, firstName);
+                levelController.renameLevel(packageIndex,
+                        levelPackages.get(packageIndex).getName(), levelIndex - 1, secondName,
+                        levelIndex, secondName);
+                levelIndex--;
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("MoveDown"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                LevelPackage levelPackage = levelPackages.get(packageIndex);
+                String firstName = levelPackage.getLevelNames().get(levelIndex);
+                String secondName = levelPackage.getLevelNames().get(levelIndex + 1);
+                String level = levelPackage.getLevelNames().remove(levelIndex);
+                levelPackage.getLevelNames().add(levelIndex + 1, level);
+
+                levelController.renameLevel(packageIndex,
+                        levelPackages.get(packageIndex).getName(), levelIndex, firstName,
+                        levelIndex + 1, firstName);
+                levelController.renameLevel(packageIndex,
+                        levelPackages.get(packageIndex).getName(), levelIndex + 1, secondName,
+                        levelIndex, secondName);
+                levelIndex++;
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("Rename"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                action = Action.RenamingLevel;
+                String name = levelPackages.get(packageIndex).getLevelNames().get(levelIndex);
+                textField.setText(name);
+                textField.setCursorPos(name.length());
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("Resize"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                action = Action.ResizingLevel;
+                inputState = 0;
+                levelSize = levelController.getLevelSize(packageIndex, levelIndex);
+                textField.setText(String.valueOf(levelSize.width));
+            }
+        }));
+        menuItems.add(new MenuItem(translator.translate("Delete"), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                action = Action.DeletingLevel;
+            }
+        }));
+        for (MenuItem item : menuItems) {
+            item.setFont(this.ubuntuSmall);
+            item.setMarginBottom(height / 25);
         }
+        this.levelMenu = new Menu(menuItems, this.container.getComponent(GameContainer.class),
+                this.container.getComponent(ResourceManager.class),
+                this.container.getComponent(EffectFactory.class));
+        this.levelMenu.setMarginRight((int) (-width / 2.6));
+        this.levelMenu.disableKeyboard();
     }
 }

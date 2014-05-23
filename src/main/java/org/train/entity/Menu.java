@@ -101,7 +101,7 @@ public class Menu extends Container {
             counter++;
         }
 
-        if (!over && !this.keyboardEnabled) {
+        if (!over && !this.keyboardEnabled && this.items.get(this.active).isEnabled()) {
             this.items.get(this.active).setColor(Color.red);
         }
 
