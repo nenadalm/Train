@@ -12,15 +12,12 @@ public class CenteredLayout implements LayoutInterface {
 
     private List<Rectangle> rectangles = new ArrayList<Rectangle>();
     private Container container;
+    private GameContainer gameContainer;
 
     public CenteredLayout(GameContainer gameContainer, Container container) {
         this.container = container;
-        this.placeMenuItems(gameContainer);
-        int counter = 0;
-        for (Child c : this.container.getChildren()) {
-            c.setRectangle(this.rectangles.get(counter));
-            counter++;
-        }
+        this.gameContainer = gameContainer;
+        this.recalculateRectangles();
     }
 
     @Override
@@ -33,7 +30,7 @@ public class CenteredLayout implements LayoutInterface {
         return this.rectangles;
     }
 
-    private void calculateRectangles(GameContainer container) {
+    private void calculateRectangles() {
         this.rectangles = new ArrayList<Rectangle>(this.container.getChildren().size());
         int menuHeight = this.getMenuHeight();
         int maxWidth = this.getMenuItemMaxWidth();
@@ -42,14 +39,15 @@ public class CenteredLayout implements LayoutInterface {
         for (Child item : this.container.getChildren()) {
             int width = item.getWidth();
             int height = item.getHeight();
-            int x = container.getWidth() / 2 - width / 2;
-            int y = container.getHeight() / 2 - menuHeight / 2 + lastOffsetY;
-            this.rectangles.add(new Rectangle(x, y, width, height));
+            int x = this.gameContainer.getWidth() / 2 - width / 2;
+            int y = this.gameContainer.getHeight() / 2 - menuHeight / 2 + lastOffsetY;
+            this.rectangles
+                    .add(new Rectangle(x - this.container.getMarginRight(), y, width, height));
             lastOffsetY += height;
         }
 
-        this.container.setPosition(new Point(container.getWidth() / 2 - maxWidth / 2, container
-                .getHeight() / 2 - menuHeight / 2));
+        this.container.setPosition(new Point(this.gameContainer.getWidth() / 2 - maxWidth / 2,
+                this.gameContainer.getHeight() / 2 - menuHeight / 2));
         this.container.setWidth(maxWidth);
         this.container.setHeight(menuHeight);
     }
@@ -103,8 +101,8 @@ public class CenteredLayout implements LayoutInterface {
                 this.container.getPosition().y - marginHeight / 2));
     }
 
-    private void placeMenuItems(GameContainer container) {
-        this.calculateRectangles(container);
+    private void placeMenuItems() {
+        this.calculateRectangles();
         this.applyItemMargin();
     }
 
@@ -112,6 +110,14 @@ public class CenteredLayout implements LayoutInterface {
     public void render(Graphics g) {
         for (Child item : this.container.getChildren()) {
             item.render(g);
+        }
+    }
+
+    @Override
+    public void recalculateRectangles() {
+        this.placeMenuItems();
+        for (int i = 0; i < this.container.getChildren().size(); i++) {
+            this.container.getChildren().get(i).setRectangle(this.rectangles.get(i));
         }
     }
 }

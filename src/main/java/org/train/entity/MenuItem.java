@@ -8,15 +8,19 @@ import org.newdawn.slick.Graphics;
 
 public class MenuItem extends Child {
 
-    private boolean isEnabled;
+    private boolean isEnabled = true;
     private ActionListener listener;
-    private Color active, disabled;
+    private Color normal, active, disabled;
     private String text;
     private Font font;
 
     public MenuItem(String text, ActionListener listener) {
         this.setText(text);
         this.listener = listener;
+
+        this.normal = Color.red;
+        this.active = Color.blue;
+        this.disabled = Color.darkGray;
     }
 
     public ActionListener getListener() {
@@ -25,6 +29,7 @@ public class MenuItem extends Child {
 
     public void setColors(Color normal, Color active, Color disabled) {
         super.setColor(normal);
+        this.normal = normal;
         this.active = active;
         this.disabled = disabled;
     }
@@ -69,6 +74,14 @@ public class MenuItem extends Child {
     }
 
     public void setEnabled(boolean isEnabled) {
+        if (isEnabled != this.isEnabled) {
+            if (isEnabled) {
+                this.setColor(this.normal);
+            } else {
+                this.setColor(this.disabled);
+            }
+        }
+
         this.isEnabled = isEnabled;
     }
 

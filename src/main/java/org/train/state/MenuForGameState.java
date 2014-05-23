@@ -59,32 +59,10 @@ public class MenuForGameState extends BasicGameState {
         levelPackages = levelController.getLevels();
         progresses = levelController.getProgresses();
 
-        int arrowWidth = ubuntuLarge.getWidth(">");
-        int arrowHeight = ubuntuLarge.getWidth(">");
-
-        packageArrowLeft = new Rectangle();
-        packageArrowLeft.width = arrowWidth;
-        packageArrowLeft.height = arrowHeight;
-        packageArrowLeft.x = width * 1 / 4;
-        packageArrowLeft.y = height * 1 / 3 + packageArrowLeft.height * 3 / 4;
-
-        packageArrowRight = new Rectangle();
-        packageArrowRight.width = arrowWidth;
-        packageArrowRight.height = arrowHeight;
-        packageArrowRight.x = width * 3 / 4 - arrowWidth;
-        packageArrowRight.y = height * 1 / 3 + packageArrowRight.height * 3 / 4;
-
-        levelArrowLeft = new Rectangle();
-        levelArrowLeft.width = arrowWidth;
-        levelArrowLeft.height = arrowHeight;
-        levelArrowLeft.x = width * 1 / 4;
-        levelArrowLeft.y = height * 3 / 4 + levelArrowLeft.height * 3 / 4;
-
-        levelArrowRight = new Rectangle();
-        levelArrowRight.width = arrowWidth;
-        levelArrowRight.height = arrowHeight;
-        levelArrowRight.x = width * 3 / 4 - arrowWidth;
-        levelArrowRight.y = height * 3 / 4 + levelArrowRight.height * 3 / 4;
+        packageArrowLeft = this.createArrowRectangle(width * 1 / 4, height * 1 / 3, 0);
+        packageArrowRight = this.createArrowRectangle(width * 3 / 4, height * 1 / 3, 1);
+        levelArrowLeft = this.createArrowRectangle(width * 1 / 4, height * 3 / 4, 0);
+        levelArrowRight = this.createArrowRectangle(width * 3 / 4, height * 3 / 4, 1);
 
         initBackLabel();
         initPlayLabel();
@@ -95,6 +73,18 @@ public class MenuForGameState extends BasicGameState {
                 : progresses[packageIndex];
         setProgressText();
         setShowingText();
+    }
+
+    private Rectangle createArrowRectangle(float dx, float dy, int c) {
+        int charWidth = ubuntuLarge.getWidth(">");
+
+        Rectangle arrow = new Rectangle();
+        arrow.width = charWidth;
+        arrow.height = charWidth;
+        arrow.x = (int) (dx - charWidth * c);
+        arrow.y = (int) (dy + arrow.height * 3 / 4);
+
+        return arrow;
     }
 
     @Override

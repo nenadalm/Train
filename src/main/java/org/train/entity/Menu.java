@@ -19,6 +19,7 @@ public class Menu extends Container {
     private List<? extends MenuItem> items;
     Point lastMousePosition;
     private boolean show = true;
+    private boolean keyboardEnabled = true;
 
     @Override
     protected List<? extends MenuItem> getChildren() {
@@ -31,8 +32,10 @@ public class Menu extends Container {
 
         try {
             for (MenuItem item : items) {
-                item.setFont(resourceManager.getFont("ubuntu", container.getWidth() / 20,
-                        effectFactory.getColorEffect(java.awt.Color.white)));
+                if (item.getFont() == null) {
+                    item.setFont(resourceManager.getFont("ubuntu", container.getWidth() / 20,
+                            effectFactory.getColorEffect(java.awt.Color.white)));
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -42,6 +45,12 @@ public class Menu extends Container {
         this.setLayout(new CenteredLayout(container, this));
         this.getLayout().setContainer(this);
         this.lastMousePosition = new Point();
+    }
+
+    @Override
+    public void setMarginRight(int marginRight) {
+        super.setMarginRight(marginRight);
+        this.getLayout().recalculateRectangles();
     }
 
     @Override
@@ -65,20 +74,23 @@ public class Menu extends Container {
         int mouseY = input.getMouseY();
 
         List<Rectangle> rectangles = this.getLayout().getRectangles();
-        if (input.isKeyPressed(Input.KEY_UP)) {
-            this.items.get(this.active).setColor(Color.red);
-            this.active = (this.active > 0) ? this.active - 1 : rectangles.size() - 1;
-            this.items.get(this.active).setColor(Color.blue);
-        } else if (input.isKeyPressed(Input.KEY_DOWN)) {
-            this.items.get(this.active).setColor(Color.red);
-            this.active = (this.active < rectangles.size() - 1) ? this.active + 1 : 0;
-            this.items.get(this.active).setColor(Color.blue);
+
+        if (this.keyboardEnabled) {
+            if (input.isKeyPressed(Input.KEY_UP)) {
+                this.items.get(this.active).setColor(Color.red);
+                this.active = (this.active > 0) ? this.active - 1 : rectangles.size() - 1;
+                this.items.get(this.active).setColor(Color.blue);
+            } else if (input.isKeyPressed(Input.KEY_DOWN)) {
+                this.items.get(this.active).setColor(Color.red);
+                this.active = (this.active < rectangles.size() - 1) ? this.active + 1 : 0;
+                this.items.get(this.active).setColor(Color.blue);
+            }
         }
 
         int counter = 0;
         boolean over = false;
         for (Rectangle r : this.getLayout().getRectangles()) {
-            if (r.contains(mouseX, mouseY)) {
+            if (r.contains(mouseX, mouseY) && this.items.get(counter).isEnabled()) {
                 if (this.lastMousePosition.x != mouseX || this.lastMousePosition.y != mouseY) {
                     this.items.get(this.active).setColor(Color.red);
                     this.active = counter;
@@ -88,12 +100,21 @@ public class Menu extends Container {
             }
             counter++;
         }
-        if ((input.isMousePressed(Input.MOUSE_LEFT_BUTTON) && over)
-                || input.isKeyPressed(Input.KEY_ENTER)) {
+
+        if (!over && !this.keyboardEnabled) {
+            this.items.get(this.active).setColor(Color.red);
+        }
+
+        if ((over && input.isMousePressed(Input.MOUSE_LEFT_BUTTON))
+                || (this.keyboardEnabled && input.isKeyPressed(Input.KEY_ENTER))) {
             ActionListener listener = this.items.get(this.active).getListener();
             listener.actionPerformed(null);
         }
         this.lastMousePosition.setLocation(mouseX, mouseY);
+    }
+
+    public void disableKeyboard() {
+        this.keyboardEnabled = false;
     }
 
     public boolean isShowed() {
@@ -106,5 +127,9 @@ public class Menu extends Container {
 
     public void close() {
         this.show = false;
+    }
+
+    public List<? extends MenuItem> getMenuItems() {
+        return this.items;
     }
 }

@@ -15,6 +15,8 @@ public interface LayoutInterface {
      */
     public abstract void setContainer(Container container);
 
+    public abstract void recalculateRectangles();
+
     /**
      * Get childs of container as rectangles
      */

@@ -11,7 +11,7 @@ public class FlowLayout extends BaseLayout {
 
     public FlowLayout(GameContainer gameContainer, Container container) {
         this.container = container;
-        this.placeMenuItems(gameContainer);
+        this.recalculateRectangles();
     }
 
     @Override
@@ -21,8 +21,8 @@ public class FlowLayout extends BaseLayout {
         }
     }
 
-    private void placeMenuItems(GameContainer gameContainer) {
-        this.calculateRectangles(gameContainer);
+    private void placeMenuItems() {
+        this.calculateRectangles();
         int counter = 0;
         for (Child c : this.container.getChildren()) {
             c.setRectangle(this.rectangles.get(counter));
@@ -30,7 +30,7 @@ public class FlowLayout extends BaseLayout {
         }
     }
 
-    private void calculateRectangles(GameContainer container) {
+    private void calculateRectangles() {
         this.rectangles = new ArrayList<Rectangle>(this.container.getChildren().size());
 
         int index = 0;
@@ -51,5 +51,10 @@ public class FlowLayout extends BaseLayout {
         this.container.setPosition(new Point(0, 0));
         this.container.setWidth(menuWidth);
         this.container.setHeight(menuHeight);
+    }
+
+    @Override
+    public void recalculateRectangles() {
+        this.placeMenuItems();
     }
 }
