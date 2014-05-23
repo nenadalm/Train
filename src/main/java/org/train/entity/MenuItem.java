@@ -34,6 +34,10 @@ public class MenuItem extends Child {
         this.disabled = disabled;
     }
 
+    public Color getNormalColor() {
+        return this.normal;
+    }
+
     public Color getActiveColor() {
         return this.active;
     }

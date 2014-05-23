@@ -16,7 +16,7 @@ import org.train.other.ResourceManager;
 
 public class Menu extends Container {
     int active = 0;
-    private List<? extends MenuItem> items;
+    protected List<? extends MenuItem> items;
     Point lastMousePosition;
     private boolean show = true;
     private boolean keyboardEnabled = true;
@@ -40,7 +40,7 @@ public class Menu extends Container {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        items.get(this.active).setColor(Color.blue);
+        items.get(this.active).setColor(items.get(this.active).getActiveColor());
         this.items = items;
         this.setLayout(new CenteredLayout(container, this));
         this.getLayout().setContainer(this);
@@ -77,13 +77,13 @@ public class Menu extends Container {
 
         if (this.keyboardEnabled) {
             if (input.isKeyPressed(Input.KEY_UP)) {
-                this.items.get(this.active).setColor(Color.red);
+                this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
                 this.active = (this.active > 0) ? this.active - 1 : rectangles.size() - 1;
-                this.items.get(this.active).setColor(Color.blue);
+                this.items.get(this.active).setColor(items.get(this.active).getActiveColor());
             } else if (input.isKeyPressed(Input.KEY_DOWN)) {
-                this.items.get(this.active).setColor(Color.red);
+                this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
                 this.active = (this.active < rectangles.size() - 1) ? this.active + 1 : 0;
-                this.items.get(this.active).setColor(Color.blue);
+                this.items.get(this.active).setColor(items.get(this.active).getActiveColor());
             }
         }
 
@@ -92,9 +92,9 @@ public class Menu extends Container {
         for (Rectangle r : this.getLayout().getRectangles()) {
             if (r.contains(mouseX, mouseY) && this.items.get(counter).isEnabled()) {
                 if (this.lastMousePosition.x != mouseX || this.lastMousePosition.y != mouseY) {
-                    this.items.get(this.active).setColor(Color.red);
+                    this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
                     this.active = counter;
-                    this.items.get(counter).setColor(Color.blue);
+                    this.items.get(counter).setColor(items.get(this.active).getActiveColor());
                 }
                 over = this.active == counter;
             }
@@ -102,7 +102,7 @@ public class Menu extends Container {
         }
 
         if (!over && !this.keyboardEnabled && this.items.get(this.active).isEnabled()) {
-            this.items.get(this.active).setColor(Color.red);
+            this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
         }
 
         if ((over && input.isMousePressed(Input.MOUSE_LEFT_BUTTON))
