@@ -42,8 +42,19 @@ public class ScrollableMenu extends Menu {
         this.updateItems();
     }
 
+    public boolean hasNext() {
+        return this.toIndex < this.children.size();
+    }
+
+    public boolean hasPrev() {
+        return this.fromIndex > 0;
+    }
+
     private void updateItems() {
         this.items = this.children.subList(fromIndex, toIndex);
+        if (this.items.size() == 0) {
+            return;
+        }
         this.getLayout().recalculateRectangles();
     }
 }

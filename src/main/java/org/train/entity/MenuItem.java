@@ -10,7 +10,7 @@ public class MenuItem extends Child {
 
     private boolean isEnabled = true;
     private ActionListener listener;
-    private Color normal, active, disabled;
+    private Color normal, active, disabled, selected;
     private String text;
     private Font font;
 
@@ -21,6 +21,7 @@ public class MenuItem extends Child {
         this.normal = Color.red;
         this.active = Color.blue;
         this.disabled = Color.darkGray;
+        this.selected = Color.blue;
     }
 
     public ActionListener getListener() {
@@ -44,6 +45,10 @@ public class MenuItem extends Child {
 
     public Color getDisabledColor() {
         return this.disabled;
+    }
+
+    public Color getSelectedColor() {
+        return selected;
     }
 
     public String getText() {

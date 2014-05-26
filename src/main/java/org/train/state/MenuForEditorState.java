@@ -39,15 +39,14 @@ public class MenuForEditorState extends BasicGameState {
 
     private Action action;
     private boolean isMouseOverPackageArrowUp, isMouseOverPackageArrowDown,
-            isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isLevelArrowDownDisabled,
-            isMouseOverPackageNames[];
+            isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isLevelArrowDownDisabled;
     private int width, height, packageIndex, levelIndex, packageBaseIndex, levelBaseIndex,
             inputState;
     private Font ubuntuSmall, ubuntuMedium;
 
     private Dimension optimalSize;
     private Rectangle packageArrowUpRectangle, packageArrowDownRectangle, levelArrowUpRectangle,
-            levelArrowDownRectangle, packageNameRectangles[];
+            levelArrowDownRectangle;
     private ArrayList<LevelPackage> levelPackages;
     private Image arrowUp, arrowDown, arrowMouseOverUp, arrowMouseOverDown, arrowDisabledUp,
             arrowDisabledDown;
@@ -59,7 +58,7 @@ public class MenuForEditorState extends BasicGameState {
     private LevelController levelController;
 
     private Menu packageMenu, levelMenu;
-    private ScrollableMenu levelsMenu;
+    private ScrollableMenu levelsMenu, packagesMenu;
 
     public MenuForEditorState(int stateId) {
         super(stateId);
@@ -139,8 +138,7 @@ public class MenuForEditorState extends BasicGameState {
         levelIndex = -1;
         levelBaseIndex = 0;
 
-        setPackageNameRectangles();
-        isMouseOverPackageNames = new boolean[5];
+        createPackagesMenu();
 
         textField = new TextField(container, ubuntuSmall, width / 3, height - width / 26,
                 width / 3, width / 30);
@@ -168,12 +166,7 @@ public class MenuForEditorState extends BasicGameState {
         g.drawString(levelsText, width / 2, height / 6 - ubuntuMedium.getHeight(packagesText) / 2);
         g.setFont(ubuntuSmall);
         back.render(g);
-        for (int i = 0; i < levelPackages.size() && i < 5; i++) {
-            g.setColor((packageIndex == packageBaseIndex + i) ? Color.blue
-                    : ((isMouseOverPackageNames[i]) ? Color.red : Color.white));
-            g.drawString(levelPackages.get(packageBaseIndex + i).getName(), width / 100, height
-                    * (4 + i) / 13);
-        }
+        this.packagesMenu.render(container, game, g);
         if (packageIndex >= 0) {
             this.levelsMenu.render(container, game, g);
         }
@@ -280,9 +273,7 @@ public class MenuForEditorState extends BasicGameState {
 
         back.setIsMouseOver(mouse);
 
-        for (int i = 0; i < packageNameRectangles.length && i < levelPackages.size(); i++) {
-            isMouseOverPackageNames[i] = packageNameRectangles[i].contains(mouse);
-        }
+        this.packagesMenu.update(container, game, delta);
 
         isLevelArrowDownDisabled = packageIndex < 0
                 || (levelBaseIndex + 5 >= levelPackages.get(packageIndex).getLevelNames().size());
@@ -314,7 +305,7 @@ public class MenuForEditorState extends BasicGameState {
                     levelController.createPackage(levelPackages.size() - 1, textField.getText());
 
                     textField.setText("");
-                    setPackageNameRectangles();
+                    createPackagesMenu();
                 } else {
                     infoText = translator.translate("EditorMenu.PackageAlreadyExist");
                 }
@@ -336,7 +327,7 @@ public class MenuForEditorState extends BasicGameState {
 
                     levelController.renamePackage(packageIndex, oldName, packageIndex, newName);
                     textField.setText("");
-                    setPackageNameRectangles();
+                    createPackagesMenu();
                 } else {
                     infoText = translator.translate("EditorMenu.PackageAlreadyExist");
                 }
@@ -350,7 +341,7 @@ public class MenuForEditorState extends BasicGameState {
                     packageBaseIndex--;
                 }
                 packageIndex--;
-                setPackageNameRectangles();
+                createPackagesMenu();
 
                 levelBaseIndex = 0;
                 levelIndex = -1;
@@ -490,36 +481,23 @@ public class MenuForEditorState extends BasicGameState {
 
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
             infoText = "";
-            if (isMouseOverPackageArrowUp && packageBaseIndex > 0) {
-                packageBaseIndex--;
-                setPackageNameRectangles();
+            if (isMouseOverPackageArrowUp && this.packagesMenu.hasPrev()) {
+                this.packagesMenu.showPrev();
             }
-            if (isMouseOverPackageArrowDown && packageBaseIndex + 5 < levelPackages.size()) {
-                packageBaseIndex++;
-                setPackageNameRectangles();
+            if (isMouseOverPackageArrowDown && this.packagesMenu.hasNext()) {
+                this.packagesMenu.showNext();
             }
 
-            if (isMouseOverLevelArrowUp && levelBaseIndex > 0) {
+            if (isMouseOverLevelArrowUp && this.levelsMenu.hasPrev()) {
                 this.levelsMenu.showPrev();
                 levelBaseIndex--;
             }
-            if (isMouseOverLevelArrowDown && !isLevelArrowDownDisabled) {
+            if (isMouseOverLevelArrowDown && this.levelsMenu.hasNext()) {
                 this.levelsMenu.showNext();
                 levelBaseIndex++;
             }
             if (back.isMouseOver()) {
                 game.enterState(Game.MENU_STATE);
-            }
-
-            if (action == Action.None) {
-                for (int i = 0; i < packageNameRectangles.length && i < levelPackages.size(); i++) {
-                    if (isMouseOverPackageNames[i]) {
-                        packageIndex = packageBaseIndex + i;
-                        levelBaseIndex = 0;
-                        levelIndex = -1;
-                        createLevelsMenu();
-                    }
-                }
             }
         }
     }
@@ -534,21 +512,41 @@ public class MenuForEditorState extends BasicGameState {
         image.draw(x, y);
     }
 
-    private void setPackageNameRectangles() {
-        packageNameRectangles = new Rectangle[5];
-        for (int i = 0; i < packageNameRectangles.length && i < levelPackages.size(); i++) {
-            packageNameRectangles[i] = new Rectangle();
-            packageNameRectangles[i].x = width / 100;
-            packageNameRectangles[i].y = height * (4 + i) / 13;
-            packageNameRectangles[i].width = ubuntuSmall.getWidth(levelPackages.get(
-                    i + packageBaseIndex).getName());
-            packageNameRectangles[i].height = ubuntuSmall.getHeight(levelPackages.get(
-                    i + packageBaseIndex).getName());
+    private void createPackagesMenu() {
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
+        for (int i = 0; i < this.levelPackages.size(); i++) {
+            final int index = i;
+            menuItems.add(new MenuItem(this.levelPackages.get(index).getName(),
+                    new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            packageIndex = packageBaseIndex + index;
+                            levelBaseIndex = 0;
+                            levelIndex = -1;
+                            createLevelsMenu();
+                        }
+                    }));
         }
+        for (MenuItem item : menuItems) {
+            item.setFont(this.ubuntuSmall);
+            item.setMarginBottom(height / 25);
+            item.setColors(Color.white, Color.red, Color.darkGray);
+        }
+
+        this.packagesMenu = new ScrollableMenu(menuItems,
+                this.container.getComponent(GameContainer.class),
+                this.container.getComponent(ResourceManager.class),
+                this.container.getComponent(EffectFactory.class));
+        this.packagesMenu.disableKeyboard();
+        this.packagesMenu.setSelectable();
+        this.packagesMenu.setMarginRight((int) (width / 2.35));
+        this.packagesMenu.setMaxItems(5);
+
     }
 
     private void createLevelsMenu() {
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
+        System.out.println(this.packageIndex);
         LevelPackage levelPackage = this.levelPackages.get(this.packageIndex);
         for (int i = 0; i < levelPackage.getLevelNames().size(); i++) {
             final int index = i;
@@ -571,8 +569,11 @@ public class MenuForEditorState extends BasicGameState {
                 this.container.getComponent(ResourceManager.class),
                 this.container.getComponent(EffectFactory.class));
         this.levelsMenu.disableKeyboard();
-        this.levelsMenu.setMarginRight(-width / 20);
-        this.levelsMenu.setMaxItems(5);
+        this.levelsMenu.setSelectable();
+        if (menuItems.size() > 0) {
+            this.levelsMenu.setMarginRight(-width / 20);
+            this.levelsMenu.setMaxItems(5);
+        }
     }
 
     private void initPackageActions() {
@@ -581,6 +582,7 @@ public class MenuForEditorState extends BasicGameState {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 action = Action.CreatingPackage;
+                createPackagesMenu();
             }
         }));
         menuItems.add(new MenuItem(translator.translate("MoveUp"), new ActionListener() {
@@ -595,6 +597,7 @@ public class MenuForEditorState extends BasicGameState {
                 levelController.renamePackage(packageIndex - 1, secondName, packageIndex,
                         secondName);
                 packageIndex--;
+                createPackagesMenu();
             }
         }));
         menuItems.add(new MenuItem(translator.translate("MoveDown"), new ActionListener() {
@@ -609,6 +612,7 @@ public class MenuForEditorState extends BasicGameState {
                 levelController.renamePackage(packageIndex + 1, secondName, packageIndex,
                         secondName);
                 packageIndex++;
+                createPackagesMenu();
             }
         }));
         menuItems.add(new MenuItem(translator.translate("Rename"), new ActionListener() {
@@ -618,12 +622,14 @@ public class MenuForEditorState extends BasicGameState {
                 String name = levelPackages.get(packageIndex).getName();
                 textField.setText(name);
                 textField.setCursorPos(name.length());
+                createPackagesMenu();
             }
         }));
         menuItems.add(new MenuItem(translator.translate("Delete"), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 action = Action.DeletingPackage;
+                createPackagesMenu();
             }
         }));
         for (MenuItem item : menuItems) {

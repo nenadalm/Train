@@ -18,8 +18,9 @@ public class Menu extends Container {
     int active = 0;
     protected List<? extends MenuItem> items;
     Point lastMousePosition;
-    private boolean show = true;
+    private boolean show = true, selectable = false;
     private boolean keyboardEnabled = true;
+    MenuItem selected;
 
     @Override
     protected List<? extends MenuItem> getChildren() {
@@ -28,6 +29,11 @@ public class Menu extends Container {
 
     public Menu(List<? extends MenuItem> items, GameContainer container,
             ResourceManager resourceManager, EffectFactory effectFactory) {
+        if (items.size() == 0) {
+            this.close();
+            return;
+        }
+
         this.addComponent(new RectangleComponent());
 
         try {
@@ -92,9 +98,15 @@ public class Menu extends Container {
         for (Rectangle r : this.getLayout().getRectangles()) {
             if (r.contains(mouseX, mouseY) && this.items.get(counter).isEnabled()) {
                 if (this.lastMousePosition.x != mouseX || this.lastMousePosition.y != mouseY) {
-                    this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
+                    if (this.items.get(this.active) != this.selected) {
+                        this.items.get(this.active).setColor(
+                                items.get(this.active).getNormalColor());
+                    }
                     this.active = counter;
-                    this.items.get(counter).setColor(items.get(this.active).getActiveColor());
+
+                    if (this.items.get(this.active) != this.selected) {
+                        this.items.get(counter).setColor(items.get(this.active).getActiveColor());
+                    }
                 }
                 over = this.active == counter;
             }
@@ -102,11 +114,20 @@ public class Menu extends Container {
         }
 
         if (!over && !this.keyboardEnabled && this.items.get(this.active).isEnabled()) {
-            this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
+            if (this.selected != this.items.get(this.active)) {
+                this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
+            }
         }
 
         if ((over && input.isMousePressed(Input.MOUSE_LEFT_BUTTON))
                 || (this.keyboardEnabled && input.isKeyPressed(Input.KEY_ENTER))) {
+            if (this.selectable) {
+                if (this.selected != null) {
+                    this.selected.setColor(this.selected.getNormalColor());
+                }
+                this.selected = this.items.get(active);
+                this.selected.setColor(this.selected.getSelectedColor());
+            }
             ActionListener listener = this.items.get(this.active).getListener();
             listener.actionPerformed(null);
         }
@@ -123,6 +144,10 @@ public class Menu extends Container {
 
     public void show() {
         this.show = true;
+    }
+
+    public void setSelectable() {
+        this.selectable = true;
     }
 
     public void close() {
