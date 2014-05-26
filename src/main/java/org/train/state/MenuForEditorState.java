@@ -40,8 +40,7 @@ public class MenuForEditorState extends BasicGameState {
     private Action action;
     private boolean isMouseOverPackageArrowUp, isMouseOverPackageArrowDown,
             isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isLevelArrowDownDisabled;
-    private int width, height, packageIndex, levelIndex, packageBaseIndex, levelBaseIndex,
-            inputState;
+    private int width, height, packageIndex, levelIndex, inputState;
     private Font ubuntuSmall, ubuntuMedium;
 
     private Dimension optimalSize;
@@ -134,9 +133,7 @@ public class MenuForEditorState extends BasicGameState {
         initLevelActions(game);
 
         packageIndex = -1;
-        packageBaseIndex = 0;
         levelIndex = -1;
-        levelBaseIndex = 0;
 
         createPackagesMenu();
 
@@ -173,10 +170,14 @@ public class MenuForEditorState extends BasicGameState {
         String text = "";
         String showing = translator.translate("showing"), of = translator.translate("Of");
         g.setColor(Color.red);
-        text = String.format("%4$s %1$d - %2$d %5$s %3$d", packageBaseIndex + 1,
-                packageBaseIndex + 5, levelPackages.size(), showing, of);
+        text = String.format("%4$s %1$d - %2$d %5$s %3$d", this.packagesMenu.getFirstIndex() + 1,
+                this.packagesMenu.getLastIndex(), levelPackages.size(), showing, of);
         g.drawString(text, width / 200, height * 9 / 11);
-        text = String.format("%4$s %1$d - %2$d %5$s %3$d", levelBaseIndex + 1, levelBaseIndex + 5,
+
+        int from, to;
+        from = this.levelsMenu == null ? 0 : this.levelsMenu.getFirstIndex() + 1;
+        to = this.levelsMenu == null ? 0 : this.levelsMenu.getLastIndex();
+        text = String.format("%4$s %1$d - %2$d %5$s %3$d", from, to,
                 (packageIndex >= 0) ? levelPackages.get(packageIndex).getLevelNames().size() : 0,
                 showing, of);
         g.drawString(text, width / 2 + width / 200, height * 9 / 11);
@@ -192,14 +193,14 @@ public class MenuForEditorState extends BasicGameState {
         this.packageMenu.render(container, game, g);
         this.levelMenu.render(container, game, g);
 
-        Image arrowImageToBeDrawn = (packageBaseIndex == 0) ? arrowDisabledUp
+        Image arrowImageToBeDrawn = (this.packagesMenu.getFirstIndex() == 0) ? arrowDisabledUp
                 : ((isMouseOverPackageArrowUp) ? arrowMouseOverUp : arrowUp);
         drawImage(arrowImageToBeDrawn, width / 12, height * 3 / 12);
-        arrowImageToBeDrawn = (packageBaseIndex + 5 >= levelPackages.size()) ? arrowDisabledDown
+        arrowImageToBeDrawn = (this.packagesMenu.getLastIndex() >= levelPackages.size()) ? arrowDisabledDown
                 : ((isMouseOverPackageArrowDown) ? arrowMouseOverDown : arrowDown);
         drawImage(arrowImageToBeDrawn, width / 12, height * 9 / 12);
 
-        arrowImageToBeDrawn = (levelBaseIndex == 0) ? arrowDisabledUp
+        arrowImageToBeDrawn = (this.levelsMenu == null || this.levelsMenu.getFirstIndex() == 0) ? arrowDisabledUp
                 : ((isMouseOverLevelArrowUp) ? arrowMouseOverUp : arrowUp);
         drawImage(arrowImageToBeDrawn, width * 7 / 12, height * 3 / 12);
 
@@ -276,7 +277,8 @@ public class MenuForEditorState extends BasicGameState {
         this.packagesMenu.update(container, game, delta);
 
         isLevelArrowDownDisabled = packageIndex < 0
-                || (levelBaseIndex + 5 >= levelPackages.get(packageIndex).getLevelNames().size());
+                || (this.levelsMenu.getLastIndex() >= levelPackages.get(packageIndex)
+                        .getLevelNames().size());
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             if (action != Action.None) {
@@ -337,13 +339,9 @@ public class MenuForEditorState extends BasicGameState {
                 levelController.deletePackage(packageIndex, levelPackages.get(packageIndex)
                         .getName());
                 levelPackages.remove(packageIndex);
-                if (packageBaseIndex > 0) {
-                    packageBaseIndex--;
-                }
                 packageIndex--;
                 createPackagesMenu();
 
-                levelBaseIndex = 0;
                 levelIndex = -1;
                 createLevelsMenu();
             }
@@ -470,9 +468,6 @@ public class MenuForEditorState extends BasicGameState {
                 ArrayList<String> names = levelPackage.getLevelNames();
                 levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex,
                         names.get(levelIndex));
-                if (levelBaseIndex > 0) {
-                    levelBaseIndex--;
-                }
                 levelPackage.getLevelNames().remove(levelIndex);
                 levelIndex--;
                 createLevelsMenu();
@@ -490,11 +485,9 @@ public class MenuForEditorState extends BasicGameState {
 
             if (isMouseOverLevelArrowUp && this.levelsMenu.hasPrev()) {
                 this.levelsMenu.showPrev();
-                levelBaseIndex--;
             }
             if (isMouseOverLevelArrowDown && this.levelsMenu.hasNext()) {
                 this.levelsMenu.showNext();
-                levelBaseIndex++;
             }
             if (back.isMouseOver()) {
                 game.enterState(Game.MENU_STATE);
@@ -520,8 +513,7 @@ public class MenuForEditorState extends BasicGameState {
                     new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            packageIndex = packageBaseIndex + index;
-                            levelBaseIndex = 0;
+                            packageIndex = index;
                             levelIndex = -1;
                             createLevelsMenu();
                         }

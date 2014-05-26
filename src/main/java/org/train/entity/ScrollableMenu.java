@@ -46,6 +46,14 @@ public class ScrollableMenu extends Menu {
         return this.toIndex < this.children.size();
     }
 
+    public int getFirstIndex() {
+        return this.fromIndex;
+    }
+
+    public int getLastIndex() {
+        return this.toIndex;
+    }
+
     public boolean hasPrev() {
         return this.fromIndex > 0;
     }
