@@ -2,6 +2,8 @@ package org.train.state;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
@@ -14,8 +16,10 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.GradientEffect;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
+import org.train.entity.Button;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.model.TextView;
 import org.train.other.InteractiveLabel;
 import org.train.other.LevelController;
 import org.train.other.LevelPackage;
@@ -23,19 +27,16 @@ import org.train.other.Translator;
 
 public class MenuForGameState extends BasicGameState {
 
-    private boolean isMouseOverPackageArrowLeft, isMouseOverPackageArrowRight,
-            isMouseOverLevelArrowLeft, isMouseOverLevelArrowRight, isPackageArrowLeftDisabled,
-            isPackageArrowRightDisabled, isLevelArrowLeftDisabled, isLevelArrowRightDisabled;
     private int width, height, packageIndex, levelIndex;
     private Font ubuntuMedium, ubuntuLarge;
     private String progressText, showingText;
 
     private Translator translator;
     private byte[] progresses;
-    private Rectangle packageArrowLeft, packageArrowRight, levelArrowLeft, levelArrowRight;
     private ArrayList<LevelPackage> levelPackages;
     private LevelController levelController;
     private InteractiveLabel play, back;
+    private Button packageArrowLeft, packageArrowRight, levelArrowLeft, levelArrowRight;
 
     public MenuForGameState(int stateId) {
         super(stateId);
@@ -59,10 +60,61 @@ public class MenuForGameState extends BasicGameState {
         levelPackages = levelController.getLevels();
         progresses = levelController.getProgresses();
 
-        packageArrowLeft = this.createArrowRectangle(width * 1 / 4, height * 1 / 3, 0);
-        packageArrowRight = this.createArrowRectangle(width * 3 / 4, height * 1 / 3, 1);
-        levelArrowLeft = this.createArrowRectangle(width * 1 / 4, height * 3 / 4, 0);
-        levelArrowRight = this.createArrowRectangle(width * 3 / 4, height * 3 / 4, 1);
+        this.packageArrowLeft = new Button(new TextView("<", this.ubuntuLarge, Color.white),
+                new TextView("<", this.ubuntuLarge, Color.red), new TextView("<", this.ubuntuLarge,
+                        Color.darkGray), new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        packageIndex--;
+                        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
+                        levelIndex = (progresses[packageIndex] == packageSize && packageSize > 0) ? progresses[packageIndex] - 1
+                                : progresses[packageIndex];
+                        setProgressText();
+                        setShowingText();
+                    }
+                });
+        this.packageArrowLeft.setPosition(new org.newdawn.slick.geom.Point(width * 1 / 4,
+                height * 1 / 3));
+        this.packageArrowRight = new Button(new TextView(">", this.ubuntuLarge, Color.white),
+                new TextView(">", this.ubuntuLarge, Color.red), new TextView(">", this.ubuntuLarge,
+                        Color.darkGray), new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        packageIndex++;
+                        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
+                        levelIndex = (progresses[packageIndex] == packageSize && packageSize > 0) ? progresses[packageIndex] - 1
+                                : progresses[packageIndex];
+                        setProgressText();
+                        setShowingText();
+                    }
+                });
+
+        this.packageArrowRight.setPosition(new org.newdawn.slick.geom.Point(width * 3 / 4
+                - this.ubuntuLarge.getWidth(">"), height * 1 / 3));
+
+        this.levelArrowLeft = new Button(new TextView("<", this.ubuntuLarge, Color.white),
+                new TextView("<", this.ubuntuLarge, Color.red), new TextView("<", this.ubuntuLarge,
+                        Color.darkGray), new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        levelIndex--;
+                        setShowingText();
+                    }
+                });
+        this.levelArrowLeft.setPosition(new org.newdawn.slick.geom.Point(width * 1 / 4,
+                height * 3 / 4));
+
+        this.levelArrowRight = new Button(new TextView(">", this.ubuntuLarge, Color.white),
+                new TextView(">", this.ubuntuLarge, Color.red), new TextView(">", this.ubuntuLarge,
+                        Color.darkGray), new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        levelIndex++;
+                        setShowingText();
+                    }
+                });
+        this.levelArrowRight.setPosition(new org.newdawn.slick.geom.Point(width * 3 / 4
+                - this.ubuntuLarge.getWidth(">"), height * 3 / 4));
 
         initBackLabel();
         initPlayLabel();
@@ -75,18 +127,6 @@ public class MenuForGameState extends BasicGameState {
         setShowingText();
     }
 
-    private Rectangle createArrowRectangle(float dx, float dy, int c) {
-        int charWidth = ubuntuLarge.getWidth(">");
-
-        Rectangle arrow = new Rectangle();
-        arrow.width = charWidth;
-        arrow.height = charWidth;
-        arrow.x = (int) (dx - charWidth * c);
-        arrow.y = (int) (dy + arrow.height * 3 / 4);
-
-        return arrow;
-    }
-
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
@@ -95,18 +135,11 @@ public class MenuForGameState extends BasicGameState {
         g.drawString(translator.translate("Packages"), width / 30, height / 10);
         g.drawString(translator.translate("Levels"), width / 30, height / 2);
 
-        g.setColor((isPackageArrowLeftDisabled) ? Color.darkGray
-                : ((isMouseOverPackageArrowLeft) ? Color.red : Color.white));
-        g.drawString("<", width * 1 / 4, height * 1 / 3);
-        g.setColor((isPackageArrowRightDisabled) ? Color.darkGray
-                : ((isMouseOverPackageArrowRight) ? Color.red : Color.white));
-        g.drawString(">", width * 3 / 4 - packageArrowRight.width, height * 1 / 3);
-        g.setColor((isLevelArrowLeftDisabled) ? Color.darkGray
-                : ((isMouseOverLevelArrowLeft) ? Color.red : Color.white));
-        g.drawString("<", width * 1 / 4, height * 3 / 4);
-        g.setColor((isLevelArrowRightDisabled) ? Color.darkGray
-                : ((isMouseOverLevelArrowRight) ? Color.red : Color.white));
-        g.drawString(">", width * 3 / 4 - levelArrowRight.width, height * 3 / 4);
+        this.packageArrowLeft.render(g);
+        this.packageArrowRight.render(g);
+        this.levelArrowLeft.render(g);
+        this.levelArrowRight.render(g);
+
         String text = levelPackages.get(packageIndex).getName();
         g.setFont(ubuntuMedium);
         back.render(g);
@@ -141,18 +174,20 @@ public class MenuForGameState extends BasicGameState {
         Input input = container.getInput();
         Point mouse = new Point(input.getMouseX(), input.getMouseY());
 
-        isPackageArrowLeftDisabled = packageIndex < 1;
-        isPackageArrowRightDisabled = packageIndex >= levelPackages.size() - 1;
-        isLevelArrowLeftDisabled = levelIndex < 1;
-        isLevelArrowRightDisabled = levelIndex >= levelPackages.get(packageIndex).getLevelNames()
-                .size() - 1;
+        this.packageArrowLeft.setEnabled(packageIndex > 0);
+        this.packageArrowRight.setEnabled(packageIndex < levelPackages.size() - 1);
+        this.levelArrowLeft.setEnabled(levelIndex > 0);
+        this.levelArrowRight.setEnabled(levelIndex < levelPackages.get(packageIndex)
+                .getLevelNames().size() - 1);
+
+        this.packageArrowLeft.update(container, game, delta);
+        this.packageArrowRight.update(container, game, delta);
+        this.levelArrowLeft.update(container, game, delta);
+        this.levelArrowRight.update(container, game, delta);
+
         play.setEnabled(levelIndex < levelPackages.get(packageIndex).getLevelNames().size()
                 && levelIndex <= progresses[packageIndex]);
 
-        isMouseOverPackageArrowLeft = packageArrowLeft.contains(mouse);
-        isMouseOverPackageArrowRight = packageArrowRight.contains(mouse);
-        isMouseOverLevelArrowLeft = levelArrowLeft.contains(mouse);
-        isMouseOverLevelArrowRight = levelArrowRight.contains(mouse);
         back.setIsMouseOver(mouse);
         play.setIsMouseOver(mouse);
 
@@ -161,30 +196,6 @@ public class MenuForGameState extends BasicGameState {
         }
 
         if (input.isMousePressed(0)) {
-            if (isMouseOverPackageArrowLeft && !isPackageArrowLeftDisabled) {
-                packageIndex--;
-                int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-                levelIndex = (progresses[packageIndex] == packageSize && packageSize > 0) ? progresses[packageIndex] - 1
-                        : progresses[packageIndex];
-                setProgressText();
-                setShowingText();
-            }
-            if (isMouseOverPackageArrowRight && !isPackageArrowRightDisabled) {
-                packageIndex++;
-                int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-                levelIndex = (progresses[packageIndex] == packageSize && packageSize > 0) ? progresses[packageIndex] - 1
-                        : progresses[packageIndex];
-                setProgressText();
-                setShowingText();
-            }
-            if (isMouseOverLevelArrowLeft && !isLevelArrowLeftDisabled) {
-                levelIndex--;
-                setShowingText();
-            }
-            if (isMouseOverLevelArrowRight && !isLevelArrowRightDisabled) {
-                levelIndex++;
-                setShowingText();
-            }
             if (back.isMouseOver()) {
                 game.enterState(Game.MENU_STATE);
             }

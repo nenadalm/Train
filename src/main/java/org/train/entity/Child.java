@@ -2,6 +2,7 @@ package org.train.entity;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 
 public abstract class Child extends BoxModel {
@@ -32,6 +33,15 @@ public abstract class Child extends BoxModel {
 
     public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
+    }
+
+    public void setPosition(Point position) {
+        this.setRectangle(new Rectangle(position.getX(), position.getY(), this.getWidth(), this
+                .getHeight()));
+    }
+
+    public Point getPosition() {
+        return new Point(this.getRectangle().getX(), this.getRectangle().getY());
     }
 
     public abstract void render(Graphics g);
