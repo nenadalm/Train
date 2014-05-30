@@ -1,6 +1,7 @@
 package org.train.entity;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
@@ -8,57 +9,47 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.font.effects.ColorEffect;
-import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.component.RectangleComponent;
+import org.train.factory.ButtonFactory;
+import org.train.factory.EffectFactory;
+import org.train.factory.FontFactory;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
 
 public class MessageBox extends Entity {
     private String text;
-    private Rectangle buttons[];
-    private String buttonsText[];
     private boolean show = false;
     private Font font;
-    private int active = -1;
     private ActionListener yesListener;
     private ActionListener noListener;
-    private boolean wasPressed = false;
 
     private Color bakcgroundColor = Color.lightGray;
     private Color textColor = Color.red;
-    private Color buttonsColor = Color.blue;
+
+    private Button yesButton, noButton;
 
     public MessageBox(GameContainer container, Translator translator,
-            ResourceManager resourceManager) {
+            ResourceManager resourceManager, FontFactory fontFactory, EffectFactory effectFactory,
+            ButtonFactory buttonFactory) {
         this.addComponent(new RectangleComponent());
-        this.buttons = new Rectangle[2];
-        this.buttonsText = new String[2];
-        this.buttonsText[0] = translator.translate("yes");
-        this.buttonsText[1] = translator.translate("no");
-        int fontWidth = container.getWidth() / 20;
+
         try {
-            this.font = resourceManager.getFont("ubuntu", fontWidth, new ColorEffect(
-                    java.awt.Color.WHITE));
+            int fontWidth = container.getWidth() / 20;
+            this.font = fontFactory.getFont("ubuntu", fontWidth,
+                    effectFactory.getColorEffect(java.awt.Color.WHITE));
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         int width = (int) (container.getWidth() / 1.5);
         int height = container.getHeight() / 3;
         this.setPosition(new Point(container.getWidth() / 2 - width / 2, container.getHeight() / 2
                 - height / 2));
         this.setWidth(width);
         this.setHeight(height);
-        int buttonsWidth = this.font.getWidth(this.buttonsText[0] + this.buttonsText[1]);
-        int buttonsHeight = this.font.getHeight(this.buttonsText[0] + this.buttonsText[1]);
-        this.buttons[0] = new Rectangle(this.getCenterX() - buttonsWidth, this.getMaxY()
-                - buttonsHeight, this.font.getWidth(this.buttonsText[0]),
-                this.font.getHeight(this.buttonsText[0]));
-        this.buttons[1] = new Rectangle(this.getCenterX() + buttonsWidth, this.getMaxY()
-                - buttonsHeight, this.font.getWidth(this.buttonsText[1]),
-                this.font.getHeight(this.buttonsText[1]));
+
+        this.createButtons(buttonFactory, translator);
     }
 
     public void showConfirm(String text, ActionListener yesListener, ActionListener noListener) {
@@ -83,20 +74,8 @@ public class MessageBox extends Entity {
         g.setColor(this.textColor);
         this.renderMessage(g);
 
-        g.setColor(this.buttonsColor);
-        this.renderButtons(g);
-    }
-
-    private void renderButtons(Graphics g) {
-        int i = 0;
-        for (Rectangle button : this.buttons) {
-            if (this.active == i) {
-                g.setColor(Color.red);
-            }
-            g.drawString(this.buttonsText[i], button.getX(), button.getY());
-            g.setColor(Color.blue);
-            i++;
-        }
+        this.yesButton.render(g);
+        this.noButton.render(g);
     }
 
     private void renderMessage(Graphics g) {
@@ -138,27 +117,42 @@ public class MessageBox extends Entity {
         if (!this.show) {
             return;
         }
-        Input input = container.getInput();
-        int mouseX = input.getMouseX();
-        int mouseY = input.getMouseY();
-        this.active = -1;
-        for (int i = 0; i < this.buttons.length; i++) {
-            if (buttons[i].contains(mouseX, mouseY)) {
-                this.active = i;
-            }
-        }
-        if (this.wasPressed && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-            this.wasPressed = false;
-            if (this.active == 1) {
-                this.show = false;
-                this.noListener.actionPerformed(null);
-            } else if (this.active == 0) {
-                this.show = false;
-                this.yesListener.actionPerformed(null);
-            }
-        }
-        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-            this.wasPressed = true;
-        }
+
+        this.yesButton.update(container, game, delta);
+        this.noButton.update(container, game, delta);
+    }
+
+    private void createButtons(ButtonFactory buttonFactory, Translator translator) {
+        buttonFactory.setDefaultFont(this.font).setNormalColor(Color.blue).setOverColor(Color.red);
+
+        String yesButtonText = translator.translate("yes");
+        String noButtonText = translator.translate("no");
+
+        this.yesButton = buttonFactory.setDefaultText(yesButtonText)
+                .setListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        show = false;
+                        yesListener.actionPerformed(null);
+                    }
+                }).createButton();
+
+        this.noButton = buttonFactory.setDefaultText(noButtonText)
+                .setListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        show = false;
+                        noListener.actionPerformed(null);
+                    }
+                }).createButton();
+
+        String buttonsText = yesButtonText + noButtonText;
+        int buttonsWidth = buttonFactory.getDefaultFont().getWidth(buttonsText);
+        int buttonsHeight = buttonFactory.getDefaultFont().getHeight(buttonsText);
+
+        this.yesButton.setPosition(new org.newdawn.slick.geom.Point(this.getCenterX()
+                - buttonsWidth, this.getMaxY() - buttonsHeight));
+        this.noButton.setPosition(new org.newdawn.slick.geom.Point(
+                this.getCenterX() + buttonsWidth, this.getMaxY() - buttonsHeight));
     }
 }

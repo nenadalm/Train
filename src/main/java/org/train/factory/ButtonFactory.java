@@ -30,6 +30,10 @@ public class ButtonFactory {
         };
     }
 
+    public Font getDefaultFont() {
+        return this.defaultFont;
+    }
+
     public ButtonFactory setDefaultText(String text) {
         this.defaultText = text;
 
