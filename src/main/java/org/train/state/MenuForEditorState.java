@@ -20,6 +20,7 @@ import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Configuration;
 import org.train.app.Game;
+import org.train.entity.ImageButton;
 import org.train.entity.Menu;
 import org.train.entity.MenuItem;
 import org.train.entity.ScrollableMenu;
@@ -38,23 +39,18 @@ public class MenuForEditorState extends BasicGameState {
     }
 
     private Action action;
-    private boolean isMouseOverPackageArrowUp, isMouseOverPackageArrowDown,
-            isMouseOverLevelArrowUp, isMouseOverLevelArrowDown, isLevelArrowDownDisabled;
     private int width, height, packageIndex, levelIndex, inputState;
     private Font ubuntuSmall, ubuntuMedium;
 
     private Dimension optimalSize;
-    private Rectangle packageArrowUpRectangle, packageArrowDownRectangle, levelArrowUpRectangle,
-            levelArrowDownRectangle;
     private ArrayList<LevelPackage> levelPackages;
-    private Image arrowUp, arrowDown, arrowMouseOverUp, arrowMouseOverDown, arrowDisabledUp,
-            arrowDisabledDown;
     private String newLevelName, infoText;
     private InteractiveLabel back;
     private TextField textField;
     private Translator translator;
     private Dimension levelSize;
     private LevelController levelController;
+    private ImageButton levelArrowUp, levelArrowDown, packageArrowUp, packageArrowDown;
 
     private Menu packageMenu, levelMenu;
     private ScrollableMenu levelsMenu, packagesMenu;
@@ -69,9 +65,9 @@ public class MenuForEditorState extends BasicGameState {
         EffectFactory effects = this.container.getComponent(EffectFactory.class);
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
         Configuration configuration = this.container.getComponent(Configuration.class);
+        ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
 
         float scale = Float.parseFloat(configuration.get("scale"));
-        String graphicsPath = configuration.get("graphicsPath");
 
         translator = this.container.getComponent(Translator.class);
         width = container.getWidth();
@@ -86,38 +82,58 @@ public class MenuForEditorState extends BasicGameState {
         levelPackages = levelController.getLevels();
         optimalSize = levelController.getOptimalLevelDimension(width, height, scale);
 
-        arrowUp = new Image(graphicsPath + "arrow.png").getScaledCopy(width / 2000f);
-        arrowDown = arrowUp.getFlippedCopy(false, true);
-        arrowDisabledUp = new Image(graphicsPath + "arrowDisabled.png")
-                .getScaledCopy(width / 2000f);
-        arrowDisabledDown = arrowDisabledUp.getFlippedCopy(false, true);
-        arrowMouseOverUp = new Image(graphicsPath + "arrowMouseOver.png")
-                .getScaledCopy(width / 2000f);
-        arrowMouseOverDown = arrowMouseOverUp.getFlippedCopy(false, true);
+        Image arrowUpImage = resourceManager.getImage("arrow").getScaledCopy(width / 2000f);
+        Image arrowUpMouseOverImage = resourceManager.getImage("arrowMouseOver").getScaledCopy(
+                width / 2000f);
+        Image arrowUpDisabledImage = resourceManager.getImage("arrowDisabled").getScaledCopy(
+                width / 2000f);
 
-        packageArrowUpRectangle = new Rectangle();
-        packageArrowUpRectangle.width = arrowUp.getWidth();
-        packageArrowUpRectangle.height = arrowUp.getHeight();
-        packageArrowUpRectangle.x = width / 12;
-        packageArrowUpRectangle.y = height * 3 / 12;
+        this.levelArrowUp = new ImageButton(arrowUpImage, arrowUpMouseOverImage,
+                arrowUpDisabledImage, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        infoText = "";
+                        levelsMenu.showPrev();
+                    }
+                });
+        this.levelArrowUp.setRectangle(new org.newdawn.slick.geom.Rectangle(width * 7 / 12,
+                height * 3 / 12, arrowUpImage.getWidth(), arrowUpImage.getHeight()));
+        this.packageArrowUp = new ImageButton(arrowUpImage, arrowUpMouseOverImage,
+                arrowUpDisabledImage, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        infoText = "";
+                        packagesMenu.showPrev();
+                    }
+                });
+        this.packageArrowUp.setRectangle(new org.newdawn.slick.geom.Rectangle(width / 12,
+                height * 3 / 12, arrowUpImage.getWidth(), arrowUpImage.getHeight()));
 
-        packageArrowDownRectangle = new Rectangle();
-        packageArrowDownRectangle.width = arrowDown.getWidth();
-        packageArrowDownRectangle.height = arrowDown.getHeight();
-        packageArrowDownRectangle.x = width / 12;
-        packageArrowDownRectangle.y = height * 9 / 12;
+        Image arrowDown = arrowUpImage.getFlippedCopy(false, true);
+        Image arrowDisabledDown = arrowUpDisabledImage.getFlippedCopy(false, true);
+        Image arrowMouseOverDown = arrowUpMouseOverImage.getFlippedCopy(false, true);
 
-        levelArrowUpRectangle = new Rectangle();
-        levelArrowUpRectangle.width = arrowUp.getWidth();
-        levelArrowUpRectangle.height = arrowUp.getHeight();
-        levelArrowUpRectangle.x = width * 7 / 12;
-        levelArrowUpRectangle.y = height * 3 / 12;
+        this.packageArrowDown = new ImageButton(arrowDown, arrowMouseOverDown, arrowDisabledDown,
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        infoText = "";
+                        packagesMenu.showNext();
+                    }
+                });
+        this.packageArrowDown.setRectangle(new org.newdawn.slick.geom.Rectangle(width / 12,
+                height * 9 / 12, arrowDown.getWidth(), arrowDown.getHeight()));
 
-        levelArrowDownRectangle = new Rectangle();
-        levelArrowDownRectangle.width = arrowDown.getWidth();
-        levelArrowDownRectangle.height = arrowDown.getHeight();
-        levelArrowDownRectangle.x = width * 7 / 12;
-        levelArrowDownRectangle.y = height * 9 / 12;
+        this.levelArrowDown = new ImageButton(arrowDown, arrowMouseOverDown, arrowDisabledDown,
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        infoText = "";
+                        levelsMenu.showNext();
+                    }
+                });
+        this.levelArrowDown.setRectangle(new org.newdawn.slick.geom.Rectangle(width * 7 / 12,
+                height * 9 / 12, arrowDown.getWidth(), arrowDown.getHeight()));
 
         String backText = translator.translate("back");
         Rectangle rectangle = new Rectangle();
@@ -193,20 +209,10 @@ public class MenuForEditorState extends BasicGameState {
         this.packageMenu.render(container, game, g);
         this.levelMenu.render(container, game, g);
 
-        Image arrowImageToBeDrawn = (this.packagesMenu.getFirstIndex() == 0) ? arrowDisabledUp
-                : ((isMouseOverPackageArrowUp) ? arrowMouseOverUp : arrowUp);
-        drawImage(arrowImageToBeDrawn, width / 12, height * 3 / 12);
-        arrowImageToBeDrawn = (this.packagesMenu.getLastIndex() >= levelPackages.size()) ? arrowDisabledDown
-                : ((isMouseOverPackageArrowDown) ? arrowMouseOverDown : arrowDown);
-        drawImage(arrowImageToBeDrawn, width / 12, height * 9 / 12);
-
-        arrowImageToBeDrawn = (this.levelsMenu == null || this.levelsMenu.getFirstIndex() == 0) ? arrowDisabledUp
-                : ((isMouseOverLevelArrowUp) ? arrowMouseOverUp : arrowUp);
-        drawImage(arrowImageToBeDrawn, width * 7 / 12, height * 3 / 12);
-
-        arrowImageToBeDrawn = (isLevelArrowDownDisabled) ? arrowDisabledDown
-                : ((isMouseOverLevelArrowDown) ? arrowMouseOverDown : arrowDown);
-        drawImage(arrowImageToBeDrawn, width * 7 / 12, height * 9 / 12);
+        this.levelArrowUp.render(g);
+        this.levelArrowDown.render(g);
+        this.packageArrowUp.render(g);
+        this.packageArrowDown.render(g);
 
         g.setColor(Color.white);
         if (action != Action.None && action != Action.DeletingPackage
@@ -233,6 +239,35 @@ public class MenuForEditorState extends BasicGameState {
             throws SlickException {
         Input input = container.getInput();
         Point mouse = new Point(input.getMouseX(), input.getMouseY());
+
+        if (this.levelsMenu != null) {
+            if (this.levelsMenu.hasPrev()) {
+                this.levelArrowUp.enable();
+            } else {
+                this.levelArrowUp.disable();
+            }
+
+            if (this.levelsMenu.hasNext()) {
+                this.levelArrowDown.enable();
+            } else {
+                this.levelArrowDown.disable();
+            }
+        } else {
+            this.levelArrowUp.disable();
+            this.levelArrowDown.disable();
+        }
+
+        if (this.packagesMenu.hasPrev()) {
+            this.packageArrowUp.enable();
+        } else {
+            this.packageArrowUp.disable();
+        }
+
+        if (this.packagesMenu.hasNext()) {
+            this.packageArrowDown.enable();
+        } else {
+            this.packageArrowDown.disable();
+        }
 
         this.packageMenu.getMenuItems().get(0).setEnabled(levelPackages.size() < 1000);
         this.packageMenu.getMenuItems().get(1).setEnabled(packageIndex >= 1);
@@ -267,18 +302,14 @@ public class MenuForEditorState extends BasicGameState {
             this.levelsMenu.update(container, game, delta);
         }
 
-        isMouseOverPackageArrowUp = packageArrowUpRectangle.contains(mouse);
-        isMouseOverPackageArrowDown = packageArrowDownRectangle.contains(mouse);
-        isMouseOverLevelArrowUp = levelArrowUpRectangle.contains(mouse);
-        isMouseOverLevelArrowDown = levelArrowDownRectangle.contains(mouse);
+        this.packageArrowDown.update(container, game, delta);
+        this.levelArrowDown.update(container, game, delta);
+        this.packageArrowUp.update(container, game, delta);
+        this.levelArrowUp.update(container, game, delta);
 
         back.setIsMouseOver(mouse);
 
         this.packagesMenu.update(container, game, delta);
-
-        isLevelArrowDownDisabled = packageIndex < 0
-                || (this.levelsMenu.getLastIndex() >= levelPackages.get(packageIndex)
-                        .getLevelNames().size());
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             if (action != Action.None) {
@@ -476,19 +507,6 @@ public class MenuForEditorState extends BasicGameState {
 
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
             infoText = "";
-            if (isMouseOverPackageArrowUp && this.packagesMenu.hasPrev()) {
-                this.packagesMenu.showPrev();
-            }
-            if (isMouseOverPackageArrowDown && this.packagesMenu.hasNext()) {
-                this.packagesMenu.showNext();
-            }
-
-            if (isMouseOverLevelArrowUp && this.levelsMenu.hasPrev()) {
-                this.levelsMenu.showPrev();
-            }
-            if (isMouseOverLevelArrowDown && this.levelsMenu.hasNext()) {
-                this.levelsMenu.showNext();
-            }
             if (back.isMouseOver()) {
                 game.enterState(Game.MENU_STATE);
             }
@@ -538,7 +556,6 @@ public class MenuForEditorState extends BasicGameState {
 
     private void createLevelsMenu() {
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
-        System.out.println(this.packageIndex);
         LevelPackage levelPackage = this.levelPackages.get(this.packageIndex);
         for (int i = 0; i < levelPackage.getLevelNames().size(); i++) {
             final int index = i;
