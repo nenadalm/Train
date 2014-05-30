@@ -17,9 +17,9 @@ import org.newdawn.slick.font.effects.GradientEffect;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.Button;
+import org.train.factory.ButtonFactory;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
-import org.train.model.TextView;
 import org.train.other.InteractiveLabel;
 import org.train.other.LevelController;
 import org.train.other.LevelPackage;
@@ -60,61 +60,7 @@ public class MenuForGameState extends BasicGameState {
         levelPackages = levelController.getLevels();
         progresses = levelController.getProgresses();
 
-        this.packageArrowLeft = new Button(new TextView("<", this.ubuntuLarge, Color.white),
-                new TextView("<", this.ubuntuLarge, Color.red), new TextView("<", this.ubuntuLarge,
-                        Color.darkGray), new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        packageIndex--;
-                        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-                        levelIndex = (progresses[packageIndex] == packageSize && packageSize > 0) ? progresses[packageIndex] - 1
-                                : progresses[packageIndex];
-                        setProgressText();
-                        setShowingText();
-                    }
-                });
-        this.packageArrowLeft.setPosition(new org.newdawn.slick.geom.Point(width * 1 / 4,
-                height * 1 / 3));
-        this.packageArrowRight = new Button(new TextView(">", this.ubuntuLarge, Color.white),
-                new TextView(">", this.ubuntuLarge, Color.red), new TextView(">", this.ubuntuLarge,
-                        Color.darkGray), new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        packageIndex++;
-                        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-                        levelIndex = (progresses[packageIndex] == packageSize && packageSize > 0) ? progresses[packageIndex] - 1
-                                : progresses[packageIndex];
-                        setProgressText();
-                        setShowingText();
-                    }
-                });
-
-        this.packageArrowRight.setPosition(new org.newdawn.slick.geom.Point(width * 3 / 4
-                - this.ubuntuLarge.getWidth(">"), height * 1 / 3));
-
-        this.levelArrowLeft = new Button(new TextView("<", this.ubuntuLarge, Color.white),
-                new TextView("<", this.ubuntuLarge, Color.red), new TextView("<", this.ubuntuLarge,
-                        Color.darkGray), new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        levelIndex--;
-                        setShowingText();
-                    }
-                });
-        this.levelArrowLeft.setPosition(new org.newdawn.slick.geom.Point(width * 1 / 4,
-                height * 3 / 4));
-
-        this.levelArrowRight = new Button(new TextView(">", this.ubuntuLarge, Color.white),
-                new TextView(">", this.ubuntuLarge, Color.red), new TextView(">", this.ubuntuLarge,
-                        Color.darkGray), new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        levelIndex++;
-                        setShowingText();
-                    }
-                });
-        this.levelArrowRight.setPosition(new org.newdawn.slick.geom.Point(width * 3 / 4
-                - this.ubuntuLarge.getWidth(">"), height * 3 / 4));
+        this.createArrowButtons();
 
         initBackLabel();
         initPlayLabel();
@@ -247,5 +193,60 @@ public class MenuForGameState extends BasicGameState {
         Point position = new Point(rectangle.x, rectangle.y);
         play = new InteractiveLabel(playText, position, rectangle);
         play.setColors(Color.white, Color.red, Color.darkGray);
+    }
+
+    private void createArrowButtons() {
+        ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
+        buttonFactory.setDefaultFont(this.ubuntuLarge).setNormalColor(Color.white)
+                .setOverColor(Color.red).setDisabledColor(Color.darkGray);
+
+        this.packageArrowLeft = buttonFactory.setDefaultText("<").setListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                packageIndex--;
+                int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
+                levelIndex = (progresses[packageIndex] == packageSize && packageSize > 0) ? progresses[packageIndex] - 1
+                        : progresses[packageIndex];
+                setProgressText();
+                setShowingText();
+            }
+        }).createButton();
+        this.packageArrowLeft.setPosition(new org.newdawn.slick.geom.Point(width * 1 / 4,
+                height * 1 / 3));
+
+        this.packageArrowRight = buttonFactory.setDefaultText(">")
+                .setListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        packageIndex++;
+                        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
+                        levelIndex = (progresses[packageIndex] == packageSize && packageSize > 0) ? progresses[packageIndex] - 1
+                                : progresses[packageIndex];
+                        setProgressText();
+                        setShowingText();
+                    }
+                }).createButton();
+        this.packageArrowRight.setPosition(new org.newdawn.slick.geom.Point(width * 3 / 4
+                - this.ubuntuLarge.getWidth(">"), height * 1 / 3));
+
+        this.levelArrowLeft = buttonFactory.setDefaultText("<").setListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                levelIndex--;
+                setShowingText();
+            }
+        }).createButton();
+        this.levelArrowLeft.setPosition(new org.newdawn.slick.geom.Point(width * 1 / 4,
+                height * 3 / 4));
+
+        this.levelArrowRight = buttonFactory.setDefaultText(">").setListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                levelIndex++;
+                setShowingText();
+            }
+        }).createButton();
+        this.levelArrowRight.setPosition(new org.newdawn.slick.geom.Point(width * 3 / 4
+                - this.ubuntuLarge.getWidth(">"), height * 3 / 4));
     }
 }

@@ -49,6 +49,7 @@ public class PicoContainerFactory {
         container.addComponent(LevelManager.class);
 
         container.as(Characteristics.NO_CACHE).addComponent(MenuBuilder.class);
+        container.as(Characteristics.NO_CACHE).addComponent(ButtonFactory.class);
 
         return container;
     }
