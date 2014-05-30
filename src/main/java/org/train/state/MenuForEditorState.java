@@ -519,10 +519,6 @@ public class MenuForEditorState extends BasicGameState {
         g.drawString(text, x - width / 2, y - height / 2);
     }
 
-    private void drawImage(Image image, float x, float y) {
-        image.draw(x, y);
-    }
-
     private void createPackagesMenu() {
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
         for (int i = 0; i < this.levelPackages.size(); i++) {
