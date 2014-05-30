@@ -3,7 +3,6 @@ package org.train.entity;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
@@ -14,11 +13,11 @@ import org.train.component.RectangleComponent;
 import org.train.factory.ButtonFactory;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.model.TextAreaView;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
 
 public class MessageBox extends Entity {
-    private String text;
     private boolean show = false;
     private Font font;
     private ActionListener yesListener;
@@ -27,6 +26,7 @@ public class MessageBox extends Entity {
     private Color bakcgroundColor = Color.lightGray;
     private Color textColor = Color.red;
 
+    private TextAreaView textMessage;
     private Button yesButton, noButton;
 
     public MessageBox(GameContainer container, Translator translator,
@@ -53,7 +53,9 @@ public class MessageBox extends Entity {
     }
 
     public void showConfirm(String text, ActionListener yesListener, ActionListener noListener) {
-        this.text = text;
+        this.textMessage = new TextAreaView(text, this.font, this.textColor, this.getWidth());
+        this.textMessage.setPosition(new org.newdawn.slick.geom.Point(this.getPosition().x, this
+                .getPosition().y));
         this.yesListener = yesListener;
         this.noListener = noListener;
         this.show = true;
@@ -72,35 +74,10 @@ public class MessageBox extends Entity {
         g.setFont(this.font);
 
         g.setColor(this.textColor);
-        this.renderMessage(g);
+        this.textMessage.render(g);
 
         this.yesButton.render(g);
         this.noButton.render(g);
-    }
-
-    private void renderMessage(Graphics g) {
-        String text[] = this.text.split(" ");
-        ArrayList<String> lines = new ArrayList<String>(text.length);
-        String line = "";
-        int last = 0;
-        for (int j = 0; j < text.length; j++) {
-            if (this.font.getWidth(line + " " + text[j]) + 20 > this.getWidth()) {
-                if (last == j) {
-                    line += text[j];
-                }
-                lines.add(line);
-                line = (last == j) ? "" : text[j];
-                last = j;
-            } else {
-                line += " " + text[j];
-            }
-        }
-        lines.add(line);
-        int lineHeight = this.font.getHeight("A");
-        for (int j = 0; j < lines.size(); j++) {
-            g.drawString(lines.get(j), this.getPosition().x + 10, this.getPosition().y + 10 + j
-                    * lineHeight);
-        }
     }
 
     public void close() {
