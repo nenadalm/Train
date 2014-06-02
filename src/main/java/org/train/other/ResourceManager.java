@@ -10,6 +10,7 @@ import org.dom4j.io.SAXReader;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.font.effects.Effect;
 import org.train.app.Configuration;
 import org.train.factory.FontFactory;
@@ -21,11 +22,13 @@ public class ResourceManager {
     private Map<String, String> fonts;
     private FontFactory fontFactory;
     private Map<String, Image> images;
+    private Map<String, Sound> sounds;
     private Configuration config;
 
     public ResourceManager(Configuration config, FontFactory fontFactory) {
         this.config = config;
         this.images = new HashMap<String, Image>();
+        this.sounds = new HashMap<String, Sound>();
         this.trucks = new HashMap<String, Truck>();
 
         this.fontFactory = fontFactory;
@@ -48,6 +51,12 @@ public class ResourceManager {
                 Element fontEl = (Element) el;
                 this.fonts.put(fontEl.attributeValue("id"),
                         config.get("contentPath") + fontEl.getText());
+            }
+
+            for (Object el : document.selectNodes("/resources/resource[@type='sound']")) {
+                Element soundEl = (Element) el;
+                String soundPath = config.get("contentPath") + soundEl.getText();
+                this.sounds.put(soundEl.attributeValue("id"), new Sound(soundPath));
             }
 
             for (Object el : document.selectNodes("/resources/resource[@type='truck']")) {
@@ -76,5 +85,9 @@ public class ResourceManager {
 
     public Image getImage(String name) {
         return this.images.get(name);
+    }
+
+    public Sound getSound(String name) {
+        return this.sounds.get(name);
     }
 }

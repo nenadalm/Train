@@ -32,6 +32,12 @@
 	<!-- fonts -->
 	<resource type="font" id="ubuntu">fonts/ubuntu.ttf</resource>
 
+	<!-- sounds -->
+    <resource type="sound" id="intro">sounds/1933__rhumphries__rbh-nyc-subway-pass.ogg</resource>
+    <resource type="sound" id="win">sounds/68999__guitarguy1985__airhorn-short.ogg</resource>
+    <resource type="sound" id="menu">sounds/124998__captain-k-man__bass-kick-drum-soft-hit.ogg</resource>
+    <resource type="sound" id="ingame">sounds/133887__aroth4__steam-machine.ogg</resource>
+
 	<!-- trucks -->
 	<resource type="truck" id="tree">
 		<truck image="treeTruck"/>

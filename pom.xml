@@ -131,6 +131,11 @@
 			<version>237</version>
 		</dependency>
 		<dependency>
+			<groupId>org.jcraft</groupId>
+			<artifactId>jorbis</artifactId>
+			<version>0.0.17</version>
+		</dependency>
+		<dependency>
 		    <groupId>org.picocontainer</groupId>
 		    <artifactId>picocontainer</artifactId>
 		    <version>2.10.2</version>
