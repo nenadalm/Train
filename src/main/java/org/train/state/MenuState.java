@@ -12,21 +12,21 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.Menu;
 import org.train.entity.MenuItem;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.model.TextView;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
 
 public class MenuState extends BasicGameState {
 
-    private int width, trainTextWidth, trainTextHeight;
-    private Font ubuntuLarge;
-    private String trainText;
     private Menu menu;
+    private TextView trainVersion;
 
     public MenuState(int stateId) {
         super(stateId);
@@ -71,25 +71,20 @@ public class MenuState extends BasicGameState {
         FontFactory fonts = this.container.getComponent(FontFactory.class);
         EffectFactory effects = this.container.getComponent(EffectFactory.class);
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        width = container.getWidth();
+        Font ubuntuLarge = fonts.getFont("ubuntu", container.getWidth() / 16, whiteEffect);
 
-        ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
-
-        trainText = "Train " + Game.VERSION;
-        trainTextWidth = ubuntuLarge.getWidth(trainText);
-        trainTextHeight = ubuntuLarge.getHeight(trainText);
+        this.trainVersion = new TextView("Train " + Game.VERSION, ubuntuLarge, Color.white);
+        float trainVersionX = (int) (this.trainVersion.getWidth() / 1.75)
+                - this.trainVersion.getWidth() / 2;
+        float trainVersionY = (int) (this.trainVersion.getHeight() / 1.5)
+                - this.trainVersion.getHeight() / 2;
+        this.trainVersion.setPosition(new Point(trainVersionX, trainVersionY));
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-        g.setFont(ubuntuLarge);
-        g.setColor(Color.gray);
-        drawString(g, ubuntuLarge, trainText, (int) (trainTextWidth / 1.75) + width / 500,
-                (int) (trainTextHeight / 1.5) + width / 750);
-        g.setColor(Color.white);
-        drawString(g, ubuntuLarge, trainText, (int) (trainTextWidth / 1.75),
-                (int) (trainTextHeight / 1.5));
+        this.trainVersion.render(g);
         this.menu.render(container, game, g);
     }
 
@@ -103,11 +98,5 @@ public class MenuState extends BasicGameState {
         }
 
         this.menu.update(container, game, delta);
-    }
-
-    private void drawString(Graphics g, Font font, String text, float x, float y) {
-        int width = font.getWidth(text);
-        int height = font.getHeight(text);
-        g.drawString(text, x - width / 2, y - height / 2);
     }
 }
