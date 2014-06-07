@@ -9,16 +9,20 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.GradientEffect;
 import org.newdawn.slick.geom.Point;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.Button;
 import org.train.factory.ButtonFactory;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.listener.ScrollListener;
+import org.train.listener.Scrollable;
 import org.train.model.Progress;
 import org.train.model.TextView;
 import org.train.other.LevelController;
@@ -42,6 +46,7 @@ public class MenuForGameState extends BasicGameState {
     private TextView lockedLevelNameView;
     private TextView noneLevelNameView;
     private TextView currentLevelView;
+    private MouseListener packageNameMouseListener, levelNameMouseListener;
 
     public MenuForGameState(int stateId) {
         super(stateId);
@@ -107,6 +112,53 @@ public class MenuForGameState extends BasicGameState {
                 : lastAvailableLevel;
         setProgressText();
         setShowingText();
+
+        this.packageNameMouseListener = new ScrollListener(new Scrollable() {
+            @Override
+            public void scrollUp() {
+                showPrevPackage();
+            }
+
+            @Override
+            public void scrollDown() {
+                showNextPackage();
+            }
+
+            @Override
+            public Rectangle getOccupiedArea() {
+                return new Rectangle(packageArrowLeft.getPosition().getX(), packageArrowLeft
+                        .getPosition().getY(), packageArrowRight.getPosition().getX()
+                        + packageArrowRight.getWidth(), packageArrowRight.getPosition().getY()
+                        + packageArrowRight.getPosition().getHeight());
+            }
+        });
+        this.packageNameMouseListener.setInput(container.getInput());
+        container.getInput().addMouseListener(this.packageNameMouseListener);
+
+        this.levelNameMouseListener = new ScrollListener(new Scrollable() {
+
+            @Override
+            public Rectangle getOccupiedArea() {
+                return new Rectangle(levelArrowLeft.getPosition().getX(), levelArrowLeft
+                        .getPosition().getY(), levelArrowRight.getPosition().getX()
+                        + levelArrowRight.getWidth(), levelArrowRight.getPosition().getY()
+                        + levelArrowRight.getPosition().getHeight());
+            }
+
+            @Override
+            public void scrollUp() {
+                showPrevLevel();
+            }
+
+            @Override
+            public void scrollDown() {
+                showNextLevel();
+            }
+        });
+        this.levelNameMouseListener.setInput(container.getInput());
+        container.getInput().addMouseListener(this.levelNameMouseListener);
+
+        this.updateArrows();
     }
 
     @Override
@@ -142,12 +194,6 @@ public class MenuForGameState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         Input input = container.getInput();
-
-        this.packageArrowLeft.setEnabled(packageIndex > 0);
-        this.packageArrowRight.setEnabled(packageIndex < levelPackages.size() - 1);
-        this.levelArrowLeft.setEnabled(levelIndex > 0);
-        this.levelArrowRight.setEnabled(levelIndex < levelPackages.get(packageIndex)
-                .getLevelNames().size() - 1);
 
         this.packageArrowLeft.update(container, game, delta);
         this.packageArrowRight.update(container, game, delta);
@@ -269,6 +315,10 @@ public class MenuForGameState extends BasicGameState {
     }
 
     private void showNextPackage() {
+        if (!this.isNextPackageAvailable()) {
+            return;
+        }
+
         packageIndex++;
         int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
         byte lastAvailableLevel = progress.getLastAvailableLevelIndex(packageIndex);
@@ -276,9 +326,14 @@ public class MenuForGameState extends BasicGameState {
                 : lastAvailableLevel;
         setProgressText();
         setShowingText();
+        this.updateArrows();
     }
 
     private void showPrevPackage() {
+        if (!this.isPrevPackageAvailable()) {
+            return;
+        }
+
         packageIndex--;
         int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
         byte lastAvailableLevel = progress.getLastAvailableLevelIndex(packageIndex);
@@ -286,15 +341,49 @@ public class MenuForGameState extends BasicGameState {
                 : lastAvailableLevel;
         setProgressText();
         setShowingText();
+        this.updateArrows();
     }
 
     private void showNextLevel() {
+        if (!this.isNextLevelAvailable()) {
+            return;
+        }
+
         levelIndex++;
         setShowingText();
+        this.updateArrows();
     }
 
     private void showPrevLevel() {
+        if (!this.isPrevLevelAvailable()) {
+            return;
+        }
+
         levelIndex--;
         setShowingText();
+        this.updateArrows();
+    }
+
+    private boolean isNextPackageAvailable() {
+        return packageIndex < levelPackages.size() - 1;
+    }
+
+    private boolean isPrevPackageAvailable() {
+        return packageIndex > 0;
+    }
+
+    private boolean isNextLevelAvailable() {
+        return levelIndex < levelPackages.get(packageIndex).getLevelNames().size() - 1;
+    }
+
+    private boolean isPrevLevelAvailable() {
+        return levelIndex > 0;
+    }
+
+    private void updateArrows() {
+        this.packageArrowRight.setEnabled(this.isNextPackageAvailable());
+        this.packageArrowLeft.setEnabled(this.isPrevPackageAvailable());
+        this.levelArrowRight.setEnabled(this.isNextLevelAvailable());
+        this.levelArrowLeft.setEnabled(this.isPrevLevelAvailable());
     }
 }

@@ -87,6 +87,10 @@ public class Button extends Child {
         this.currentView = this.enabled ? this.normalView : this.disabledView;
     }
 
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
     @Override
     public void setRectangle(Rectangle rectangle) {
         super.setRectangle(rectangle);
