@@ -8,6 +8,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
+import org.train.input.Mouse;
 import org.train.model.ViewInterface;
 
 public class Button extends Child {
@@ -18,6 +19,8 @@ public class Button extends Child {
     private boolean wasOver = false;
     private Sound overSound;
 
+    private Mouse mouse;
+
     public Button(ViewInterface normalView, ViewInterface overView, ViewInterface disabledView,
             ActionListener listener) {
         this.normalView = normalView;
@@ -26,6 +29,7 @@ public class Button extends Child {
 
         this.currentView = this.normalView;
         this.listener = listener;
+        this.mouse = new Mouse();
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta) {
@@ -42,7 +46,7 @@ public class Button extends Child {
             }
             this.wasOver = true;
 
-            if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+            if (this.mouse.isPressed(input, Input.MOUSE_LEFT_BUTTON, delta)) {
                 this.listener.actionPerformed(null);
             }
         } else {
