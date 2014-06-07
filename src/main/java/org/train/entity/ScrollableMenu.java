@@ -3,13 +3,18 @@ package org.train.entity;
 import java.util.List;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.MouseListener;
+import org.newdawn.slick.geom.Rectangle;
 import org.train.factory.EffectFactory;
+import org.train.listener.ScrollListener;
+import org.train.listener.Scrollable;
 import org.train.other.ResourceManager;
 
-public class ScrollableMenu extends Menu {
+public class ScrollableMenu extends Menu implements Scrollable {
 
     private List<? extends MenuItem> children;
     private int fromIndex = 0, toIndex = 0;
+    private MouseListener mouseListener;
 
     public ScrollableMenu(List<? extends MenuItem> items, GameContainer container,
             ResourceManager resourceManager, EffectFactory effectFactory) {
@@ -17,6 +22,9 @@ public class ScrollableMenu extends Menu {
         super(items, container, resourceManager, effectFactory);
         this.children = items;
         this.updateItems();
+        this.mouseListener = new ScrollListener(this);
+        this.mouseListener.setInput(container.getInput());
+        container.getInput().addMouseListener(this.mouseListener);
     }
 
     public void setMaxItems(int max) {
@@ -31,14 +39,18 @@ public class ScrollableMenu extends Menu {
     }
 
     public void showNext() {
-        this.overSound.play();
+        if (this.items.get(active) != this.selected) {
+            this.items.get(active).setColor(this.items.get(active).getNormalColor());
+        }
         this.fromIndex++;
         this.toIndex++;
         this.updateItems();
     }
 
     public void showPrev() {
-        this.overSound.play();
+        if (this.items.get(active) != this.selected) {
+            this.items.get(active).setColor(this.items.get(active).getNormalColor());
+        }
         this.fromIndex--;
         this.toIndex--;
         this.updateItems();
@@ -66,5 +78,27 @@ public class ScrollableMenu extends Menu {
             return;
         }
         this.getLayout().recalculateRectangles();
+    }
+
+    @Override
+    public Rectangle getOccupiedArea() {
+        return new Rectangle(getPosition().x - getPaddingLeft() - getMarginRight(), getPosition().y
+                - getPaddingTop(), getWidth() + getPaddingRight() + getPaddingLeft(), getHeight()
+                + getPaddingBottom() + getPaddingTop());
+    }
+
+    @Override
+    public void scrollUp() {
+        if (hasPrev()) {
+            showPrev();
+        }
+
+    }
+
+    @Override
+    public void scrollDown() {
+        if (hasNext()) {
+            showNext();
+        }
     }
 }

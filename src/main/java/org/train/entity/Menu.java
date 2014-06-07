@@ -21,7 +21,7 @@ public class Menu extends Container {
     private Point lastMousePosition;
     private boolean show = true, selectable = false;
     private boolean keyboardEnabled = true;
-    private MenuItem selected;
+    protected MenuItem selected;
     protected Sound overSound;
 
     @Override
