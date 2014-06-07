@@ -8,6 +8,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.component.RectangleComponent;
@@ -15,12 +16,13 @@ import org.train.factory.EffectFactory;
 import org.train.other.ResourceManager;
 
 public class Menu extends Container {
-    int active = 0;
+    int active = 0, lastActiveItem = -1;
     protected List<? extends MenuItem> items;
-    Point lastMousePosition;
+    private Point lastMousePosition;
     private boolean show = true, selectable = false;
     private boolean keyboardEnabled = true;
-    MenuItem selected;
+    private MenuItem selected;
+    protected Sound overSound;
 
     @Override
     protected List<? extends MenuItem> getChildren() {
@@ -43,6 +45,7 @@ public class Menu extends Container {
                             effectFactory.getColorEffect(java.awt.Color.white)));
                 }
             }
+            this.overSound = resourceManager.getSound("menu");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -79,17 +82,11 @@ public class Menu extends Container {
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
 
-        List<Rectangle> rectangles = this.getLayout().getRectangles();
-
         if (this.keyboardEnabled) {
             if (input.isKeyPressed(Input.KEY_UP)) {
-                this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
-                this.active = (this.active > 0) ? this.active - 1 : rectangles.size() - 1;
-                this.items.get(this.active).setColor(items.get(this.active).getActiveColor());
+                this.markOver(this.active - 1);
             } else if (input.isKeyPressed(Input.KEY_DOWN)) {
-                this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
-                this.active = (this.active < rectangles.size() - 1) ? this.active + 1 : 0;
-                this.items.get(this.active).setColor(items.get(this.active).getActiveColor());
+                this.markOver(this.active + 1);
             }
         }
 
@@ -102,6 +99,9 @@ public class Menu extends Container {
                         this.items.get(this.active).setColor(
                                 items.get(this.active).getNormalColor());
                     }
+                    if (this.lastActiveItem != counter) {
+                        this.overSound.play();
+                    }
                     this.active = counter;
 
                     if (this.items.get(this.active) != this.selected) {
@@ -113,9 +113,11 @@ public class Menu extends Container {
             counter++;
         }
 
+        this.lastActiveItem = this.active;
         if (!over && !this.keyboardEnabled && this.items.get(this.active).isEnabled()) {
             if (this.selected != this.items.get(this.active)) {
                 this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
+                this.lastActiveItem = -1;
             }
         }
 
@@ -132,6 +134,21 @@ public class Menu extends Container {
             listener.actionPerformed(null);
         }
         this.lastMousePosition.setLocation(mouseX, mouseY);
+    }
+
+    private void markOver(int overMenuItemIndex) {
+        this.overSound.play();
+        this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
+
+        if (overMenuItemIndex < 0) {
+            this.active = this.items.size() - 1;
+        } else if (overMenuItemIndex >= this.items.size()) {
+            this.active = 0;
+        } else {
+            this.active = overMenuItemIndex;
+        }
+
+        this.items.get(this.active).setColor(items.get(this.active).getActiveColor());
     }
 
     public void disableKeyboard() {

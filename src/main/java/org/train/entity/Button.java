@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.model.ViewInterface;
@@ -14,6 +15,8 @@ public class Button extends Child {
     private ViewInterface normalView, overView, disabledView, currentView;
     private ActionListener listener;
     private boolean enabled = true;
+    private boolean wasOver = false;
+    private Sound overSound;
 
     public Button(ViewInterface normalView, ViewInterface overView, ViewInterface disabledView,
             ActionListener listener) {
@@ -34,11 +37,29 @@ public class Button extends Child {
 
         if (this.getRectangle().contains(input.getMouseX(), input.getMouseY())) {
             this.currentView = this.overView;
+            if (!this.wasOver) {
+                this.onMouseOver();
+            }
+            this.wasOver = true;
+
             if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
                 this.listener.actionPerformed(null);
             }
         } else {
-            this.currentView = this.normalView;
+            if (this.wasOver) {
+                this.currentView = this.normalView;
+            }
+            this.wasOver = false;
+        }
+    }
+
+    public void setOverSound(Sound sound) {
+        this.overSound = sound;
+    }
+
+    private void onMouseOver() {
+        if (this.overSound != null) {
+            this.overSound.play();
         }
     }
 

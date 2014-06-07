@@ -31,12 +31,14 @@ public class ScrollableMenu extends Menu {
     }
 
     public void showNext() {
+        this.overSound.play();
         this.fromIndex++;
         this.toIndex++;
         this.updateItems();
     }
 
     public void showPrev() {
+        this.overSound.play();
         this.fromIndex--;
         this.toIndex--;
         this.updateItems();

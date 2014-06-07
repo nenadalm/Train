@@ -6,6 +6,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +25,8 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Configuration;
 import org.train.app.Game;
+import org.train.entity.Button;
+import org.train.factory.ButtonFactory;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
 import org.train.other.LevelController;
@@ -30,13 +34,12 @@ import org.train.other.Translator;
 
 public class OptionsState extends BasicGameState {
 
-    private boolean isMouseOverReturn, isMouseOverSave, isMouseOverResolution,
-            isMouseOverFullscreen, isMouseOverLanguage, isMouseOverAutoscale, isMouseOverScale,
-            isFullscreen, isAutoscale, isHolding;
+    private boolean isMouseOverResolution, isMouseOverFullscreen, isMouseOverLanguage,
+            isMouseOverAutoscale, isMouseOverScale, isFullscreen, isAutoscale, isHolding;
     private int width, height, languageIndex, modeIndex, scale, holdCounter;
     private Font ubuntuSmall, ubuntuMedium, ubuntuLarge;
-    private Rectangle saveRectangle, returnRectangle, resolutionRectangle, fullscreenRectangle,
-            languageRectangle, autoscaleRectangle, scaleRectangle;
+    private Rectangle resolutionRectangle, fullscreenRectangle, languageRectangle,
+            autoscaleRectangle, scaleRectangle;
     private DisplayMode displayModes[];
     private Dimension size;
     private Image wall, wallPreview;
@@ -44,6 +47,8 @@ public class OptionsState extends BasicGameState {
     private String resolutionText, languages[], yes, no, scaleText, sizeText;
     private Translator translator;
     private Configuration configuration;
+
+    private Button backBtn, saveBtn;
 
     public OptionsState(int stateId) {
         super(stateId);
@@ -63,6 +68,9 @@ public class OptionsState extends BasicGameState {
         ubuntuSmall = fonts.getFont("ubuntu", width / 40, whiteEffect);
         ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
         ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
+
+        this.createBackButton(game);
+        this.createSaveButton(game);
 
         translate();
         wall = new Image(configuration.get("contentPath") + "graphics/wall.png");
@@ -130,20 +138,6 @@ public class OptionsState extends BasicGameState {
 
         scaleRectangle = new Rectangle();
         setScaleRectangle();
-
-        String save = translator.translate("save");
-
-        saveRectangle = new Rectangle();
-        saveRectangle.width = ubuntuMedium.getWidth(save);
-        saveRectangle.height = ubuntuMedium.getHeight(save);
-        saveRectangle.x = (width / 3) - saveRectangle.width / 2;
-        saveRectangle.y = (height - saveRectangle.height) - saveRectangle.height / 6;
-
-        returnRectangle = new Rectangle();
-        returnRectangle.width = ubuntuMedium.getWidth(translator.translate("back"));
-        returnRectangle.height = ubuntuMedium.getHeight(save);
-        returnRectangle.x = (int) (width / 1.5) - returnRectangle.width / 2;
-        returnRectangle.y = (height - returnRectangle.height) - returnRectangle.height / 6;
     }
 
     @Override
@@ -178,12 +172,9 @@ public class OptionsState extends BasicGameState {
         g.setColor((isAutoscale) ? Color.darkGray : (isMouseOverScale) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, scaleText, width / 6 * 4, height * 6 / 10);
 
-        g.setColor((isMouseOverSave) ? Color.red : Color.white);
-        drawString(g, ubuntuMedium, translator.translate("save"), width / 3,
-                (height - saveRectangle.height * 3 / 4));
-        g.setColor((isMouseOverReturn) ? Color.red : Color.white);
-        drawString(g, ubuntuMedium, translator.translate("back"), (int) (width / 1.5),
-                (height - returnRectangle.height * 3 / 4));
+        this.saveBtn.render(g);
+        this.backBtn.render(g);
+
         g.setFont(ubuntuSmall);
         g.setColor((size.width > 7 && size.height > 7 && size.width <= 100 && size.height <= 100) ? Color.white
                 : Color.blue);
@@ -202,8 +193,8 @@ public class OptionsState extends BasicGameState {
         isMouseOverLanguage = languageRectangle.contains(mouse);
         isMouseOverAutoscale = autoscaleRectangle.contains(mouse);
         isMouseOverScale = scaleRectangle.contains(mouse) && !isAutoscale;
-        isMouseOverSave = saveRectangle.contains(mouse);
-        isMouseOverReturn = returnRectangle.contains(mouse);
+        this.saveBtn.update(container, game, delta);
+        this.backBtn.update(container, game, delta);
         isHolding = false;
 
         if (input.isKeyPressed(Input.KEY_ENTER)) {
@@ -235,13 +226,6 @@ public class OptionsState extends BasicGameState {
             if (isMouseOverAutoscale) {
                 isAutoscale = !isAutoscale;
                 setAutoscaleRectangle();
-            }
-            if (isMouseOverSave) {
-                saveOptions(container, game);
-                game.enterState(Game.MENU_STATE);
-            }
-            if (isMouseOverReturn) {
-                game.enterState(Game.MENU_STATE);
             }
         }
         if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
@@ -374,6 +358,37 @@ public class OptionsState extends BasicGameState {
         rectangle.height = ubuntuMedium.getHeight(text);
         rectangle.x = x - rectangle.width / 2;
         rectangle.y = y - rectangle.height / 2;
+    }
+
+    private void createBackButton(final StateBasedGame game) {
+        ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
+        this.backBtn = buttonFactory.setDefaultColor(Color.white).setDisabledColor(Color.darkGray)
+                .setOverColor(Color.red).setDefaultText(translator.translate("back"))
+                .setDefaultFont(ubuntuMedium).setListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        game.enterState(Game.MENU_STATE);
+                    }
+                }).createButton();
+
+        this.backBtn.setPosition(new org.newdawn.slick.geom.Point((int) (width / 1.5 - this.backBtn
+                .getWidth() / 2), (int) (height - this.backBtn.getHeight() * 1.2f)));
+    }
+
+    private void createSaveButton(final StateBasedGame game) {
+        ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
+        this.saveBtn = buttonFactory.setDefaultColor(Color.white).setDisabledColor(Color.darkGray)
+                .setOverColor(Color.red).setDefaultText(translator.translate("save"))
+                .setDefaultFont(ubuntuMedium).setListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        saveOptions(game.getContainer(), game);
+                        game.enterState(Game.MENU_STATE);
+                    }
+                }).createButton();
+
+        this.saveBtn.setPosition(new org.newdawn.slick.geom.Point(width / 3
+                - this.saveBtn.getWidth() / 2, (int) (height - this.backBtn.getHeight() * 1.2f)));
     }
 
     private void translate() {

@@ -1,7 +1,5 @@
 package org.train.state;
 
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -20,7 +18,6 @@ import org.train.entity.Button;
 import org.train.factory.ButtonFactory;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
-import org.train.other.InteractiveLabel;
 import org.train.other.LevelController;
 import org.train.other.LevelPackage;
 import org.train.other.Translator;
@@ -35,7 +32,7 @@ public class MenuForGameState extends BasicGameState {
     private byte[] progresses;
     private ArrayList<LevelPackage> levelPackages;
     private LevelController levelController;
-    private InteractiveLabel play, back;
+    private Button playBtn, backBtn;
     private Button packageArrowLeft, packageArrowRight, levelArrowLeft, levelArrowRight;
 
     public MenuForGameState(int stateId) {
@@ -62,8 +59,8 @@ public class MenuForGameState extends BasicGameState {
 
         this.createArrowButtons();
 
-        initBackLabel();
-        initPlayLabel();
+        this.createBackButton(game);
+        this.createPlayButton(game);
 
         packageIndex = 0;
         int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
@@ -88,8 +85,8 @@ public class MenuForGameState extends BasicGameState {
 
         String text = levelPackages.get(packageIndex).getName();
         g.setFont(ubuntuMedium);
-        back.render(g);
-        play.render(g);
+        this.backBtn.render(g);
+        this.playBtn.render(g);
         g.setColor(Color.white);
         g.drawString(text, width / 2 - ubuntuMedium.getWidth(text) / 2, height * 1 / 3 + height
                 / 50);
@@ -118,7 +115,6 @@ public class MenuForGameState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         Input input = container.getInput();
-        Point mouse = new Point(input.getMouseX(), input.getMouseY());
 
         this.packageArrowLeft.setEnabled(packageIndex > 0);
         this.packageArrowRight.setEnabled(packageIndex < levelPackages.size() - 1);
@@ -131,29 +127,14 @@ public class MenuForGameState extends BasicGameState {
         this.levelArrowLeft.update(container, game, delta);
         this.levelArrowRight.update(container, game, delta);
 
-        play.setEnabled(levelIndex < levelPackages.get(packageIndex).getLevelNames().size()
+        playBtn.setEnabled(levelIndex < levelPackages.get(packageIndex).getLevelNames().size()
                 && levelIndex <= progresses[packageIndex]);
 
-        back.setIsMouseOver(mouse);
-        play.setIsMouseOver(mouse);
+        this.playBtn.update(container, game, delta);
+        this.backBtn.update(container, game, delta);
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);
-        }
-
-        if (input.isMousePressed(0)) {
-            if (back.isMouseOver()) {
-                game.enterState(Game.MENU_STATE);
-            }
-            if (play.isMouseOver()) {
-                try {
-                    levelController.loadLevel(packageIndex, levelIndex);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                input.clearKeyPressedRecord();
-                game.enterState(Game.GAME_STATE);
-            }
         }
     }
 
@@ -171,28 +152,39 @@ public class MenuForGameState extends BasicGameState {
                 translator.translate("showing"));
     }
 
-    private void initBackLabel() {
-        String backText = translator.translate("back");
-        Rectangle rectangle = new Rectangle();
-        rectangle.width = ubuntuMedium.getWidth(backText);
-        rectangle.height = ubuntuMedium.getHeight(backText);
-        rectangle.x = width / 100;
-        rectangle.y = (int) (height - rectangle.height * 1.1f);
-        Point position = new Point(rectangle.x, rectangle.y);
-        back = new InteractiveLabel(backText, position, rectangle);
-        back.setColors(Color.white, Color.red, Color.darkGray);
+    private void createBackButton(final StateBasedGame game) {
+        ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
+        this.backBtn = buttonFactory.setDefaultColor(Color.white).setDisabledColor(Color.darkGray)
+                .setOverColor(Color.red).setDefaultText(translator.translate("back"))
+                .setDefaultFont(ubuntuMedium).setListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        game.enterState(Game.MENU_STATE);
+                    }
+                }).createButton();
+
+        this.backBtn.setPosition(new org.newdawn.slick.geom.Point(width / 100,
+                (int) (height - this.backBtn.getHeight() * 1.1f)));
     }
 
-    private void initPlayLabel() {
-        String playText = translator.translate("play");
-        Rectangle rectangle = new Rectangle();
-        rectangle.width = ubuntuMedium.getWidth(playText);
-        rectangle.height = ubuntuMedium.getHeight(playText);
-        rectangle.x = width / 2 - rectangle.width / 2;
-        rectangle.y = (int) (height - rectangle.height * 1.1f);
-        Point position = new Point(rectangle.x, rectangle.y);
-        play = new InteractiveLabel(playText, position, rectangle);
-        play.setColors(Color.white, Color.red, Color.darkGray);
+    private void createPlayButton(final StateBasedGame game) {
+        ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
+        this.playBtn = buttonFactory.setDefaultColor(Color.white).setDisabledColor(Color.darkGray)
+                .setOverColor(Color.red).setDefaultText(translator.translate("play"))
+                .setDefaultFont(ubuntuMedium).setListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            levelController.loadLevel(packageIndex, levelIndex);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        game.enterState(Game.GAME_STATE);
+                    }
+                }).createButton();
+
+        this.playBtn.setPosition(new org.newdawn.slick.geom.Point(width / 2
+                - this.playBtn.getWidth() / 2, (int) (height - this.playBtn.getHeight() * 1.1f)));
     }
 
     private void createArrowButtons() {

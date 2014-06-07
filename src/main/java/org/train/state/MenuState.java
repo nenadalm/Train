@@ -11,6 +11,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
@@ -27,6 +28,7 @@ public class MenuState extends BasicGameState {
 
     private Menu menu;
     private TextView trainVersion;
+    private Sound intro;
 
     public MenuState(int stateId) {
         super(stateId);
@@ -35,6 +37,8 @@ public class MenuState extends BasicGameState {
     @Override
     public void init(final GameContainer container, final StateBasedGame game)
             throws SlickException {
+        this.intro = this.container.getComponent(ResourceManager.class).getSound("intro");
+        this.intro.play();
         Translator translator = this.container.getComponent(Translator.class);
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
         menuItems.add(new MenuItem(translator.translate("Menu.StartGame"), new ActionListener() {
@@ -79,6 +83,11 @@ public class MenuState extends BasicGameState {
         float trainVersionY = (int) (this.trainVersion.getHeight() / 1.5)
                 - this.trainVersion.getHeight() / 2;
         this.trainVersion.setPosition(new Point(trainVersionX, trainVersionY));
+    }
+
+    @Override
+    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+        this.intro.stop();
     }
 
     @Override

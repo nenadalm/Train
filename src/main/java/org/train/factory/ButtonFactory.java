@@ -5,20 +5,27 @@ import java.awt.event.ActionListener;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.TrueTypeFont;
 import org.train.entity.Button;
+import org.train.model.ImageView;
 import org.train.model.TextView;
 import org.train.model.ViewInterface;
+import org.train.other.ResourceManager;
 
 public class ButtonFactory {
     private Font defaultFont;
     private Color defaultColor;
+    private Image normalImage, overImage, disabledImage;
 
     private String defaultText;
     private Color normalColor, overColor, disabledColor;
     private ActionListener listener;
+    private Sound overSound;
 
-    public ButtonFactory() {
+    public ButtonFactory(ResourceManager resourceManager) {
+        this.overSound = resourceManager.getSound("menu");
         this.defaultFont = new TrueTypeFont(new java.awt.Font("ubuntu", java.awt.Font.PLAIN, 40),
                 true);
         this.defaultColor = Color.red;
@@ -64,6 +71,24 @@ public class ButtonFactory {
         return this;
     }
 
+    public ButtonFactory setNormalImage(Image img) {
+        this.normalImage = img;
+
+        return this;
+    }
+
+    public ButtonFactory setOverImage(Image img) {
+        this.overImage = img;
+
+        return this;
+    }
+
+    public ButtonFactory setDisabledImage(Image img) {
+        this.disabledImage = img;
+
+        return this;
+    }
+
     public ButtonFactory setDisabledColor(Color color) {
         this.disabledColor = color;
 
@@ -77,20 +102,39 @@ public class ButtonFactory {
     }
 
     public Button createButton() {
-        return new Button(this.createNormalView(), this.createOverView(),
+        Button button = new Button(this.createNormalView(), this.createOverView(),
                 this.createDisabledView(), this.listener);
+        button.setOverSound(this.overSound);
+
+        return button;
     }
 
     private ViewInterface createNormalView() {
+        if (this.normalImage != null) {
+            return this.createView(this.normalImage);
+        }
+
         return this.createView(this.defaultText, this.defaultFont, this.normalColor);
     }
 
     private ViewInterface createOverView() {
+        if (this.overImage != null) {
+            return this.createView(this.overImage);
+        }
+
         return this.createView(this.defaultText, this.defaultFont, this.overColor);
     }
 
     private ViewInterface createDisabledView() {
+        if (this.disabledImage != null) {
+            return this.createView(this.disabledImage);
+        }
+
         return this.createView(this.defaultText, this.defaultFont, this.disabledColor);
+    }
+
+    private ViewInterface createView(Image img) {
+        return new ImageView(img);
     }
 
     private ViewInterface createView(String text, Font font, Color color) {
