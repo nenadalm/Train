@@ -12,6 +12,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.GradientEffect;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.Button;
@@ -19,6 +20,7 @@ import org.train.factory.ButtonFactory;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
 import org.train.model.Progress;
+import org.train.model.TextView;
 import org.train.other.LevelController;
 import org.train.other.LevelPackage;
 import org.train.other.Translator;
@@ -35,6 +37,10 @@ public class MenuForGameState extends BasicGameState {
     private LevelController levelController;
     private Button playBtn, backBtn;
     private Button packageArrowLeft, packageArrowRight, levelArrowLeft, levelArrowRight;
+    private TextView[] packageNameViews;
+    private TextView[][] levelNameViews;
+    private TextView lockedLevelNameView;
+    private TextView noneLevelNameView;
 
     public MenuForGameState(int stateId) {
         super(stateId);
@@ -56,6 +62,36 @@ public class MenuForGameState extends BasicGameState {
 
         levelController = this.container.getComponent(LevelController.class);
         levelPackages = levelController.getLevels();
+
+        this.packageNameViews = new TextView[this.levelPackages.size()];
+        for (int i = 0; i < this.levelPackages.size(); i++) {
+            this.packageNameViews[i] = new TextView(levelPackages.get(i).getName(),
+                    this.ubuntuMedium, Color.white);
+            this.packageNameViews[i].setPosition(new Point(width / 2
+                    - this.packageNameViews[i].getWidth() / 2, height * 1 / 3 + height / 50));
+
+        }
+        this.levelNameViews = new TextView[this.levelPackages.size()][];
+        for (int i = 0; i < this.levelNameViews.length; i++) {
+            this.levelNameViews[i] = new TextView[this.levelPackages.get(i).getLevelNames().size()];
+
+            for (int j = 0; j < this.levelNameViews[i].length; j++) {
+                this.levelNameViews[i][j] = new TextView(this.levelPackages.get(i).getLevelNames()
+                        .get(j), this.ubuntuMedium, Color.white);
+
+                this.levelNameViews[i][j].setPosition(new Point(width / 2
+                        - this.levelNameViews[i][j].getWidth() / 2, height * 3 / 4 + height / 40));
+            }
+        }
+        this.lockedLevelNameView = new TextView(String.format("» %1$s «",
+                translator.translate("locked")), this.ubuntuMedium, Color.darkGray);
+        this.lockedLevelNameView.setPosition(new Point(width / 2
+                - this.lockedLevelNameView.getWidth() / 2, height * 3 / 4 + height / 40));
+        this.noneLevelNameView = new TextView(String.format("« %1$s »",
+                translator.translate("none")), this.ubuntuMedium, Color.darkGray);
+        this.noneLevelNameView.setPosition(new Point(width / 2 - this.noneLevelNameView.getWidth()
+                / 2, height * 3 / 4 + height / 40));
+
         this.progress = levelController.getProgress();
 
         this.createArrowButtons();
@@ -85,29 +121,25 @@ public class MenuForGameState extends BasicGameState {
         this.levelArrowLeft.render(g);
         this.levelArrowRight.render(g);
 
-        String text = levelPackages.get(packageIndex).getName();
-        g.setFont(ubuntuMedium);
         this.backBtn.render(g);
         this.playBtn.render(g);
-        g.setColor(Color.white);
-        g.drawString(text, width / 2 - ubuntuMedium.getWidth(text) / 2, height * 1 / 3 + height
-                / 50);
+
+        this.packageNameViews[this.packageIndex].render(g);
+
         if (levelIndex < levelPackages.get(packageIndex).getLevelNames().size()) {
             g.drawString(showingText, width - ubuntuMedium.getWidth(showingText) * 1.1f, height
                     - ubuntuMedium.getHeight(showingText) * 1.1f);
+
             if (levelIndex <= this.progress.getLastCompletedLevelIndex(this.packageIndex)) {
-                text = levelPackages.get(packageIndex).getLevelNames().get(levelIndex);
+                this.levelNameViews[this.packageIndex][this.levelIndex].render(g);
             } else {
-                g.setColor(Color.darkGray);
-                text = String.format("» %1$s «", translator.translate("locked"));
+                this.lockedLevelNameView.render(g);
             }
 
         } else {
-            g.setColor(Color.darkGray);
-            text = String.format("« %1$s »", translator.translate("none"));
+            this.noneLevelNameView.render(g);
         }
-        g.drawString(text, width / 2 - ubuntuMedium.getWidth(text) / 2, height * 3 / 4 + height
-                / 40);
+
         g.setColor(new Color(0, 0.5f, 0));
         g.drawString(progressText, width - ubuntuMedium.getWidth(progressText) * 1.1f,
                 height * 16 / 30);
@@ -198,13 +230,7 @@ public class MenuForGameState extends BasicGameState {
         this.packageArrowLeft = buttonFactory.setDefaultText("<").setListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                packageIndex--;
-                int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-                byte lastCompletedLevel = progress.getLastCompletedLevelIndex(packageIndex);
-                levelIndex = (lastCompletedLevel == packageSize && packageSize > 0) ? lastCompletedLevel - 1
-                        : lastCompletedLevel;
-                setProgressText();
-                setShowingText();
+                showPrevPackage();
             }
         }).createButton();
         this.packageArrowLeft.setPosition(new org.newdawn.slick.geom.Point(width * 1 / 4,
@@ -214,13 +240,7 @@ public class MenuForGameState extends BasicGameState {
                 .setListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        packageIndex++;
-                        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-                        byte lastCompletedLevel = progress.getLastCompletedLevelIndex(packageIndex);
-                        levelIndex = (lastCompletedLevel == packageSize && packageSize > 0) ? lastCompletedLevel - 1
-                                : lastCompletedLevel;
-                        setProgressText();
-                        setShowingText();
+                        showNextPackage();
                     }
                 }).createButton();
         this.packageArrowRight.setPosition(new org.newdawn.slick.geom.Point(width * 3 / 4
@@ -229,8 +249,7 @@ public class MenuForGameState extends BasicGameState {
         this.levelArrowLeft = buttonFactory.setDefaultText("<").setListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                levelIndex--;
-                setShowingText();
+                showPrevLevel();
             }
         }).createButton();
         this.levelArrowLeft.setPosition(new org.newdawn.slick.geom.Point(width * 1 / 4,
@@ -239,11 +258,40 @@ public class MenuForGameState extends BasicGameState {
         this.levelArrowRight = buttonFactory.setDefaultText(">").setListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                levelIndex++;
-                setShowingText();
+                showNextLevel();
             }
         }).createButton();
         this.levelArrowRight.setPosition(new org.newdawn.slick.geom.Point(width * 3 / 4
                 - this.ubuntuLarge.getWidth(">"), height * 3 / 4));
+    }
+
+    private void showNextPackage() {
+        packageIndex++;
+        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
+        byte lastCompletedLevel = progress.getLastCompletedLevelIndex(packageIndex);
+        levelIndex = (lastCompletedLevel == packageSize && packageSize > 0) ? lastCompletedLevel - 1
+                : lastCompletedLevel;
+        setProgressText();
+        setShowingText();
+    }
+
+    private void showPrevPackage() {
+        packageIndex--;
+        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
+        byte lastCompletedLevel = progress.getLastCompletedLevelIndex(packageIndex);
+        levelIndex = (lastCompletedLevel == packageSize && packageSize > 0) ? lastCompletedLevel - 1
+                : lastCompletedLevel;
+        setProgressText();
+        setShowingText();
+    }
+
+    private void showNextLevel() {
+        levelIndex++;
+        setShowingText();
+    }
+
+    private void showPrevLevel() {
+        levelIndex--;
+        setShowingText();
     }
 }
