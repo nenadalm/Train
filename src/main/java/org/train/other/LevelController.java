@@ -12,6 +12,7 @@ import org.train.entity.Level;
 import org.train.entity.Level.Item;
 import org.train.entity.LevelItem;
 import org.train.level.LevelManager;
+import org.train.model.Progress;
 
 public class LevelController {
 
@@ -61,7 +62,11 @@ public class LevelController {
         this.level = this.levelManager.loadLevel(packageIndex, levelIndex, packageName, levelName);
     }
 
-    public byte[] getProgresses() {
+    public Progress getProgress() {
+        return new Progress(this.getProgresses());
+    }
+
+    private byte[] getProgresses() {
         File saveFile = new File(this.config.get("contentPath") + "save");
         try {
             if (!saveFile.exists()) {
