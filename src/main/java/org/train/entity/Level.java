@@ -14,6 +14,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.collection.LevelItemsStorage;
 import org.train.other.ResourceManager;
@@ -40,8 +41,10 @@ public class Level extends Entity implements Cloneable {
     private ResourceManager resourceManager;
     private boolean playable = false;
     private Queue<Integer> keys = new LinkedList<Integer>();
+    private Sound winSound;
 
     public Level(int width, int height, int refreshSpeed, ResourceManager resourceManager) {
+        this.winSound = resourceManager.getSound("win");
         this.levelItemsStorage = new LevelItemsStorage();
         this.interval = refreshSpeed;
         this.resourceManager = resourceManager;
@@ -223,6 +226,7 @@ public class Level extends Entity implements Cloneable {
             if (this.itemsToWin == 0
                     && this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y].getType() == Item.GATE) {
                 this.isGameWon = true;
+                this.winSound.play();
             }
             this.moveTrucks(lastPoint, this.train.getRotation(), this.train.flippedHorizontal,
                     this.train.flippedVertical);
