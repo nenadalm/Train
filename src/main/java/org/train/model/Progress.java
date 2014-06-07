@@ -8,7 +8,11 @@ public class Progress {
         this.progresses = progresses;
     }
 
-    public byte getLastCompletedLevelIndex(int packageIndex) {
+    public boolean isLevelAvailable(int packageIndex, int levelIndex) {
+        return this.getLastAvailableLevelIndex(packageIndex) >= levelIndex;
+    }
+
+    public byte getLastAvailableLevelIndex(int packageIndex) {
         return this.progresses[packageIndex];
     }
 }

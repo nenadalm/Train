@@ -41,6 +41,7 @@ public class MenuForGameState extends BasicGameState {
     private TextView[][] levelNameViews;
     private TextView lockedLevelNameView;
     private TextView noneLevelNameView;
+    private TextView currentLevelView;
 
     public MenuForGameState(int stateId) {
         super(stateId);
@@ -101,9 +102,9 @@ public class MenuForGameState extends BasicGameState {
 
         packageIndex = 0;
         int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-        byte lastCompletedLevel = this.progress.getLastCompletedLevelIndex(this.packageIndex);
-        this.levelIndex = (lastCompletedLevel == packageSize && packageSize > 0) ? lastCompletedLevel - 1
-                : lastCompletedLevel;
+        byte lastAvailableLevel = this.progress.getLastAvailableLevelIndex(this.packageIndex);
+        this.levelIndex = (lastAvailableLevel == packageSize && packageSize > 0) ? lastAvailableLevel - 1
+                : lastAvailableLevel;
         setProgressText();
         setShowingText();
     }
@@ -125,19 +126,11 @@ public class MenuForGameState extends BasicGameState {
         this.playBtn.render(g);
 
         this.packageNameViews[this.packageIndex].render(g);
+        this.currentLevelView.render(g);
 
         if (levelIndex < levelPackages.get(packageIndex).getLevelNames().size()) {
             g.drawString(showingText, width - ubuntuMedium.getWidth(showingText) * 1.1f, height
                     - ubuntuMedium.getHeight(showingText) * 1.1f);
-
-            if (levelIndex <= this.progress.getLastCompletedLevelIndex(this.packageIndex)) {
-                this.levelNameViews[this.packageIndex][this.levelIndex].render(g);
-            } else {
-                this.lockedLevelNameView.render(g);
-            }
-
-        } else {
-            this.noneLevelNameView.render(g);
         }
 
         g.setColor(new Color(0, 0.5f, 0));
@@ -161,8 +154,18 @@ public class MenuForGameState extends BasicGameState {
         this.levelArrowLeft.update(container, game, delta);
         this.levelArrowRight.update(container, game, delta);
 
+        if (levelIndex < levelPackages.get(packageIndex).getLevelNames().size()) {
+            if (this.progress.isLevelAvailable(this.packageIndex, this.levelIndex)) {
+                this.currentLevelView = this.levelNameViews[this.packageIndex][this.levelIndex];
+            } else {
+                this.currentLevelView = this.lockedLevelNameView;
+            }
+        } else {
+            this.currentLevelView = this.noneLevelNameView;
+        }
+
         playBtn.setEnabled(levelIndex < levelPackages.get(packageIndex).getLevelNames().size()
-                && levelIndex <= this.progress.getLastCompletedLevelIndex(packageIndex));
+                && this.progress.isLevelAvailable(packageIndex, this.levelIndex));
 
         this.playBtn.update(container, game, delta);
         this.backBtn.update(container, game, delta);
@@ -175,7 +178,7 @@ public class MenuForGameState extends BasicGameState {
     private void setProgressText() {
         int size = levelPackages.get(packageIndex).getLevelNames().size();
         progressText = String.format("%4$s %1$d %3$s %2$d",
-                this.progress.getLastCompletedLevelIndex(packageIndex), size,
+                this.progress.getLastAvailableLevelIndex(packageIndex), size,
                 translator.translate((size > 1 && size < 5) ? "Alternative.Of" : "Of"),
                 translator.translate("completed"));
     }
@@ -268,9 +271,9 @@ public class MenuForGameState extends BasicGameState {
     private void showNextPackage() {
         packageIndex++;
         int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-        byte lastCompletedLevel = progress.getLastCompletedLevelIndex(packageIndex);
-        levelIndex = (lastCompletedLevel == packageSize && packageSize > 0) ? lastCompletedLevel - 1
-                : lastCompletedLevel;
+        byte lastAvailableLevel = progress.getLastAvailableLevelIndex(packageIndex);
+        levelIndex = (lastAvailableLevel == packageSize && packageSize > 0) ? lastAvailableLevel - 1
+                : lastAvailableLevel;
         setProgressText();
         setShowingText();
     }
@@ -278,9 +281,9 @@ public class MenuForGameState extends BasicGameState {
     private void showPrevPackage() {
         packageIndex--;
         int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-        byte lastCompletedLevel = progress.getLastCompletedLevelIndex(packageIndex);
-        levelIndex = (lastCompletedLevel == packageSize && packageSize > 0) ? lastCompletedLevel - 1
-                : lastCompletedLevel;
+        byte lastAvailableLevel = progress.getLastAvailableLevelIndex(packageIndex);
+        levelIndex = (lastAvailableLevel == packageSize && packageSize > 0) ? lastAvailableLevel - 1
+                : lastAvailableLevel;
         setProgressText();
         setShowingText();
     }
