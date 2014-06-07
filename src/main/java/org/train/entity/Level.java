@@ -42,9 +42,11 @@ public class Level extends Entity implements Cloneable {
     private boolean playable = false;
     private Queue<Integer> keys = new LinkedList<Integer>();
     private Sound winSound;
+    private Sound moveSound;
 
     public Level(int width, int height, int refreshSpeed, ResourceManager resourceManager) {
         this.winSound = resourceManager.getSound("win");
+        this.moveSound = resourceManager.getSound("ingame");
         this.levelItemsStorage = new LevelItemsStorage();
         this.interval = refreshSpeed;
         this.resourceManager = resourceManager;
@@ -209,7 +211,7 @@ public class Level extends Entity implements Cloneable {
 
                 if (this.trainCrashed(newPoint)) {
                     this.doCrash();
-                } else {
+                } else if (!this.isFinished()) {
                     this.moveTrain(lastPoint, newPoint);
                 }
 
@@ -226,6 +228,7 @@ public class Level extends Entity implements Cloneable {
             if (this.itemsToWin == 0
                     && this.levelItemsStorage.getLevelItems()[newPoint.x][newPoint.y].getType() == Item.GATE) {
                 this.isGameWon = true;
+                this.moveSound.stop();
                 this.winSound.play();
             }
             this.moveTrucks(lastPoint, this.train.getRotation(), this.train.flippedHorizontal,
@@ -237,6 +240,10 @@ public class Level extends Entity implements Cloneable {
                 empty.setScale(this.getScale());
                 this.levelItemsStorage.getLevelItems()[lastPoint.x][lastPoint.y] = empty;
             }
+        }
+        if (!this.train.getPosition().equals(this.getItemPosition(newPoint))
+                && !this.trainDirectionPrepared.equals(new Point()) && !this.isFinished()) {
+            this.moveSound.play();
         }
         this.train.setPosition(this.getItemPosition(newPoint));
         this.train.setScale(this.getScale());
