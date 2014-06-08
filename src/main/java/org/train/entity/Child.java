@@ -8,7 +8,7 @@ import org.newdawn.slick.geom.Rectangle;
 public abstract class Child extends BoxModel implements ChildInterface {
 
     private Color color = Color.red;
-    private float scale;
+    private float scale = 1;
     protected Rectangle rectangle;
 
     public Color getColor() {
@@ -19,6 +19,7 @@ public abstract class Child extends BoxModel implements ChildInterface {
         this.color = color;
     }
 
+    @Override
     public float getScale() {
         return scale;
     }
@@ -31,6 +32,7 @@ public abstract class Child extends BoxModel implements ChildInterface {
         return this.rectangle;
     }
 
+    @Override
     public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
     }
@@ -44,9 +46,12 @@ public abstract class Child extends BoxModel implements ChildInterface {
         return new Point(this.getRectangle().getX(), this.getRectangle().getY());
     }
 
+    @Override
     public abstract void render(Graphics g);
 
+    @Override
     public abstract int getWidth();
 
+    @Override
     public abstract int getHeight();
 }

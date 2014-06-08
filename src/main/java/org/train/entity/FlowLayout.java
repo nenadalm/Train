@@ -1,10 +1,8 @@
 package org.train.entity;
 
 import java.awt.Point;
-import java.util.ArrayList;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.geom.Rectangle;
 
 public class FlowLayout extends BaseLayout {
 
@@ -22,25 +20,9 @@ public class FlowLayout extends BaseLayout {
         }
     }
 
-    private void calculateRectangles() {
-        this.rectangles = new ArrayList<Rectangle>(this.container.getChildren().size());
-
-        int index = 0;
-        int menuWidth = this.getContainerWidth();
-        int menuHeight = this.getContainerHeight();
-        for (ChildInterface item : this.container.getChildren()) {
-            int width = (int) (item.getWidth() * item.getScale());
-            int height = (int) (item.getHeight() * item.getScale());
-            int x = width * index;
-            int y = 0;
-            this.rectangles.add(new Rectangle(x + this.container.getPadding().getLeft(), y, width,
-                    height));
-            index++;
-        }
-
+    @Override
+    protected void setContainerPosition() {
         this.container.setPosition(new Point(0, 0));
-        this.container.setWidth(menuWidth);
-        this.container.setHeight(menuHeight);
     }
 
     @Override
@@ -49,7 +31,15 @@ public class FlowLayout extends BaseLayout {
     }
 
     @Override
-    protected int getContainerHeight() {
+    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child, int childIndex) {
+        int x = (int) (child.getWidth() * child.getScale()) * childIndex;
+        int y = 0;
+
+        return new org.newdawn.slick.geom.Point(x, y);
+    }
+
+    @Override
+    protected int calculateContainerHeight() {
         int menuHeight = 0;
         for (ChildInterface child : this.container.getChildren()) {
             menuHeight = Math.max(menuHeight, (int) (child.getHeight() * child.getScale()));
@@ -59,7 +49,7 @@ public class FlowLayout extends BaseLayout {
     }
 
     @Override
-    protected int getContainerWidth() {
+    protected int calculateContainerWidth() {
         int containerWidth = this.container.getPadding().getLeft();
         for (ChildInterface child : this.container.getChildren()) {
             containerWidth += (int) (child.getWidth() * child.getScale());

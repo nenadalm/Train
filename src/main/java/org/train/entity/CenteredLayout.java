@@ -1,7 +1,6 @@
 package org.train.entity;
 
 import java.awt.Point;
-import java.util.ArrayList;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Rectangle;
@@ -10,6 +9,7 @@ import org.train.model.Margin;
 public class CenteredLayout extends BaseLayout {
 
     private GameContainer gameContainer;
+    private int lastOffsetY = 0;
 
     public CenteredLayout(GameContainer gameContainer, Container container) {
         this.container = container;
@@ -17,40 +17,17 @@ public class CenteredLayout extends BaseLayout {
         this.recalculateRectangles();
     }
 
-    private void calculateRectangles() {
-        this.rectangles = new ArrayList<Rectangle>(this.container.getChildren().size());
-
-        int menuHeight = this.getContainerHeight();
-        int maxWidth = this.getContainerWidth();
-
-        int lastOffsetY = 0;
-        for (ChildInterface item : this.container.getChildren()) {
-            int width = item.getWidth();
-            int height = item.getHeight();
-            int x = this.gameContainer.getWidth() / 2 - width / 2;
-            int y = this.gameContainer.getHeight() / 2 - menuHeight / 2 + lastOffsetY;
-            this.rectangles
-                    .add(new Rectangle(x - this.container.getMarginRight(), y, width, height));
-            lastOffsetY += height;
-        }
-
-        this.container.setPosition(new Point(this.gameContainer.getWidth() / 2 - maxWidth / 2,
-                this.gameContainer.getHeight() / 2 - menuHeight / 2));
-        this.container.setWidth(maxWidth);
-        this.container.setHeight(menuHeight);
-    }
-
     private void applyItemMargin() {
         int marginHeight = 0;
         int marginWidth = 0;
-        int counter = 0;
+        int index = 0;
         int offsetY = 0;
         int lastMarginBottom = 0;
-        for (ChildInterface item : this.container.getChildren()) {
-            Margin itemMargin = item.getMargin();
+        for (ChildInterface child : this.container.getChildren()) {
+            Margin itemMargin = child.getMargin();
             Rectangle addition = new Rectangle(itemMargin.getLeft(), itemMargin.getTop()
                     + lastMarginBottom, 0, 0);
-            Rectangle r = this.rectangles.get(counter);
+            Rectangle r = this.rectangles.get(index);
             r.setX(r.getX() + addition.getX());
             r.setY(r.getY() + addition.getY() + offsetY);
             marginHeight += itemMargin.getTop();
@@ -59,7 +36,7 @@ public class CenteredLayout extends BaseLayout {
             marginWidth = (marginWidth < itemMarginWidth) ? itemMarginWidth : marginWidth;
             lastMarginBottom = itemMargin.getBottom();
             offsetY += addition.getY();
-            counter++;
+            index++;
         }
         for (Rectangle r : this.rectangles) {
             r.setX(r.getX() - marginWidth / 2);
@@ -77,6 +54,27 @@ public class CenteredLayout extends BaseLayout {
     }
 
     @Override
+    protected void setContainerPosition() {
+        this.container.setPosition(new Point(this.gameContainer.getWidth() / 2
+                - this.calculateContainerWidth() / 2, this.gameContainer.getHeight() / 2
+                - this.calculateContainerHeight() / 2));
+    }
+
+    @Override
+    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child, int childIndex) {
+        if (childIndex == 0) {
+            this.lastOffsetY = 0;
+        }
+
+        int x = this.gameContainer.getWidth() / 2 - (int) (child.getWidth() * child.getScale()) / 2;
+        int y = this.gameContainer.getHeight() / 2 - this.calculateContainerHeight() / 2
+                + this.lastOffsetY;
+        this.lastOffsetY += (int) (child.getHeight() * child.getScale());
+
+        return new org.newdawn.slick.geom.Point(x, y);
+    }
+
+    @Override
     public void recalculateRectangles() {
         this.placeMenuItems();
         for (int i = 0; i < this.container.getChildren().size(); i++) {
@@ -85,7 +83,7 @@ public class CenteredLayout extends BaseLayout {
     }
 
     @Override
-    protected int getContainerHeight() {
+    protected int calculateContainerHeight() {
         int containerHeight = 0;
         for (ChildInterface child : this.container.getChildren()) {
             containerHeight += child.getHeight();
@@ -95,7 +93,7 @@ public class CenteredLayout extends BaseLayout {
     }
 
     @Override
-    protected int getContainerWidth() {
+    protected int calculateContainerWidth() {
         int maxWidth = 0;
         for (ChildInterface child : this.container.getChildren()) {
             maxWidth = Math.max(child.getWidth(), maxWidth);
