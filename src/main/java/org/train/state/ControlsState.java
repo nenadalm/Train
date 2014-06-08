@@ -11,6 +11,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
+import org.train.entity.ContainerImpl;
+import org.train.entity.FlowLayout;
 import org.train.entity.List;
 import org.train.entity.ListItem;
 import org.train.factory.EffectFactory;
@@ -20,6 +22,7 @@ import org.train.model.TextView;
 public class ControlsState extends BasicGameState {
 
     private List gameList, editorList;
+    private ContainerImpl childContainer;
 
     public ControlsState(int stateId) {
         super(stateId);
@@ -35,35 +38,44 @@ public class ControlsState extends BasicGameState {
         FontFactory fonts = this.container.getComponent(FontFactory.class);
         EffectFactory effects = this.container.getComponent(EffectFactory.class);
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        Font ubuntuLarge = fonts.getFont("ubuntu", container.getWidth() / 16, whiteEffect);
+        Font font = fonts.getFont("ubuntu", container.getWidth() / 20, whiteEffect);
 
         java.util.List<ListItem> gameListItems = new ArrayList<ListItem>();
-        gameListItems.add(new ListItem(new TextView("Controls.Game", ubuntuLarge, Color.red)));
-        gameListItems.add(new ListItem(new TextView("Controls.Up", ubuntuLarge, Color.red)));
-        gameListItems.add(new ListItem(new TextView("Controls.Down", ubuntuLarge, Color.red)));
-        gameListItems.add(new ListItem(new TextView("Controls.Left", ubuntuLarge, Color.red)));
-        gameListItems.add(new ListItem(new TextView("Controls.Right", ubuntuLarge, Color.red)));
+        gameListItems.add(new ListItem(new TextView("Controls.Game", font, Color.red)));
+        gameListItems.add(new ListItem(new TextView("Controls.Up", font, Color.red)));
+        gameListItems.add(new ListItem(new TextView("Controls.Down", font, Color.red)));
+        gameListItems.add(new ListItem(new TextView("Controls.Left", font, Color.red)));
+        gameListItems.add(new ListItem(new TextView("Controls.Right", font, Color.red)));
         this.gameList = new List(gameListItems, container);
 
         java.util.List<ListItem> editorListItems = new ArrayList<ListItem>();
-        editorListItems.add(new ListItem(new TextView("Controls.Editor", ubuntuLarge, Color.red)));
+        editorListItems.add(new ListItem(new TextView("Controls.Editor", font, Color.red)));
         editorListItems
-                .add(new ListItem(new TextView("Controls.ShowMenu", ubuntuLarge, Color.red)));
+                .add(new ListItem(new TextView("Controls.ShowMenu", font, Color.red)));
         editorListItems
-                .add(new ListItem(new TextView("Controls.HideMenu", ubuntuLarge, Color.red)));
-        editorListItems.add(new ListItem(new TextView("Controls.Train", ubuntuLarge, Color.red)));
-        editorListItems.add(new ListItem(new TextView("Controls.Gate", ubuntuLarge, Color.red)));
-        editorListItems.add(new ListItem(new TextView("Controls.Item", ubuntuLarge, Color.red)));
-        editorListItems.add(new ListItem(new TextView("Controls.Test", ubuntuLarge, Color.red)));
-        editorListItems.add(new ListItem(new TextView("Controls.Wall", ubuntuLarge, Color.red)));
+                .add(new ListItem(new TextView("Controls.HideMenu", font, Color.red)));
+        editorListItems.add(new ListItem(new TextView("Controls.Train", font, Color.red)));
+        editorListItems.add(new ListItem(new TextView("Controls.Gate", font, Color.red)));
+        editorListItems.add(new ListItem(new TextView("Controls.Item", font, Color.red)));
+        editorListItems.add(new ListItem(new TextView("Controls.Test", font, Color.red)));
+        editorListItems.add(new ListItem(new TextView("Controls.Wall", font, Color.red)));
         this.editorList = new List(editorListItems, container);
+
+        java.util.List<List> listItems = new ArrayList<List>();
+        listItems.add(this.gameList);
+        listItems.add(this.editorList);
+
+        this.childContainer = new ContainerImpl();
+        this.childContainer.setChildren(listItems);
+        this.childContainer.setLayout(new FlowLayout(container, this.childContainer));
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-        this.gameList.render(container, game, g);
-        this.editorList.render(container, game, g);
+        // this.gameList.render(container, game, g);
+        // this.editorList.render(container, game, g);
+        this.childContainer.render(container, game, g);
     }
 
     @Override

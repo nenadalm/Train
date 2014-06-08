@@ -11,6 +11,8 @@ public class ListItem extends Child {
 
     public ListItem(ViewInterface view) {
         this.view = view;
+        this.rectangle = new Rectangle(this.view.getPosition().getX(), this.view.getPosition()
+                .getY(), this.view.getWidth(), this.view.getHeight());
     }
 
     @Override

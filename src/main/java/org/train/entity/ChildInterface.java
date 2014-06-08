@@ -1,6 +1,7 @@
 package org.train.entity;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.train.model.Border;
 import org.train.model.Margin;
@@ -28,4 +29,8 @@ public interface ChildInterface {
     public void setRectangle(Rectangle rectangle);
 
     public float getScale();
+
+    public Point getPosition();
+
+    public void setPosition(Point position);
 }
