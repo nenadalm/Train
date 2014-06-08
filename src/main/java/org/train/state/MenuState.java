@@ -1,10 +1,5 @@
 package org.train.state;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
@@ -17,12 +12,13 @@ import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.Menu;
-import org.train.entity.MenuItem;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
+import org.train.menu.MainMenuFactory;
+import org.train.menu.MenuBuilder;
+import org.train.menu.MenuFactoryInterface;
 import org.train.model.TextView;
 import org.train.other.ResourceManager;
-import org.train.other.Translator;
 
 public class MenuState extends BasicGameState {
 
@@ -39,38 +35,10 @@ public class MenuState extends BasicGameState {
             throws SlickException {
         this.intro = this.container.getComponent(ResourceManager.class).getSound("intro");
         this.intro.play();
-        Translator translator = this.container.getComponent(Translator.class);
-        List<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add(new MenuItem(translator.translate("Menu.StartGame"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                game.enterState(Game.MENU_FOR_GAME_STATE);
-            }
-        }));
-        menuItems.add(new MenuItem(translator.translate("Menu.LevelEditor"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                game.enterState(Game.MENU_FOR_EDITOR_STATE);
-            }
-        }));
-        menuItems.add(new MenuItem(translator.translate("Menu.Options"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                game.enterState(Game.OPTIONS_STATE);
-            }
-        }));
-        menuItems.add(new MenuItem(translator.translate("Menu.Exit"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                container.exit();
-            }
-        }));
-        for (int i = 0; i < menuItems.size() - 1; i++) {
-            menuItems.get(i).setMarginBottom(container.getHeight() / 14);
-        }
-        this.menu = new Menu(menuItems, container,
-                this.container.getComponent(ResourceManager.class),
-                this.container.getComponent(EffectFactory.class));
+
+        MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
+        MenuFactoryInterface mainMenuFactory = new MainMenuFactory(menuBuilder);
+        this.menu = mainMenuFactory.create(game, container);
 
         FontFactory fonts = this.container.getComponent(FontFactory.class);
         EffectFactory effects = this.container.getComponent(EffectFactory.class);
