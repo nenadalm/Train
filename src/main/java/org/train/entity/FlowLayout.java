@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 
 public class FlowLayout extends BaseLayout {
@@ -14,17 +13,10 @@ public class FlowLayout extends BaseLayout {
         this.recalculateRectangles();
     }
 
-    @Override
-    public void render(Graphics g) {
-        for (Child child : this.container.getChildren()) {
-            child.render(g);
-        }
-    }
-
     private void placeMenuItems() {
         this.calculateRectangles();
         int counter = 0;
-        for (Child c : this.container.getChildren()) {
+        for (ChildInterface c : this.container.getChildren()) {
             c.setRectangle(this.rectangles.get(counter));
             counter++;
         }
@@ -34,18 +26,16 @@ public class FlowLayout extends BaseLayout {
         this.rectangles = new ArrayList<Rectangle>(this.container.getChildren().size());
 
         int index = 0;
-        int menuWidth = this.container.getPaddingLeft();
-        int menuHeight = 0;
-        for (Child item : this.container.getChildren()) {
+        int menuWidth = this.getContainerWidth();
+        int menuHeight = this.getContainerHeight();
+        for (ChildInterface item : this.container.getChildren()) {
             int width = (int) (item.getWidth() * item.getScale());
             int height = (int) (item.getHeight() * item.getScale());
             int x = width * index;
             int y = 0;
-            this.rectangles
-                    .add(new Rectangle(x + this.container.getPaddingLeft(), y, width, height));
+            this.rectangles.add(new Rectangle(x + this.container.getPadding().getLeft(), y, width,
+                    height));
             index++;
-            menuWidth += width;
-            menuHeight = height > menuHeight ? height : menuHeight;
         }
 
         this.container.setPosition(new Point(0, 0));
@@ -56,5 +46,25 @@ public class FlowLayout extends BaseLayout {
     @Override
     public void recalculateRectangles() {
         this.placeMenuItems();
+    }
+
+    @Override
+    protected int getContainerHeight() {
+        int menuHeight = 0;
+        for (ChildInterface child : this.container.getChildren()) {
+            menuHeight = Math.max(menuHeight, (int) (child.getHeight() * child.getScale()));
+        }
+
+        return menuHeight;
+    }
+
+    @Override
+    protected int getContainerWidth() {
+        int containerWidth = this.container.getPadding().getLeft();
+        for (ChildInterface child : this.container.getChildren()) {
+            containerWidth += (int) (child.getWidth() * child.getScale());
+        }
+
+        return containerWidth;
     }
 }

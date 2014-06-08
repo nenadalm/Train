@@ -21,6 +21,10 @@
                 <target>start game</target>
             </trans-unit>
             <trans-unit>
+                <source>Menu.Controls</source>
+                <target>controls</target>
+            </trans-unit>
+            <trans-unit>
                 <source>MoveUp</source>
                 <target>Move Up</target>
             </trans-unit>

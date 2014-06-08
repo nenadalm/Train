@@ -5,7 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 
-public abstract class Child extends BoxModel {
+public abstract class Child extends BoxModel implements ChildInterface {
 
     private Color color = Color.red;
     private float scale;

@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.Menu;
 import org.train.model.Margin;
+import org.train.model.MenuItem;
 
 public class MainMenuFactory extends AbstractMenuFactory {
 
@@ -19,7 +20,7 @@ public class MainMenuFactory extends AbstractMenuFactory {
     public Menu create(final StateBasedGame game, final GameContainer container) {
         Margin margin = new Margin(0, 0, container.getHeight() / 14, 0);
 
-        org.train.model.MenuItem startGame = new org.train.model.MenuItem();
+        MenuItem startGame = new MenuItem();
         startGame.setText("Menu.StartGame");
         startGame.setMargin(margin);
         startGame.setListener(new ActionListener() {
@@ -30,7 +31,7 @@ public class MainMenuFactory extends AbstractMenuFactory {
         });
         this.menuBuilder.add(startGame);
 
-        org.train.model.MenuItem editor = new org.train.model.MenuItem();
+        MenuItem editor = new MenuItem();
         editor.setText("Menu.LevelEditor");
         editor.setMargin(margin);
         editor.setListener(new ActionListener() {
@@ -41,7 +42,7 @@ public class MainMenuFactory extends AbstractMenuFactory {
         });
         this.menuBuilder.add(editor);
 
-        org.train.model.MenuItem options = new org.train.model.MenuItem();
+        MenuItem options = new MenuItem();
         options.setText("Menu.Options");
         options.setMargin(margin);
         options.setListener(new ActionListener() {
@@ -52,7 +53,18 @@ public class MainMenuFactory extends AbstractMenuFactory {
         });
         this.menuBuilder.add(options);
 
-        org.train.model.MenuItem exit = new org.train.model.MenuItem();
+        MenuItem controls = new MenuItem();
+        controls.setText("Menu.Controls");
+        controls.setMargin(margin);
+        controls.setListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                game.enterState(Game.CONTROLS_STATE);
+            }
+        });
+        this.menuBuilder.add(controls);
+
+        MenuItem exit = new MenuItem();
         exit.setText("Menu.Exit");
         exit.setListener(new ActionListener() {
             @Override

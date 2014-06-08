@@ -95,15 +95,12 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g)
+            throws SlickException {
         if (this.level == null) {
             this.loadLevel(container);
         }
-    }
 
-    @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
         this.level.render(container, game, g);
 
         if (this.topMenu.isShowed()) {

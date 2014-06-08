@@ -2,16 +2,13 @@ package org.train.entity;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
+import org.train.model.Margin;
 
-public class CenteredLayout implements LayoutInterface {
+public class CenteredLayout extends BaseLayout {
 
-    private List<Rectangle> rectangles = new ArrayList<Rectangle>();
-    private Container container;
     private GameContainer gameContainer;
 
     public CenteredLayout(GameContainer gameContainer, Container container) {
@@ -20,23 +17,14 @@ public class CenteredLayout implements LayoutInterface {
         this.recalculateRectangles();
     }
 
-    @Override
-    public void setContainer(Container container) {
-        this.container = container;
-    }
-
-    @Override
-    public List<Rectangle> getRectangles() {
-        return this.rectangles;
-    }
-
     private void calculateRectangles() {
         this.rectangles = new ArrayList<Rectangle>(this.container.getChildren().size());
-        int menuHeight = this.getMenuHeight();
-        int maxWidth = this.getMenuItemMaxWidth();
+
+        int menuHeight = this.getContainerHeight();
+        int maxWidth = this.getContainerWidth();
 
         int lastOffsetY = 0;
-        for (Child item : this.container.getChildren()) {
+        for (ChildInterface item : this.container.getChildren()) {
             int width = item.getWidth();
             int height = item.getHeight();
             int x = this.gameContainer.getWidth() / 2 - width / 2;
@@ -52,42 +40,24 @@ public class CenteredLayout implements LayoutInterface {
         this.container.setHeight(menuHeight);
     }
 
-    private int getMenuHeight() {
-        int menuHeight = 0;
-        for (Child item : this.container.getChildren()) {
-            menuHeight += item.getHeight();
-        }
-        return menuHeight;
-    }
-
-    private int getMenuItemMaxWidth() {
-        int maxWidth = 0;
-        for (Child item : this.container.getChildren()) {
-            int width = item.getWidth();
-            if (width > maxWidth) {
-                maxWidth = width;
-            }
-        }
-        return maxWidth;
-    }
-
     private void applyItemMargin() {
         int marginHeight = 0;
         int marginWidth = 0;
         int counter = 0;
         int offsetY = 0;
         int lastMarginBottom = 0;
-        for (Child item : this.container.getChildren()) {
-            Rectangle addition = new Rectangle(item.getMarginLeft(), item.getMarginTop()
+        for (ChildInterface item : this.container.getChildren()) {
+            Margin itemMargin = item.getMargin();
+            Rectangle addition = new Rectangle(itemMargin.getLeft(), itemMargin.getTop()
                     + lastMarginBottom, 0, 0);
             Rectangle r = this.rectangles.get(counter);
             r.setX(r.getX() + addition.getX());
             r.setY(r.getY() + addition.getY() + offsetY);
-            marginHeight += item.getMarginTop();
-            marginHeight += item.getMarginBottom();
-            int itemMarginWidth = item.getMarginLeft() + item.getMarginRight();
+            marginHeight += itemMargin.getTop();
+            marginHeight += itemMargin.getBottom();
+            int itemMarginWidth = itemMargin.getLeft() + itemMargin.getRight();
             marginWidth = (marginWidth < itemMarginWidth) ? itemMarginWidth : marginWidth;
-            lastMarginBottom = item.getMarginBottom();
+            lastMarginBottom = itemMargin.getBottom();
             offsetY += addition.getY();
             counter++;
         }
@@ -107,17 +77,30 @@ public class CenteredLayout implements LayoutInterface {
     }
 
     @Override
-    public void render(Graphics g) {
-        for (Child item : this.container.getChildren()) {
-            item.render(g);
-        }
-    }
-
-    @Override
     public void recalculateRectangles() {
         this.placeMenuItems();
         for (int i = 0; i < this.container.getChildren().size(); i++) {
             this.container.getChildren().get(i).setRectangle(this.rectangles.get(i));
         }
+    }
+
+    @Override
+    protected int getContainerHeight() {
+        int containerHeight = 0;
+        for (ChildInterface child : this.container.getChildren()) {
+            containerHeight += child.getHeight();
+        }
+
+        return containerHeight;
+    }
+
+    @Override
+    protected int getContainerWidth() {
+        int maxWidth = 0;
+        for (ChildInterface child : this.container.getChildren()) {
+            maxWidth = Math.max(child.getWidth(), maxWidth);
+        }
+
+        return maxWidth;
     }
 }

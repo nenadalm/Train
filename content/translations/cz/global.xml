@@ -29,6 +29,10 @@
                 <target>ukončit</target>
             </trans-unit>
             <trans-unit>
+                <source>Menu.Controls</source>
+                <target>ovládání</target>
+            </trans-unit>
+            <trans-unit>
                 <source>Menu.Options</source>
                 <target>nastavení</target>
             </trans-unit>
