@@ -19,7 +19,7 @@ public class TestGameState extends BasicGameState {
     }
 
     @Override
-    public void init(GameContainer container, StateBasedGame game) throws SlickException {
+    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         LevelController levelController = this.container.getComponent(LevelController.class);
         LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
 
