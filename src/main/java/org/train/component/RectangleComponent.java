@@ -11,11 +11,11 @@ public class RectangleComponent extends RenderComponent {
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
         Entity owner = this.owner;
         g.setColor(owner.getBackgroundColor());
-        g.fillRect(owner.getPosition().x - owner.getPadding().getLeft()
-                - owner.getMargin().getRight(),
-                owner.getPosition().y - owner.getPadding().getTop(), owner.getWidth()
-                        + owner.getPadding().getRight() + owner.getPadding().getLeft(),
-                owner.getHeight() + owner.getPadding().getBottom() + owner.getPadding().getTop());
+        g.fillRect(owner.getPosition().getX() - owner.getPadding().getLeft()
+                - owner.getMargin().getRight(), owner.getPosition().getY()
+                - owner.getPadding().getTop(), owner.getWidth() + owner.getPadding().getRight()
+                + owner.getPadding().getLeft(), owner.getHeight() + owner.getPadding().getBottom()
+                + owner.getPadding().getTop());
     }
 
     @Override

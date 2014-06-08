@@ -20,7 +20,7 @@ public class LevelItem extends Entity implements Cloneable {
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
         super.render(container, game, g);
 
-        this.image.draw(this.getPosition().x, this.getPosition().y, this.getScale());
+        this.image.draw(this.getPosition().getX(), this.getPosition().getY(), this.getScale());
     }
 
     public void setImage(Image image) {

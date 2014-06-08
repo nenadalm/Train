@@ -82,9 +82,9 @@ public class ScrollableMenu extends Menu implements Scrollable {
 
     @Override
     public Rectangle getOccupiedArea() {
-        return new Rectangle(getPosition().x - getPaddingLeft() - getMarginRight(), getPosition().y
-                - getPaddingTop(), getWidth() + getPaddingRight() + getPaddingLeft(), getHeight()
-                + getPaddingBottom() + getPaddingTop());
+        return new Rectangle(getPosition().getX() - getPaddingLeft() - getMarginRight(),
+                getPosition().getY() - getPaddingTop(), getWidth() + getPaddingRight()
+                        + getPaddingLeft(), getHeight() + getPaddingBottom() + getPaddingTop());
     }
 
     @Override

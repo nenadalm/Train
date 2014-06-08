@@ -1,13 +1,12 @@
 package org.train.entity;
 
-import java.awt.Point;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
-
 import org.train.component.Component;
 import org.train.component.RenderComponent;
 
@@ -26,7 +25,7 @@ public class Entity extends BoxModel {
 
     public Entity() {
         this.components = new ArrayList<Component>();
-        this.position = new Point();
+        this.position = new Point(0, 0);
         this.scale = 1;
         this.rotation = 0;
         this.direction = new Point(0, 0);
@@ -101,19 +100,19 @@ public class Entity extends BoxModel {
     }
 
     public int getCenterX() {
-        return this.position.x + this.width / 2;
+        return (int) this.position.getX() + this.width / 2;
     }
 
     public int getCenterY() {
-        return this.position.y + this.height / 2;
+        return (int) this.position.getY() + this.height / 2;
     }
 
     public int getMaxX() {
-        return this.getPosition().x + this.width;
+        return (int) this.getPosition().getX() + this.width;
     }
 
     public int getMaxY() {
-        return this.getPosition().y + this.getHeight();
+        return (int) this.getPosition().getY() + this.getHeight();
     }
 
     public void setBackgroundColor(Color c) {

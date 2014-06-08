@@ -1,7 +1,6 @@
 package org.train.collection;
 
-import java.awt.Point;
-
+import org.newdawn.slick.geom.Point;
 import org.train.entity.Level.Item;
 import org.train.entity.LevelItem;
 

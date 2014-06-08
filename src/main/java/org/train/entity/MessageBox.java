@@ -1,6 +1,5 @@
 package org.train.entity;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -8,6 +7,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.component.RectangleComponent;
 import org.train.factory.ButtonFactory;
@@ -54,8 +54,8 @@ public class MessageBox extends Entity {
 
     public void showConfirm(String text, ActionListener yesListener, ActionListener noListener) {
         this.textMessage = new TextAreaView(text, this.font, this.textColor, this.getWidth());
-        this.textMessage.setPosition(new org.newdawn.slick.geom.Point(this.getPosition().x, this
-                .getPosition().y));
+        this.textMessage.setPosition(new org.newdawn.slick.geom.Point(this.getPosition().getX(),
+                this.getPosition().getY()));
         this.yesListener = yesListener;
         this.noListener = noListener;
         this.show = true;

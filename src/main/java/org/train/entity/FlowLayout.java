@@ -1,8 +1,7 @@
 package org.train.entity;
 
-import java.awt.Point;
-
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.geom.Point;
 
 public class FlowLayout extends BaseLayout {
 
@@ -31,7 +30,8 @@ public class FlowLayout extends BaseLayout {
     }
 
     @Override
-    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child, int childIndex) {
+    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child,
+            int childIndex) {
         int x = (int) (child.getWidth() * child.getScale()) * childIndex;
         int y = 0;
 

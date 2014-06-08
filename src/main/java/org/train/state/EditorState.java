@@ -1,6 +1,5 @@
 package org.train.state;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.FlowLayout;
@@ -71,7 +71,7 @@ public class EditorState extends BasicGameState {
         this.translator = this.container.getComponent(Translator.class);
         this.messageBox = this.container.getComponent(MessageBox.class);
         this.messageBox.setBackgroundColor(Color.lightGray);
-        this.fieldPosition = new Point();
+        this.fieldPosition = new Point(0, 0);
 
         this.itemMenu = this.resourceManager.getImage("itemMenu");
         this.active = this.resourceManager.getImage("active");
@@ -112,8 +112,9 @@ public class EditorState extends BasicGameState {
         }
         this.topMenu.render(container, game, g);
         if (this.showActive) {
-            this.active.draw(this.fieldPosition.x, this.fieldPosition.y, this.active.getWidth()
-                    * this.level.getScale(), this.active.getHeight() * this.level.getScale());
+            this.active.draw(this.fieldPosition.getX(), this.fieldPosition.getY(),
+                    this.active.getWidth() * this.level.getScale(), this.active.getHeight()
+                            * this.level.getScale());
         }
         this.messageBox.render(container, game, g);
     }
@@ -197,7 +198,8 @@ public class EditorState extends BasicGameState {
 
     private void setItemPosition(Point gridPosition) {
         // remove position
-        Item item = this.level.getLevelItems()[gridPosition.x][gridPosition.y].getType();
+        Item item = this.level.getLevelItems()[(int) gridPosition.getX()][(int) gridPosition.getY()]
+                .getType();
         switch (item) {
             case TRAIN:
                 this.trainPosition = null;
@@ -253,7 +255,7 @@ public class EditorState extends BasicGameState {
 
     private void updateMenu(final StateBasedGame game, Input input) {
         int mouseY = input.getMouseY();
-        int index = this.fieldPosition.x / this.level.getImageSize() - 1;
+        int index = (int) this.fieldPosition.getX() / this.level.getImageSize() - 1;
         if (mouseY < this.level.getImageSize() && index >= 0 && index < this.imageMenuItems.size()) {
             this.showActive = true;
         } else {

@@ -1,8 +1,7 @@
 package org.train.entity;
 
-import java.awt.Point;
-
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.train.model.Margin;
 
@@ -44,8 +43,8 @@ public class CenteredLayout extends BaseLayout {
         }
         this.container.setWidth(this.container.getWidth() + marginWidth);
         this.container.setHeight(this.container.getHeight() + marginHeight);
-        this.container.setPosition(new Point(this.container.getPosition().x - marginWidth / 2,
-                this.container.getPosition().y - marginHeight / 2));
+        this.container.setPosition(new Point(this.container.getPosition().getX() - marginWidth / 2,
+                this.container.getPosition().getY() - marginHeight / 2));
     }
 
     private void placeMenuItems() {
@@ -61,7 +60,8 @@ public class CenteredLayout extends BaseLayout {
     }
 
     @Override
-    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child, int childIndex) {
+    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child,
+            int childIndex) {
         if (childIndex == 0) {
             this.lastOffsetY = 0;
         }

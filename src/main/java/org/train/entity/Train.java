@@ -1,8 +1,7 @@
 package org.train.entity;
 
-import java.awt.Point;
-
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Point;
 import org.train.component.MoveComponent;
 
 public class Train extends LevelItem {
@@ -22,7 +21,7 @@ public class Train extends LevelItem {
         super.setDirection(direction);
 
         float rotation = 0;
-        switch (direction.x) {
+        switch ((int) direction.getX()) {
             case -1:
                 rotation = 180;
                 this.setFlippedVertical(true);
@@ -32,7 +31,7 @@ public class Train extends LevelItem {
                 this.setFlippedVertical(false);
                 break;
         }
-        switch (direction.y) {
+        switch ((int) direction.getY()) {
             case -1:
                 rotation = -90;
                 break;
