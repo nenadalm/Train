@@ -96,6 +96,54 @@
                 <source>EditorMenu.WrongLevelSize</source>
                 <target>Valid level size is</target>
             </trans-unit>
+            <trans-unit>
+                <source>Controls.Game</source>
+                <target>Game</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Up</source>
+                <target>Move upwards</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Down</source>
+                <target>Move downwards</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Left</source>
+                <target>Move leftwards</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Right</source>
+                <target>Move rightwards</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Editor</source>
+                <target>Editor</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.ShowMenu</source>
+                <target>Show item menu</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Train</source>
+                <target>Place train</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Gate</source>
+                <target>Place gate</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Item</source>
+                <target>Place consumable item</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Test</source>
+                <target>Run test</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Wall</source>
+                <target>Place wall</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

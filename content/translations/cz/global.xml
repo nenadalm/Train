@@ -212,6 +212,54 @@
                 <source>Editor.Message.TrainAndGateMissing</source>
                 <target>Level není hratelný. Chybí vlak a brána. Opravdu chceš ukončit editor?</target>
             </trans-unit>
+            <trans-unit>
+                <source>Controls.Game</source>
+                <target>Hra</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Up</source>
+                <target>Směr nahoru</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Down</source>
+                <target>Směr dolů</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Left</source>
+                <target>Směr vlevo</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Right</source>
+                <target>směr vpravo</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Editor</source>
+                <target>Editor</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.ShowMenu</source>
+                <target>Zobrazit editační menu</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Train</source>
+                <target>Vybrat vlak</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Gate</source>
+                <target>Vybrat bránu</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Item</source>
+                <target>Vybrat předmět</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Test</source>
+                <target>Spustit test</target>
+            </trans-unit>
+            <trans-unit>
+                <source>Controls.Wall</source>
+                <target>Vybrat zeď</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
