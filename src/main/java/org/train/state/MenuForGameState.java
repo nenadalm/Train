@@ -128,8 +128,9 @@ public class MenuForGameState extends BasicGameState {
             public Rectangle getOccupiedArea() {
                 return new Rectangle(packageArrowLeft.getPosition().getX(), packageArrowLeft
                         .getPosition().getY(), packageArrowRight.getPosition().getX()
-                        + packageArrowRight.getWidth(), packageArrowRight.getPosition().getY()
-                        + packageArrowRight.getPosition().getHeight());
+                        + packageArrowRight.getWidth() - packageArrowLeft.getPosition().getX(),
+                        packageArrowRight.getPosition().getY() + packageArrowRight.getHeight()
+                                - packageArrowLeft.getPosition().getY());
             }
         });
         this.packageNameMouseListener.setInput(container.getInput());
@@ -141,8 +142,9 @@ public class MenuForGameState extends BasicGameState {
             public Rectangle getOccupiedArea() {
                 return new Rectangle(levelArrowLeft.getPosition().getX(), levelArrowLeft
                         .getPosition().getY(), levelArrowRight.getPosition().getX()
-                        + levelArrowRight.getWidth(), levelArrowRight.getPosition().getY()
-                        + levelArrowRight.getPosition().getHeight());
+                        + levelArrowRight.getWidth() - levelArrowLeft.getPosition().getX(),
+                        levelArrowRight.getPosition().getY() + levelArrowRight.getHeight()
+                                - levelArrowLeft.getPosition().getY());
             }
 
             @Override
