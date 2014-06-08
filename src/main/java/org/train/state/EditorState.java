@@ -24,11 +24,13 @@ import org.train.entity.Menu;
 import org.train.entity.MessageBox;
 import org.train.factory.EffectFactory;
 import org.train.helper.LevelHelper;
+import org.train.listener.AbstractKeyListener;
 import org.train.model.Truck;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
 import org.train.other.Translator;
 import org.train.state.listener.editor.GateSelectedListener;
+import org.train.state.listener.editor.ItemSelectedListener;
 import org.train.state.listener.editor.SaveSelectedListener;
 import org.train.state.listener.editor.TestSelectedListener;
 import org.train.state.listener.editor.TrainSelectedListener;
@@ -79,7 +81,7 @@ public class EditorState extends BasicGameState {
         this.loadLevel(container);
 
         this.imageMenuItems = new ArrayList<ImageMenuItem>();
-        this.initTopMenuListeners(game, this.resourceManager);
+        this.initTopMenuListeners(game, this.resourceManager, container.getInput());
 
         for (ImageMenuItem item : this.imageMenuItems) {
             item.setScale(this.level.getScale());
@@ -93,13 +95,15 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
-
+    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         if (this.level == null) {
             this.loadLevel(container);
         }
+    }
 
+    @Override
+    public void render(GameContainer container, StateBasedGame game, Graphics g)
+            throws SlickException {
         this.level.render(container, game, g);
 
         if (this.topMenu.isShowed()) {
@@ -268,25 +272,68 @@ public class EditorState extends BasicGameState {
         this.activeItem = item;
     }
 
-    private void initTopMenuListeners(final StateBasedGame game, ResourceManager resourceManager) {
+    private void initTopMenuListeners(final StateBasedGame game, ResourceManager resourceManager,
+            Input input) {
         Image train = this.resourceManager.getImage("train");
         Image gate = this.resourceManager.getImage("gate");
         Image wall = this.resourceManager.getImage("wall");
         Image save = this.resourceManager.getImage("save");
         Image test = this.resourceManager.getImage("try");
 
-        this.imageMenuItems.add(new ImageMenuItem(train, new TrainSelectedListener(this, train)));
-        this.imageMenuItems.add(new ImageMenuItem(gate, new GateSelectedListener(this, gate)));
+        final ItemSelectedListener trainSelectedListener = new TrainSelectedListener(this, train);
+        this.imageMenuItems.add(new ImageMenuItem(train, trainSelectedListener));
 
+        final ItemSelectedListener gateSelectedListener = new GateSelectedListener(this, gate);
+        this.imageMenuItems.add(new ImageMenuItem(gate, gateSelectedListener));
+
+        final List<ItemSelectedListener> itemSelectedListeners = new ArrayList<ItemSelectedListener>();
         for (String name : this.resourceManager.getTrucks().keySet()) {
             Truck t = this.resourceManager.getTrucks().get(name);
-            this.imageMenuItems.add(new ImageMenuItem(t.getItem(), new TreeSelectedListener(this,
-                    name, t.getItem())));
+            itemSelectedListeners.add(new TreeSelectedListener(this, name, t.getItem()));
+            this.imageMenuItems.add(new ImageMenuItem(t.getItem(), itemSelectedListeners
+                    .get(itemSelectedListeners.size() - 1)));
         }
 
-        this.imageMenuItems.add(new ImageMenuItem(wall, new WallSelectedListener(this, wall)));
-        this.imageMenuItems.add(new ImageMenuItem(save, new SaveSelectedListener(this, level,
-                this.levelController, this.translator, messageBox, game)));
-        this.imageMenuItems.add(new ImageMenuItem(test, new TestSelectedListener(this, game)));
+        final ItemSelectedListener wallSelectedListener = new WallSelectedListener(this, wall);
+        this.imageMenuItems.add(new ImageMenuItem(wall, wallSelectedListener));
+        final ItemSelectedListener saveSelectedListener = new SaveSelectedListener(this, level,
+                this.levelController, this.translator, messageBox, game);
+        this.imageMenuItems.add(new ImageMenuItem(save, saveSelectedListener));
+        final ItemSelectedListener testSelectedListener = new TestSelectedListener(this, game);
+        this.imageMenuItems.add(new ImageMenuItem(test, testSelectedListener));
+        input.addKeyListener(new AbstractKeyListener() {
+            @Override
+            public boolean isAcceptingInput() {
+                return true;
+            }
+
+            @Override
+            public void keyPressed(int key, char c) {
+                switch (c) {
+                    case 't':
+                        trainSelectedListener.actionPerformed(null);
+                        break;
+                    case 'g':
+                        gateSelectedListener.actionPerformed(null);
+                        break;
+                    case 'w':
+                        wallSelectedListener.actionPerformed(null);
+                        break;
+                    case 's':
+                        saveSelectedListener.actionPerformed(null);
+                        break;
+                    case 'r':
+                        testSelectedListener.actionPerformed(null);
+                        break;
+                    default:
+                        if (c >= '0' && c <= '9') {
+                            int index = Integer.valueOf(String.valueOf(c)) - 1;
+                            if (index < itemSelectedListeners.size()) {
+                                itemSelectedListeners.get(index).actionPerformed(null);
+                            }
+                        }
+                }
+            }
+        });
     }
 }
