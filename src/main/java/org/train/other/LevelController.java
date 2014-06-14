@@ -2,9 +2,6 @@ package org.train.other;
 
 import java.awt.Dimension;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.train.app.Configuration;
@@ -21,14 +18,15 @@ public class LevelController {
     private Level levelClone;
     // list of levels
     private LevelPackage[] levels;
-    private byte progresses[];
     private Configuration config;
     private ResourceManager resourceManager;
     private LevelManager levelManager;
+    private ProgressController progressController;
 
     public LevelController(Configuration config, ResourceManager resourceManager,
-            LevelManager levelManager) {
+            LevelManager levelManager, ProgressController progressController) {
         this.levelManager = levelManager;
+        this.progressController = progressController;
         this.resourceManager = resourceManager;
         this.config = config;
         this.loadLevels();
@@ -62,24 +60,9 @@ public class LevelController {
         this.level = this.levelManager.loadLevel(packageIndex, levelIndex, packageName, levelName);
     }
 
+    @Deprecated
     public Progress getProgress() {
-        return new Progress(this.getProgresses());
-    }
-
-    private byte[] getProgresses() {
-        File saveFile = new File(this.config.get("contentPath") + "save");
-        try {
-            if (!saveFile.exists()) {
-                saveFile.createNewFile();
-            }
-            FileInputStream in = new FileInputStream(saveFile);
-            this.progresses = new byte[this.getLevels().size()];
-            in.read(this.progresses);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return this.progresses;
+        return this.progressController.getCurrentProgress();
     }
 
     public boolean nextLevelExist() {
@@ -87,17 +70,10 @@ public class LevelController {
                 .getLevelIndex() + 1);
     }
 
+    @Deprecated
     public void updateProgress() {
-        if (this.progresses[this.level.getPackageIndex()] < (byte) (this.level.getLevelIndex() + 1)) {
-            this.progresses[this.level.getPackageIndex()] = (byte) (this.level.getLevelIndex() + 1);
-        }
-        try {
-            FileOutputStream fos = new FileOutputStream(this.config.get("contentPath") + "save");
-            fos.write(this.progresses);
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.progressController.updateProgress(this.level.getPackageIndex(),
+                this.level.getLevelIndex());
     }
 
     public void loadNextLevel() {
