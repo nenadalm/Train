@@ -6,6 +6,7 @@ config.xml
 /content/save
 target/*
 !target/site
+build/
 #################
 ## Eclipse
 #################
