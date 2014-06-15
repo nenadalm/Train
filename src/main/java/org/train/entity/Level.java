@@ -246,8 +246,8 @@ public class Level extends Entity implements Cloneable {
                         .getY()] = empty;
             }
         }
-        if (!this.train.getPosition().equals(this.getItemPosition(newPoint))
-                && !this.trainDirectionPrepared.equals(new Point(0, 0)) && !this.isFinished()) {
+        if (this.getTrain().getDirection().getX() != 0
+                || this.getTrain().getDirection().getY() != 0) {
             this.moveSound.play();
         }
         this.train.setPosition(this.getItemPosition(newPoint));
