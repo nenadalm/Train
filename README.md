@@ -29,6 +29,16 @@ Setup project
 
     ```$ mvn eclipse:eclipse```
 
+
+Create distributable package
+----------------------------
+
+* you can create directory with all necessary files by
+
+    ```$ make build```
+
+* it'll put all necessary files for run into build/
+
 BSD License
 -----------
 
