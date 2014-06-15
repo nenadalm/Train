@@ -7,6 +7,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.component.RectangleComponent;
@@ -97,6 +98,15 @@ public class MessageBox extends Entity {
 
         this.yesButton.update(container, game, delta);
         this.noButton.update(container, game, delta);
+
+        Input input = container.getInput();
+        if (input.isKeyPressed(Input.KEY_ENTER)) {
+            this.close();
+            this.yesListener.actionPerformed(null);
+        } else if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            this.close();
+            this.noListener.actionPerformed(null);
+        }
     }
 
     private void createButtons(ButtonFactory buttonFactory, Translator translator) {

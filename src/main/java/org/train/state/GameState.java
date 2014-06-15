@@ -180,12 +180,6 @@ public class GameState extends BasicGameState {
                                 game.enterState(Game.MENU_STATE);
                             }
                         });
-                if (input.isKeyPressed(Input.KEY_ENTER)
-                        || input.isKeyPressed(Input.KEY_NUMPADENTER)) {
-                    this.levelController.loadNextLevel();
-                    this.initLevel(container, game);
-                    this.messageBox.close();
-                }
             } else {
                 this.messageBox.showConfirm(this.translator.translate("Game.Congratulation"),
                         new ActionListener() {
