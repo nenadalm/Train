@@ -218,6 +218,14 @@ public class MenuForGameState extends BasicGameState {
         this.playBtn.update(container, game, delta);
         this.backBtn.update(container, game, delta);
 
+        if (input.isKeyPressed(Input.KEY_ENTER)) {
+            try {
+                levelController.loadLevel(packageIndex, levelIndex);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            game.enterState(Game.GAME_STATE);
+        }
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);
         }
