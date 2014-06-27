@@ -32,7 +32,7 @@ public class ControlsState extends BasicGameState {
         FontFactory fonts = this.container.getComponent(FontFactory.class);
         EffectFactory effects = this.container.getComponent(EffectFactory.class);
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        Font font = fonts.getFont("ubuntu", container.getWidth() / 20, whiteEffect);
+        Font font = fonts.getFont("ubuntu", container.getHeight() / 14, whiteEffect);
 
         Translator translator = this.container.getComponent(Translator.class);
 
