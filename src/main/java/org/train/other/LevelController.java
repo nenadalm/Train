@@ -60,7 +60,6 @@ public class LevelController {
         this.level = this.levelManager.loadLevel(packageIndex, levelIndex, packageName, levelName);
     }
 
-    @Deprecated
     public Progress getProgress() {
         return this.progressController.getCurrentProgress();
     }
@@ -70,7 +69,6 @@ public class LevelController {
                 .getLevelIndex() + 1);
     }
 
-    @Deprecated
     public void updateProgress() {
         this.progressController.updateProgress(this.level.getPackageIndex(),
                 this.level.getLevelIndex());
