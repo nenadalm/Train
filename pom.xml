@@ -98,6 +98,42 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-antrun-plugin</artifactId>
+	            <executions>
+	                <execution>
+	                    <id>createThriftDir</id>
+	                    <phase>process-resources</phase>
+	                    <configuration>
+	                        <tasks>
+	                            <delete dir="build"/>
+
+	                            <mkdir dir="build/Train/content"/>
+	                            <copy todir="build/Train/content">
+	                                <fileset dir="content" includes="*" excludes="save*"/>
+	                            </copy>
+
+	                            <mkdir dir="build/Train/natives"/>
+	                            <copy todir="build/Train/natives">
+	                                <fileset dir="target/natives" includes="*"/>
+	                            </copy>
+
+	                            <copy todir="build/Train">
+	                               <fileset dir="target" includes="*-jar-with-dependencies.jar"/>
+	                                <mapper type="merge" from="*" to="Train.jar"/>
+	                            </copy>
+
+	                            <zip destfile="build/Train.zip" basedir="build/Train"/>
+	                            <tar destfile="build/Train.tar.bz2" basedir="build/Train" compression="bzip2"/>
+	                        </tasks>
+	                    </configuration>
+	                    <goals>
+	                        <goal>run</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+			</plugin>
 		</plugins>
 	</build>
 

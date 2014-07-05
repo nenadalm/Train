@@ -1,6 +1,7 @@
 package org.train.app;
 
 import java.awt.Dimension;
+import java.lang.reflect.Field;
 
 import org.newdawn.slick.AppGameContainer;
 import org.picocontainer.PicoContainer;
@@ -9,10 +10,10 @@ import org.train.other.Display;
 
 public class App {
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
+
+        App.addNativesToLibraryPath();
+
         PicoContainer container = new PicoContainerFactory().create();
 
         Configuration configuration = container.getComponent(Configuration.class);
@@ -31,4 +32,14 @@ public class App {
         }
     }
 
+    private static void addNativesToLibraryPath() {
+        try {
+            System.setProperty("java.library.path", "natives/");
+            Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+            fieldSysPath.setAccessible(true);
+            fieldSysPath.set(null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
