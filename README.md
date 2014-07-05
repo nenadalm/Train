@@ -35,7 +35,7 @@ Create distributable package
 
 * you can create directory with all necessary files by
 
-    ```$ make build```
+    ```$ mvn package```
 
 * it'll put all necessary files for run into build/
 
