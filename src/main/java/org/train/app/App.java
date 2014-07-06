@@ -34,7 +34,9 @@ public class App {
 
     private static void addNativesToLibraryPath() {
         try {
-            System.setProperty("java.library.path", "natives/");
+            String originalLibraryPath = System.getProperty("java.library.path");
+            System.setProperty("java.library.path", String
+                    .format("%s:%s", originalLibraryPath, "natives/"));
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
             fieldSysPath.setAccessible(true);
             fieldSysPath.set(null, null);
