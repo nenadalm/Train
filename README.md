@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/nenadalm/Train.png?branch=master)](http://travis-ci.org/nenadalm/Train)
+
 Train
 =====
 
