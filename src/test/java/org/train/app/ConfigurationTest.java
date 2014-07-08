@@ -1,21 +1,17 @@
 package org.train.app;
 
-import java.io.File;
-
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.train.loader.ConfigurationLoader;
-import org.train.loader.ConfigurationXmlLoader;
 import org.train.storer.ConfigurationStorer;
-import org.train.storer.ConfigurationXmlStorer;
 
 public class ConfigurationTest {
 
     @Test
     public void testGetDefaultConfigurationValues() {
-        File configFile = new File("testingContent/newConfig.xml");
-        ConfigurationLoader loader = new ConfigurationXmlLoader(configFile);
-        ConfigurationStorer storer = new ConfigurationXmlStorer(configFile);
+        ConfigurationLoader loader = Mockito.mock(ConfigurationLoader.class);
+        ConfigurationStorer storer = Mockito.mock(ConfigurationStorer.class);
         Configuration config = new Configuration(loader, storer);
 
         Assert.assertEquals("en", config.get("language"));
@@ -32,9 +28,8 @@ public class ConfigurationTest {
 
     @Test(expected = NullPointerException.class)
     public void testGetNonExistingConfigurationValue() {
-        File configFile = new File("testingContent/newConfig.xml");
-        ConfigurationLoader loader = new ConfigurationXmlLoader(configFile);
-        ConfigurationStorer storer = new ConfigurationXmlStorer(configFile);
+        ConfigurationLoader loader = Mockito.mock(ConfigurationLoader.class);
+        ConfigurationStorer storer = Mockito.mock(ConfigurationStorer.class);
         Configuration config = new Configuration(loader, storer);
 
         config.get("non-existing-property");
