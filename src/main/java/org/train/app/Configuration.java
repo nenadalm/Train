@@ -12,8 +12,7 @@ public class Configuration {
     private ConfigurationLoader configurationLoader;
     private Map<String, ConfigurationProperty> properties;
 
-    public Configuration(ConfigurationLoader configurationLoader,
-            ConfigurationStorer configurationStorer) {
+    public Configuration(ConfigurationLoader configurationLoader, ConfigurationStorer configurationStorer) {
         this.configurationLoader = configurationLoader;
         this.configurationStorer = configurationStorer;
         this.loadConfiguration();
@@ -49,6 +48,7 @@ public class Configuration {
         properties.put("contentPath", "content/");
         properties.put("levelsPath", "content/levels/");
         properties.put("graphicsPath", "content/graphics/");
+        properties.put("nativesPath", "natives/");
 
         for (String key : properties.keySet()) {
             if (!this.properties.containsKey(key)) {
