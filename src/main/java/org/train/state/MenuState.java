@@ -35,7 +35,10 @@ public class MenuState extends BasicGameState {
             throws SlickException {
         this.intro = this.container.getComponent(ResourceManager.class).getSound("intro");
         this.intro.play();
+    }
 
+    @Override
+    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
         MenuFactoryInterface mainMenuFactory = new MainMenuFactory(menuBuilder);
         this.menu = mainMenuFactory.create(game, container);

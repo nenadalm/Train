@@ -69,10 +69,13 @@ public class EditorState extends BasicGameState {
     public void init(GameContainer container, final StateBasedGame game) throws SlickException {
         this.resourceManager = this.container.getComponent(ResourceManager.class);
         this.translator = this.container.getComponent(Translator.class);
+        this.fieldPosition = new Point(0, 0);
+    }
+
+    @Override
+    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         this.messageBox = this.container.getComponent(MessageBox.class);
         this.messageBox.setBackgroundColor(Color.lightGray);
-        this.fieldPosition = new Point(0, 0);
-
         this.itemMenu = this.resourceManager.getImage("itemMenu");
         this.active = this.resourceManager.getImage("active");
         this.activeItem = new LevelItem("wall", this.resourceManager.getImage("wall"), Item.WALL);
@@ -104,17 +107,17 @@ public class EditorState extends BasicGameState {
         this.level.render(container, game, g);
 
         if (this.topMenu.isShowed()) {
-            this.itemMenu.draw(0, 0, container.getWidth(),
-                    this.itemMenu.getHeight() * this.level.getScale());
+            this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight()
+                    * this.level.getScale());
         } else {
-            this.itemMenu.draw(0, -this.level.getImageSize(), container.getWidth(),
-                    this.itemMenu.getHeight() * this.level.getScale());
+            this.itemMenu.draw(0, -this.level.getImageSize(), container.getWidth(), this.itemMenu
+                    .getHeight() * this.level.getScale());
         }
         this.topMenu.render(container, game, g);
         if (this.showActive) {
-            this.active.draw(this.fieldPosition.getX(), this.fieldPosition.getY(),
-                    this.active.getWidth() * this.level.getScale(), this.active.getHeight()
-                            * this.level.getScale());
+            this.active.draw(this.fieldPosition.getX(), this.fieldPosition.getY(), this.active
+                    .getWidth() * this.level.getScale(), this.active.getHeight()
+                    * this.level.getScale());
         }
         this.messageBox.render(container, game, g);
     }
@@ -145,8 +148,8 @@ public class EditorState extends BasicGameState {
         int indexY;
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            this.messageBox.showConfirm(this.translator.translate("Editor.Menu.ExitWithoutSaving"),
-                    new ActionListener() {
+            this.messageBox
+                    .showConfirm(this.translator.translate("Editor.Menu.ExitWithoutSaving"), new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
                             EditorState.this.level = null;
@@ -246,9 +249,8 @@ public class EditorState extends BasicGameState {
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
                 this.setItemPosition(gridPosition);
             } else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
-                this.level.setLevelItem(
-                        new LevelItem("empty", this.resourceManager.getImage("empty"), Item.EMPTY),
-                        gridPosition);
+                this.level.setLevelItem(new LevelItem("empty", this.resourceManager
+                        .getImage("empty"), Item.EMPTY), gridPosition);
             }
         }
     }

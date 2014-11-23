@@ -59,7 +59,7 @@ public class MenuForEditorState extends BasicGameState {
     }
 
     @Override
-    public void init(GameContainer container, StateBasedGame game) throws SlickException {
+    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         FontFactory fonts = this.container.getComponent(FontFactory.class);
         EffectFactory effects = this.container.getComponent(EffectFactory.class);
         ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
@@ -117,8 +117,8 @@ public class MenuForEditorState extends BasicGameState {
         g.setColor(Color.gray);
         g.drawString(packagesText, width / 500, height / 6 - ubuntuMedium.getHeight(packagesText)
                 / 2 + height / 750);
-        g.drawString(levelsText, width / 2 + width / 500,
-                height / 6 - ubuntuMedium.getHeight(packagesText) / 2 + height / 750);
+        g.drawString(levelsText, width / 2 + width / 500, height / 6
+                - ubuntuMedium.getHeight(packagesText) / 2 + height / 750);
         g.setColor(Color.white);
         g.drawString(packagesText, 0, height / 6 - ubuntuMedium.getHeight(packagesText) / 2);
         g.drawString(levelsText, width / 2, height / 6 - ubuntuMedium.getHeight(packagesText) / 2);
@@ -131,25 +131,25 @@ public class MenuForEditorState extends BasicGameState {
         String text = "";
         String showing = translator.translate("showing"), of = translator.translate("Of");
         g.setColor(Color.red);
-        text = String.format("%4$s %1$d - %2$d %5$s %3$d", this.packagesMenu.getFirstIndex() + 1,
-                this.packagesMenu.getLastIndex(), levelPackages.size(), showing, of);
+        text = String
+                .format("%4$s %1$d - %2$d %5$s %3$d", this.packagesMenu.getFirstIndex() + 1, this.packagesMenu
+                        .getLastIndex(), levelPackages.size(), showing, of);
         g.drawString(text, width / 200, height * 9 / 11);
 
         int from, to;
         from = this.levelsMenu == null ? 0 : this.levelsMenu.getFirstIndex() + 1;
         to = this.levelsMenu == null ? 0 : this.levelsMenu.getLastIndex();
-        text = String.format("%4$s %1$d - %2$d %5$s %3$d", from, to,
-                (packageIndex >= 0) ? levelPackages.get(packageIndex).getLevelNames().size() : 0,
-                showing, of);
+        text = String
+                .format("%4$s %1$d - %2$d %5$s %3$d", from, to, (packageIndex >= 0) ? levelPackages
+                        .get(packageIndex).getLevelNames().size() : 0, showing, of);
         g.drawString(text, width / 2 + width / 200, height * 9 / 11);
 
         g.drawString(infoText, width * 4 / 12, height * 13 / 15);
 
         if (action == Action.DeletingPackage || action == Action.DeletingLevel) {
-            drawString(g, ubuntuSmall, String.format("%1$s %2$s? %3$s(Enter)/%4$s(Escape)",
-                    translator.translate("Really"), translator.translate("delete"),
-                    translator.translate("Yes"), translator.translate("No")), width / 2, height
-                    - height / 24);
+            drawString(g, ubuntuSmall, String.format("%1$s %2$s? %3$s(Enter)/%4$s(Escape)", translator
+                    .translate("Really"), translator.translate("delete"), translator
+                    .translate("Yes"), translator.translate("No")), width / 2, height - height / 24);
         }
         this.packageMenu.render(container, game, g);
         this.levelMenu.render(container, game, g);
@@ -202,19 +202,15 @@ public class MenuForEditorState extends BasicGameState {
         this.levelMenu
                 .getMenuItems()
                 .get(0)
-                .setEnabled(
-                        packageIndex >= 0
-                                && levelPackages.get(packageIndex).getLevelNames().size() < 100);
+                .setEnabled(packageIndex >= 0
+                        && levelPackages.get(packageIndex).getLevelNames().size() < 100);
         this.levelMenu.getMenuItems().get(1).setEnabled(packageIndex >= 0 && levelIndex >= 0);
         this.levelMenu.getMenuItems().get(2).setEnabled(packageIndex >= 0 && levelIndex >= 1);
         this.levelMenu
                 .getMenuItems()
                 .get(3)
-                .setEnabled(
-                        packageIndex >= 0
-                                && levelIndex >= 0
-                                && levelIndex < levelPackages.get(packageIndex).getLevelNames()
-                                        .size() - 1);
+                .setEnabled(packageIndex >= 0 && levelIndex >= 0
+                        && levelIndex < levelPackages.get(packageIndex).getLevelNames().size() - 1);
         this.levelMenu.getMenuItems().get(4).setEnabled(packageIndex >= 0 && levelIndex >= 0);
         this.levelMenu.getMenuItems().get(5).setEnabled(packageIndex >= 0 && levelIndex >= 0);
         this.levelMenu.getMenuItems().get(6).setEnabled(packageIndex >= 0 && levelIndex >= 0);
@@ -308,9 +304,9 @@ public class MenuForEditorState extends BasicGameState {
                             LevelPackage levelPackage = levelPackages.get(packageIndex);
                             levelPackage.getLevelNames().add(newLevelName);
 
-                            levelController.createLevel(packageIndex, levelPackage.getName(),
-                                    levelPackage.getLevelNames().size() - 1, newLevelName,
-                                    levelSize.width, levelSize.height);
+                            levelController
+                                    .createLevel(packageIndex, levelPackage.getName(), levelPackage
+                                            .getLevelNames().size() - 1, newLevelName, levelSize.width, levelSize.height);
                             textField.setText("");
                             createLevelsMenu();
 
@@ -390,8 +386,8 @@ public class MenuForEditorState extends BasicGameState {
                         if (levelHeight >= 7 && levelHeight <= 100) {
                             action = Action.None;
                             levelSize.height = levelHeight;
-                            levelController.resizeLevel(packageIndex, levelIndex, levelSize.width,
-                                    levelSize.height);
+                            levelController
+                                    .resizeLevel(packageIndex, levelIndex, levelSize.width, levelSize.height);
                             textField.setText("");
                         } else {
                             infoText = translator.translate("EditorMenu.WrongLevelSize")
@@ -417,8 +413,8 @@ public class MenuForEditorState extends BasicGameState {
                 action = Action.None;
                 LevelPackage levelPackage = levelPackages.get(packageIndex);
                 ArrayList<String> names = levelPackage.getLevelNames();
-                levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex,
-                        names.get(levelIndex));
+                levelController.deleteLevel(packageIndex, levelPackage.getName(), levelIndex, names
+                        .get(levelIndex));
                 levelPackage.getLevelNames().remove(levelIndex);
                 levelIndex--;
                 createLevelsMenu();
@@ -516,8 +512,8 @@ public class MenuForEditorState extends BasicGameState {
                 levelPackages.add(packageIndex, levelPackage);
 
                 levelController.renamePackage(packageIndex, firstName, packageIndex - 1, firstName);
-                levelController.renamePackage(packageIndex - 1, secondName, packageIndex,
-                        secondName);
+                levelController
+                        .renamePackage(packageIndex - 1, secondName, packageIndex, secondName);
                 packageIndex--;
                 createPackagesMenu();
             }
@@ -531,8 +527,8 @@ public class MenuForEditorState extends BasicGameState {
                 levelPackages.add(packageIndex + 1, levelPackage);
 
                 levelController.renamePackage(packageIndex, firstName, packageIndex + 1, firstName);
-                levelController.renamePackage(packageIndex + 1, secondName, packageIndex,
-                        secondName);
+                levelController
+                        .renamePackage(packageIndex + 1, secondName, packageIndex, secondName);
                 packageIndex++;
                 createPackagesMenu();
             }
@@ -594,12 +590,10 @@ public class MenuForEditorState extends BasicGameState {
                 String level = levelPackage.getLevelNames().remove(levelIndex - 1);
                 levelPackage.getLevelNames().add(levelIndex, level);
 
-                levelController.renameLevel(packageIndex,
-                        levelPackages.get(packageIndex).getName(), levelIndex, firstName,
-                        levelIndex - 1, firstName);
-                levelController.renameLevel(packageIndex,
-                        levelPackages.get(packageIndex).getName(), levelIndex - 1, secondName,
-                        levelIndex, secondName);
+                levelController
+                        .renameLevel(packageIndex, levelPackages.get(packageIndex).getName(), levelIndex, firstName, levelIndex - 1, firstName);
+                levelController
+                        .renameLevel(packageIndex, levelPackages.get(packageIndex).getName(), levelIndex - 1, secondName, levelIndex, secondName);
                 levelIndex--;
             }
         }));
@@ -612,12 +606,10 @@ public class MenuForEditorState extends BasicGameState {
                 String level = levelPackage.getLevelNames().remove(levelIndex);
                 levelPackage.getLevelNames().add(levelIndex + 1, level);
 
-                levelController.renameLevel(packageIndex,
-                        levelPackages.get(packageIndex).getName(), levelIndex, firstName,
-                        levelIndex + 1, firstName);
-                levelController.renameLevel(packageIndex,
-                        levelPackages.get(packageIndex).getName(), levelIndex + 1, secondName,
-                        levelIndex, secondName);
+                levelController
+                        .renameLevel(packageIndex, levelPackages.get(packageIndex).getName(), levelIndex, firstName, levelIndex + 1, firstName);
+                levelController
+                        .renameLevel(packageIndex, levelPackages.get(packageIndex).getName(), levelIndex + 1, secondName, levelIndex, secondName);
                 levelIndex++;
             }
         }));
@@ -676,10 +668,10 @@ public class MenuForEditorState extends BasicGameState {
         ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
 
         Image arrowUpImage = resourceManager.getImage("arrow").getScaledCopy(width / 2000f);
-        Image arrowUpMouseOverImage = resourceManager.getImage("arrowMouseOver").getScaledCopy(
-                width / 2000f);
-        Image arrowUpDisabledImage = resourceManager.getImage("arrowDisabled").getScaledCopy(
-                width / 2000f);
+        Image arrowUpMouseOverImage = resourceManager.getImage("arrowMouseOver")
+                .getScaledCopy(width / 2000f);
+        Image arrowUpDisabledImage = resourceManager.getImage("arrowDisabled")
+                .getScaledCopy(width / 2000f);
 
         this.levelArrowUp = buttonFactory.setNormalImage(arrowUpImage)
                 .setOverImage(arrowUpMouseOverImage).setDisabledImage(arrowUpDisabledImage)

@@ -40,7 +40,7 @@ public class PicoContainerFactory {
 
         container.addComponent(new Game("Train", container));
         container.addComponent(AppGameContainer.class);
-        container.addComponent(MessageBox.class);
+        container.as(Characteristics.NO_CACHE).addComponent(MessageBox.class);
         container.addComponent(LevelController.class);
         container.addComponent(ResourceManager.class);
         container.addComponent(FontFactory.class);

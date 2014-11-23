@@ -49,6 +49,8 @@ public class Game extends StateBasedGame {
         this.addState(new MenuForGameState(Game.MENU_FOR_GAME_STATE));
         this.addState(new OptionsState(Game.OPTIONS_STATE));
         this.addState(new TestGameState(Game.TEST_GAME_STATE));
+        this.addState(new EditorState(Game.EDITOR_STATE));
+        this.addState(new MenuForEditorState(Game.MENU_FOR_EDITOR_STATE));
     }
 
     @Override
@@ -58,57 +60,5 @@ public class Game extends StateBasedGame {
         }
 
         super.addState(state);
-    }
-
-    @Override
-    public void enterState(int id) {
-        try {
-            if (this.getState(id) == null) {
-                org.newdawn.slick.state.GameState state = this.createState(id);
-                state.init(this.getContainer(), this);
-                this.addState(state);
-            } else {
-                org.newdawn.slick.state.GameState state = this.getState(id);
-                if ((Game.isReinitializationRequried || (id == Game.EDITOR_STATE && this
-                        .getCurrentStateID() != Game.TEST_GAME_STATE))) {
-                    state.init(this.getContainer(), this);
-                }
-            }
-        } catch (SlickException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-        super.enterState(id);
-    }
-
-    private org.newdawn.slick.state.GameState createState(int id) {
-        BasicGameState gameState = null;
-        switch (id) {
-            case Game.MENU_STATE:
-                gameState = new MenuState(Game.MENU_STATE);
-                break;
-            case Game.GAME_STATE:
-                gameState = new GameState(Game.GAME_STATE);
-                break;
-            case Game.EDITOR_STATE:
-                gameState = new EditorState(Game.EDITOR_STATE);
-                break;
-            case Game.OPTIONS_STATE:
-                gameState = new OptionsState(Game.OPTIONS_STATE);
-                break;
-            case Game.MENU_FOR_EDITOR_STATE:
-                gameState = new MenuForEditorState(Game.MENU_FOR_EDITOR_STATE);
-                break;
-            case Game.MENU_FOR_GAME_STATE:
-                gameState = new MenuForGameState(Game.MENU_FOR_GAME_STATE);
-                break;
-            case Game.TEST_GAME_STATE:
-                gameState = new TestGameState(Game.TEST_GAME_STATE);
-        }
-        if (gameState != null) {
-            gameState.setContainer(this.container);
-        }
-
-        return gameState;
     }
 }
