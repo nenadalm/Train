@@ -28,8 +28,6 @@ public class Game extends StateBasedGame {
 
     public static final String VERSION = "0.8";
 
-    public static boolean isReinitializationRequried = false;
-
     private DefaultPicoContainer container;
 
     public Game(String title, DefaultPicoContainer container) {

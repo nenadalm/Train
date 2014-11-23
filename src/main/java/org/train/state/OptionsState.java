@@ -150,16 +150,11 @@ public class OptionsState extends BasicGameState {
         drawString(g, ubuntuLarge, options, width / 2, (ubuntuLarge.getHeight(options) / 2.25f));
         g.setFont(ubuntuMedium);
 
-        drawString(g, ubuntuMedium, translator.translate("Resolution") + ":", width / 6 * 2,
-                height * 2 / 10);
-        drawString(g, ubuntuMedium, translator.translate("Fullscreen") + ":", width / 6 * 2,
-                height * 3 / 10);
-        drawString(g, ubuntuMedium, translator.translate("Language") + ":", width / 6 * 2,
-                height * 4 / 10);
-        drawString(g, ubuntuMedium, translator.translate("Autoscale") + ":", width / 6 * 2,
-                height * 5 / 10);
-        drawString(g, ubuntuMedium, translator.translate("Scale") + ":", width / 6 * 2,
-                height * 6 / 10);
+        drawString(g, ubuntuMedium, translator.translate("Resolution") + ":", width / 6 * 2, height * 2 / 10);
+        drawString(g, ubuntuMedium, translator.translate("Fullscreen") + ":", width / 6 * 2, height * 3 / 10);
+        drawString(g, ubuntuMedium, translator.translate("Language") + ":", width / 6 * 2, height * 4 / 10);
+        drawString(g, ubuntuMedium, translator.translate("Autoscale") + ":", width / 6 * 2, height * 5 / 10);
+        drawString(g, ubuntuMedium, translator.translate("Scale") + ":", width / 6 * 2, height * 6 / 10);
 
         g.setColor((isMouseOverResolution) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, resolutionText, width / 6 * 4, height * 2 / 10);
@@ -299,19 +294,14 @@ public class OptionsState extends BasicGameState {
             configuration.set("scale", String.valueOf(scale / 100f));
             configuration.saveChanges();
 
-            ((AppGameContainer) container).setDisplayMode(displayModes[modeIndex].getWidth(),
-                    displayModes[modeIndex].getHeight(), isFullscreen);
+            ((AppGameContainer) container)
+                    .setDisplayMode(displayModes[modeIndex].getWidth(), displayModes[modeIndex]
+                            .getHeight(), isFullscreen);
 
             if (!translator.getLanguageCode().equals(languages[languageIndex])) {
-                Game.isReinitializationRequried = true;
                 translate();
             }
             translator.setLanguage(languages[languageIndex]);
-
-            if (width != displayModes[modeIndex].getWidth()
-                    || height != displayModes[modeIndex].getHeight()) {
-                Game.isReinitializationRequried = true;
-            }
         } catch (SlickException e) {
             e.printStackTrace();
         }
@@ -324,8 +314,9 @@ public class OptionsState extends BasicGameState {
     }
 
     private void setResolutionRectangle() {
-        resolutionText = String.format("%1$dx%2$d", displayModes[modeIndex].getWidth(),
-                displayModes[modeIndex].getHeight());
+        resolutionText = String
+                .format("%1$dx%2$d", displayModes[modeIndex].getWidth(), displayModes[modeIndex]
+                        .getHeight());
         setRectangle(resolutionRectangle, resolutionText, width * 4 / 6, height * 2 / 10);
     }
 
@@ -345,8 +336,8 @@ public class OptionsState extends BasicGameState {
     }
 
     private void setScaleRectangle() {
-        size = this.container.getComponent(LevelController.class).getOptimalLevelDimension(width,
-                height, scale / 100f);
+        size = this.container.getComponent(LevelController.class)
+                .getOptimalLevelDimension(width, height, scale / 100f);
         sizeText = String.format("[%1$02d , %2$02d]", size.width, size.height);
         scaleText = String.format("%1$d.%2$02dx", scale / 100, scale % 100);
         wallPreview = wall.getScaledCopy(scale / 512f);
