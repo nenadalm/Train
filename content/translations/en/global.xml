@@ -144,6 +144,10 @@
                 <source>Controls.Wall</source>
                 <target>Place wall</target>
             </trans-unit>
+            <trans-unit>
+                <source>Options.UnavailableResolution</source>
+                <target>Unavailable</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

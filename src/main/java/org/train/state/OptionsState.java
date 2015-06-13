@@ -286,17 +286,20 @@ public class OptionsState extends BasicGameState {
 
     private void saveOptions(GameContainer container, StateBasedGame game) {
         try {
-            configuration.set("width", String.valueOf(displayModes[modeIndex].getWidth()));
-            configuration.set("height", String.valueOf(displayModes[modeIndex].getHeight()));
             configuration.set("language", languages[languageIndex]);
             configuration.set("fullscreen", String.valueOf(isFullscreen));
             configuration.set("autoscale", String.valueOf(isAutoscale));
             configuration.set("scale", String.valueOf(scale / 100f));
-            configuration.saveChanges();
 
-            ((AppGameContainer) container)
-                    .setDisplayMode(displayModes[modeIndex].getWidth(), displayModes[modeIndex]
-                            .getHeight(), isFullscreen);
+            if (displayModes.length != 0) {
+                configuration.set("width", String.valueOf(displayModes[modeIndex].getWidth()));
+                configuration.set("height", String.valueOf(displayModes[modeIndex].getHeight()));
+                ((AppGameContainer) container)
+                        .setDisplayMode(displayModes[modeIndex].getWidth(), displayModes[modeIndex]
+                                .getHeight(), isFullscreen);
+            }
+
+            configuration.saveChanges();
 
             if (!translator.getLanguageCode().equals(languages[languageIndex])) {
                 translate();
@@ -314,6 +317,11 @@ public class OptionsState extends BasicGameState {
     }
 
     private void setResolutionRectangle() {
+        if (displayModes.length == 0) {
+            resolutionText = this.translator.translate("Options.UnavailableResolution");
+
+            return;
+        }
         resolutionText = String
                 .format("%1$dx%2$d", displayModes[modeIndex].getWidth(), displayModes[modeIndex]
                         .getHeight());
