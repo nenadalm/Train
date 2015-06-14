@@ -15,6 +15,7 @@ public class ScrollableMenu extends Menu implements Scrollable {
     private List<? extends MenuItem> children;
     private int fromIndex = 0, toIndex = 0;
     private MouseListener mouseListener;
+    private boolean roundScroll = false;
 
     public ScrollableMenu(List<? extends MenuItem> items, GameContainer container,
             ResourceManager resourceManager, EffectFactory effectFactory) {
@@ -87,18 +88,29 @@ public class ScrollableMenu extends Menu implements Scrollable {
                         + getPaddingLeft(), getHeight() + getPaddingBottom() + getPaddingTop());
     }
 
+    public void enableRoundScroll() {
+        this.roundScroll = true;
+    }
+
     @Override
     public void scrollUp() {
         if (hasPrev()) {
             showPrev();
+        } else if (this.roundScroll) {
+            this.fromIndex = this.children.size() - this.toIndex;
+            this.toIndex = this.children.size();
+            this.updateItems();
         }
-
     }
 
     @Override
     public void scrollDown() {
         if (hasNext()) {
             showNext();
+        } else if (this.roundScroll) {
+            this.toIndex = this.toIndex - this.fromIndex;
+            this.fromIndex = 0;
+            this.updateItems();
         }
     }
 }

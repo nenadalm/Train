@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
@@ -26,10 +27,15 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Configuration;
 import org.train.app.Game;
 import org.train.entity.Button;
+import org.train.entity.FlowLayout;
+import org.train.entity.Menu;
+import org.train.entity.MenuItem;
+import org.train.entity.ScrollableMenu;
 import org.train.factory.ButtonFactory;
 import org.train.factory.EffectFactory;
 import org.train.factory.FontFactory;
 import org.train.other.LevelController;
+import org.train.other.ResourceManager;
 import org.train.other.Translator;
 
 public class OptionsState extends BasicGameState {
@@ -49,6 +55,8 @@ public class OptionsState extends BasicGameState {
     private Configuration configuration;
 
     private Button backBtn, saveBtn;
+
+    private ScrollableMenu resolutionMenu;
 
     public OptionsState(int stateId) {
         super(stateId);
@@ -124,8 +132,51 @@ public class OptionsState extends BasicGameState {
         isFullscreen = container.isFullscreen();
         isAutoscale = Boolean.parseBoolean(configuration.get("autoscale"));
 
-        resolutionRectangle = new Rectangle();
-        setResolutionRectangle();
+        int [] modeIndexOrder = new int[displayModes.length];
+        for (int i = modeIndex; i < displayModes.length; i++) {
+            modeIndexOrder[i - modeIndex] = i;
+        }
+        for (int i = 0; i < modeIndex; i++) {
+            modeIndexOrder[displayModes.length - modeIndex + i] = i;
+        }
+
+        List<MenuItem> resolutionMenuItems = new ArrayList<>();
+        for (int i = 0; i < modeIndexOrder.length; i++) {
+            DisplayMode displayMode = displayModes[modeIndexOrder[i]];
+
+            String text = String
+                .format("%1$dx%2$d", displayMode.getWidth(), displayMode.getHeight());
+
+            MenuItem menuItem = new MenuItem(text, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    modeIndex++;
+                    if (modeIndex >= displayModes.length) {
+                        modeIndex = 0;
+                    }
+                    resolutionMenu.scrollDown();
+                }
+            }, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    modeIndex--;
+                    if (modeIndex == -1) {
+                        modeIndex = displayModes.length - 1;
+                    }
+                    resolutionMenu.scrollUp();
+                }
+            });
+            resolutionMenuItems.add(menuItem);
+        }
+        ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
+        this.resolutionMenu = new ScrollableMenu(resolutionMenuItems, container, resourceManager, effects);
+        int resolutionMenuX = width * 4 / 6;
+        int resolutionMenuY = height * 2 / 10;
+        this.resolutionMenu.setMarginRight(width / 2 - resolutionMenuX);
+        this.resolutionMenu.setMarginTop(height / 2 - resolutionMenuY);
+        this.resolutionMenu.setMaxItems(1);
+        this.resolutionMenu.disableKeyboard();
+        this.resolutionMenu.enableRoundScroll();
 
         fullscreenRectangle = new Rectangle();
         setFullscreenRectangle();
@@ -157,7 +208,7 @@ public class OptionsState extends BasicGameState {
         drawString(g, ubuntuMedium, translator.translate("Scale") + ":", width / 6 * 2, height * 6 / 10);
 
         g.setColor((isMouseOverResolution) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, resolutionText, width / 6 * 4, height * 2 / 10);
+        this.resolutionMenu.render(container, game, g);
         g.setColor((isMouseOverFullscreen) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, isFullscreen ? yes : no, width / 6 * 4, height * 3 / 10);
         g.setColor((isMouseOverLanguage) ? Color.blue : Color.red);
@@ -183,7 +234,7 @@ public class OptionsState extends BasicGameState {
         Input input = container.getInput();
         Point mouse = new Point(input.getMouseX(), input.getMouseY());
 
-        isMouseOverResolution = resolutionRectangle.contains(mouse);
+        this.resolutionMenu.update(container, game, delta);
         isMouseOverFullscreen = fullscreenRectangle.contains(mouse);
         isMouseOverLanguage = languageRectangle.contains(mouse);
         isMouseOverAutoscale = autoscaleRectangle.contains(mouse);
@@ -200,13 +251,6 @@ public class OptionsState extends BasicGameState {
             game.enterState(Game.MENU_STATE);
         }
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-            if (isMouseOverResolution) {
-                modeIndex++;
-                if (modeIndex == displayModes.length) {
-                    modeIndex = 0;
-                }
-                setResolutionRectangle();
-            }
             if (isMouseOverFullscreen) {
                 isFullscreen = !isFullscreen;
                 setFullscreenRectangle();
@@ -224,13 +268,6 @@ public class OptionsState extends BasicGameState {
             }
         }
         if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
-            if (isMouseOverResolution) {
-                modeIndex--;
-                if (modeIndex == -1) {
-                    modeIndex = displayModes.length - 1;
-                }
-                setResolutionRectangle();
-            }
             if (isMouseOverLanguage) {
                 languageIndex--;
                 if (languageIndex == -1) {
@@ -314,18 +351,6 @@ public class OptionsState extends BasicGameState {
         int width = font.getWidth(text);
         int height = font.getHeight(text);
         g.drawString(text, x - width / 2, y - height / 2);
-    }
-
-    private void setResolutionRectangle() {
-        if (displayModes.length == 0) {
-            resolutionText = this.translator.translate("Options.UnavailableResolution");
-
-            return;
-        }
-        resolutionText = String
-                .format("%1$dx%2$d", displayModes[modeIndex].getWidth(), displayModes[modeIndex]
-                        .getHeight());
-        setRectangle(resolutionRectangle, resolutionText, width * 4 / 6, height * 2 / 10);
     }
 
     private void setFullscreenRectangle() {

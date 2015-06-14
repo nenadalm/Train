@@ -94,20 +94,19 @@ public class Menu extends Container {
         boolean over = false;
         for (Rectangle r : this.getLayout().getRectangles()) {
             if (r.contains(mouseX, mouseY) && this.items.get(counter).isEnabled()) {
-                if (this.lastMousePosition.x != mouseX || this.lastMousePosition.y != mouseY) {
-                    if (this.items.get(this.active) != this.selected) {
-                        this.items.get(this.active).setColor(
-                                items.get(this.active).getNormalColor());
-                    }
-                    if (this.lastActiveItem != counter) {
-                        this.overSound.play();
-                    }
-                    this.active = counter;
-
-                    if (this.items.get(this.active) != this.selected) {
-                        this.items.get(counter).setColor(items.get(this.active).getActiveColor());
-                    }
+                if (this.items.get(this.active) != this.selected) {
+                    this.items.get(this.active).setColor(
+                            items.get(this.active).getNormalColor());
                 }
+                if (this.lastActiveItem != counter) {
+                    this.overSound.play();
+                }
+                this.active = counter;
+
+                if (this.items.get(this.active) != this.selected) {
+                    this.items.get(counter).setColor(items.get(this.active).getActiveColor());
+                }
+
                 over = this.active == counter;
             }
             counter++;
@@ -132,6 +131,12 @@ public class Menu extends Container {
             }
             ActionListener listener = this.items.get(this.active).getListener();
             listener.actionPerformed(null);
+        }
+        if (over && input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
+            ActionListener listener = this.items.get(this.active).getListener2();
+            if (listener != null) {
+                listener.actionPerformed(null);
+            }
         }
         this.lastMousePosition.setLocation(mouseX, mouseY);
     }

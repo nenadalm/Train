@@ -41,7 +41,7 @@ public abstract class BaseLayout implements LayoutInterface {
 
             this.rectangles.add(new Rectangle(childPosition.getX()
                     - this.container.getMarginRight() + this.container.getPadding().getLeft(),
-                    childPosition.getY(), width, height));
+                    childPosition.getY() - this.container.getMarginTop() + this.container.getPaddingTop(), width, height));
             index++;
         }
 
