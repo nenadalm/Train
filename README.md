@@ -11,14 +11,6 @@ Used technologies
 -----------------
 [JavaSE][1], [Slick2D][2], [Maven][4], [PicoContainer][5]
 
-Code conventions
-----------------
-**maximum line width:** 100
-
-**tab policy:** spaces only
-
-**indentation size:** 4
-
 Setup project
 -------------
 * setup [Maven][4]
@@ -31,6 +23,9 @@ Setup project
 
     ```$ mvn eclipse:eclipse```
 
+* format code
+
+    ```$ mvn java-formatter:format```
 
 Create distributable package
 ----------------------------

@@ -102,8 +102,8 @@ public class ButtonFactory {
     }
 
     public Button createButton() {
-        Button button = new Button(this.createNormalView(), this.createOverView(),
-                this.createDisabledView(), this.listener);
+        Button button = new Button(this.createNormalView(), this.createOverView(), this
+                .createDisabledView(), this.listener);
         button.setOverSound(this.overSound);
 
         return button;
