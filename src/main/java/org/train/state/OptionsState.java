@@ -44,13 +44,13 @@ public class OptionsState extends BasicGameState {
             isMouseOverAutoscale, isMouseOverScale, isFullscreen, isAutoscale, isHolding;
     private int width, height, languageIndex, modeIndex, scale, holdCounter;
     private Font ubuntuSmall, ubuntuMedium, ubuntuLarge;
-    private Rectangle resolutionRectangle, fullscreenRectangle, languageRectangle,
+    private Rectangle fullscreenRectangle, languageRectangle,
             autoscaleRectangle, scaleRectangle;
     private DisplayMode displayModes[];
     private Dimension size;
     private Image wall, wallPreview;
 
-    private String resolutionText, languages[], yes, no, scaleText, sizeText;
+    private String languages[], yes, no, scaleText, sizeText;
     private Translator translator;
     private Configuration configuration;
 
@@ -132,51 +132,7 @@ public class OptionsState extends BasicGameState {
         isFullscreen = container.isFullscreen();
         isAutoscale = Boolean.parseBoolean(configuration.get("autoscale"));
 
-        int [] modeIndexOrder = new int[displayModes.length];
-        for (int i = modeIndex; i < displayModes.length; i++) {
-            modeIndexOrder[i - modeIndex] = i;
-        }
-        for (int i = 0; i < modeIndex; i++) {
-            modeIndexOrder[displayModes.length - modeIndex + i] = i;
-        }
-
-        List<MenuItem> resolutionMenuItems = new ArrayList<>();
-        for (int i = 0; i < modeIndexOrder.length; i++) {
-            DisplayMode displayMode = displayModes[modeIndexOrder[i]];
-
-            String text = String
-                .format("%1$dx%2$d", displayMode.getWidth(), displayMode.getHeight());
-
-            MenuItem menuItem = new MenuItem(text, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    modeIndex++;
-                    if (modeIndex >= displayModes.length) {
-                        modeIndex = 0;
-                    }
-                    resolutionMenu.scrollDown();
-                }
-            }, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    modeIndex--;
-                    if (modeIndex == -1) {
-                        modeIndex = displayModes.length - 1;
-                    }
-                    resolutionMenu.scrollUp();
-                }
-            });
-            resolutionMenuItems.add(menuItem);
-        }
-        ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
-        this.resolutionMenu = new ScrollableMenu(resolutionMenuItems, container, resourceManager, effects);
-        int resolutionMenuX = width * 4 / 6;
-        int resolutionMenuY = height * 2 / 10;
-        this.resolutionMenu.setMarginRight(width / 2 - resolutionMenuX);
-        this.resolutionMenu.setMarginTop(height / 2 - resolutionMenuY);
-        this.resolutionMenu.setMaxItems(1);
-        this.resolutionMenu.disableKeyboard();
-        this.resolutionMenu.enableRoundScroll();
+        this.createResolutionMenu(container, effects);
 
         fullscreenRectangle = new Rectangle();
         setFullscreenRectangle();
@@ -418,5 +374,53 @@ public class OptionsState extends BasicGameState {
     private void translate() {
         yes = translator.translate("yes");
         no = translator.translate("no");
+    }
+
+    private void createResolutionMenu(GameContainer container, EffectFactory effects) {
+        int [] modeIndexOrder = new int[displayModes.length];
+        for (int i = modeIndex; i < displayModes.length; i++) {
+            modeIndexOrder[i - modeIndex] = i;
+        }
+        for (int i = 0; i < modeIndex; i++) {
+            modeIndexOrder[displayModes.length - modeIndex + i] = i;
+        }
+
+        List<MenuItem> resolutionMenuItems = new ArrayList<>();
+        for (int i = 0; i < modeIndexOrder.length; i++) {
+            DisplayMode displayMode = displayModes[modeIndexOrder[i]];
+
+            String text = String
+                .format("%1$dx%2$d", displayMode.getWidth(), displayMode.getHeight());
+
+            MenuItem menuItem = new MenuItem(text, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    modeIndex++;
+                    if (modeIndex >= displayModes.length) {
+                        modeIndex = 0;
+                    }
+                    resolutionMenu.scrollDown();
+                }
+            }, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    modeIndex--;
+                    if (modeIndex == -1) {
+                        modeIndex = displayModes.length - 1;
+                    }
+                    resolutionMenu.scrollUp();
+                }
+            });
+            resolutionMenuItems.add(menuItem);
+        }
+        ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
+        this.resolutionMenu = new ScrollableMenu(resolutionMenuItems, container, resourceManager, effects);
+        int resolutionMenuX = width * 4 / 6;
+        int resolutionMenuY = height * 2 / 10;
+        this.resolutionMenu.setMarginRight(width / 2 - resolutionMenuX);
+        this.resolutionMenu.setMarginTop(height / 2 - resolutionMenuY);
+        this.resolutionMenu.setMaxItems(1);
+        this.resolutionMenu.disableKeyboard();
+        this.resolutionMenu.enableRoundScroll();
     }
 }
