@@ -40,12 +40,11 @@ import org.train.other.Translator;
 
 public class OptionsState extends BasicGameState {
 
-    private boolean isMouseOverResolution, isMouseOverFullscreen, isMouseOverLanguage,
+    private boolean isMouseOverResolution, isMouseOverFullscreen,
             isMouseOverAutoscale, isMouseOverScale, isFullscreen, isAutoscale, isHolding;
     private int width, height, languageIndex, modeIndex, scale, holdCounter;
     private Font ubuntuSmall, ubuntuMedium, ubuntuLarge;
-    private Rectangle fullscreenRectangle, languageRectangle,
-            autoscaleRectangle, scaleRectangle;
+    private Rectangle fullscreenRectangle, autoscaleRectangle, scaleRectangle;
     private DisplayMode displayModes[];
     private Dimension size;
     private Image wall, wallPreview;
@@ -56,7 +55,7 @@ public class OptionsState extends BasicGameState {
 
     private Button backBtn, saveBtn;
 
-    private ScrollableMenu resolutionMenu;
+    private ScrollableMenu resolutionMenu, languageMenu;
 
     public OptionsState(int stateId) {
         super(stateId);
@@ -133,12 +132,10 @@ public class OptionsState extends BasicGameState {
         isAutoscale = Boolean.parseBoolean(configuration.get("autoscale"));
 
         this.createResolutionMenu(container, effects);
+        this.createLanguageMenu(container, effects);
 
         fullscreenRectangle = new Rectangle();
         setFullscreenRectangle();
-
-        languageRectangle = new Rectangle();
-        setLanguageRectangle();
 
         autoscaleRectangle = new Rectangle();
         setAutoscaleRectangle();
@@ -165,10 +162,9 @@ public class OptionsState extends BasicGameState {
 
         g.setColor((isMouseOverResolution) ? Color.blue : Color.red);
         this.resolutionMenu.render(container, game, g);
+        this.languageMenu.render(container, game, g);
         g.setColor((isMouseOverFullscreen) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, isFullscreen ? yes : no, width / 6 * 4, height * 3 / 10);
-        g.setColor((isMouseOverLanguage) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, languages[languageIndex], width / 6 * 4, height * 4 / 10);
         g.setColor((isMouseOverAutoscale) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, isAutoscale ? yes : no, width / 6 * 4, height * 5 / 10);
         g.setColor((isAutoscale) ? Color.darkGray : (isMouseOverScale) ? Color.blue : Color.red);
@@ -191,8 +187,8 @@ public class OptionsState extends BasicGameState {
         Point mouse = new Point(input.getMouseX(), input.getMouseY());
 
         this.resolutionMenu.update(container, game, delta);
+        this.languageMenu.update(container, game, delta);
         isMouseOverFullscreen = fullscreenRectangle.contains(mouse);
-        isMouseOverLanguage = languageRectangle.contains(mouse);
         isMouseOverAutoscale = autoscaleRectangle.contains(mouse);
         isMouseOverScale = scaleRectangle.contains(mouse) && !isAutoscale;
         this.saveBtn.update(container, game, delta);
@@ -211,25 +207,9 @@ public class OptionsState extends BasicGameState {
                 isFullscreen = !isFullscreen;
                 setFullscreenRectangle();
             }
-            if (isMouseOverLanguage) {
-                languageIndex++;
-                if (languageIndex == languages.length) {
-                    languageIndex = 0;
-                }
-                setLanguageRectangle();
-            }
             if (isMouseOverAutoscale) {
                 isAutoscale = !isAutoscale;
                 setAutoscaleRectangle();
-            }
-        }
-        if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
-            if (isMouseOverLanguage) {
-                languageIndex--;
-                if (languageIndex == -1) {
-                    languageIndex = languages.length - 1;
-                }
-                setLanguageRectangle();
             }
         }
         if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
@@ -314,11 +294,6 @@ public class OptionsState extends BasicGameState {
         setRectangle(fullscreenRectangle, text, width * 4 / 6, height * 3 / 10);
     }
 
-    private void setLanguageRectangle() {
-        String text = languages[languageIndex];
-        setRectangle(languageRectangle, text, width * 4 / 6, height * 4 / 10);
-    }
-
     private void setAutoscaleRectangle() {
         String text = isAutoscale ? yes : no;
         setRectangle(autoscaleRectangle, text, width * 4 / 6, height * 5 / 10);
@@ -374,6 +349,53 @@ public class OptionsState extends BasicGameState {
     private void translate() {
         yes = translator.translate("yes");
         no = translator.translate("no");
+    }
+
+    private void createLanguageMenu(GameContainer container, EffectFactory effects) {
+        int[] languageIndexOrder = new int[this.languages.length];
+        for (int i = languageIndex; i < this.languages.length; i++) {
+            languageIndexOrder[i - languageIndex] = i;
+        }
+        for (int i = 0; i < languageIndex; i++) {
+            languageIndexOrder[languages.length - languageIndex + i] = i;
+        }
+
+        List<MenuItem> languageMenuItems = new ArrayList<>();
+        for (int i = 0; i < languageIndexOrder.length; i++) {
+            String language = languages[languageIndexOrder[i]];
+
+            MenuItem menuItem = new MenuItem(language, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    languageIndex++;
+                    if (languageIndex == languages.length) {
+                        languageIndex = 0;
+                    }
+                    languageMenu.scrollDown();
+                }
+            }, new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    languageIndex--;
+                    if (languageIndex == -1) {
+                        languageIndex = languages.length - 1;
+                    }
+                    languageMenu.scrollUp();
+                }
+            });
+            languageMenuItems.add(menuItem);
+        }
+
+        ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
+        this.languageMenu = new ScrollableMenu(languageMenuItems, container, resourceManager, effects);
+        int resolutionMenuX = width * 4 / 6;
+        int resolutionMenuY = height * 4 / 10;
+        this.languageMenu.setMarginRight(width / 2 - resolutionMenuX);
+        this.languageMenu.setMarginTop(height / 2 - resolutionMenuY);
+        this.languageMenu.setMaxItems(1);
+        this.languageMenu.disableKeyboard();
+        this.languageMenu.enableRoundScroll();
     }
 
     private void createResolutionMenu(GameContainer container, EffectFactory effects) {
