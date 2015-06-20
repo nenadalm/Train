@@ -1,1 +1,10 @@
 language: java
+
+before_script:
+    - mvn install
+
+test:
+    - mvn test
+    - mvn java-formatter:format
+    - git diff --exit-code
+
