@@ -352,13 +352,7 @@ public class OptionsState extends BasicGameState {
     }
 
     private void createLanguageMenu(GameContainer container, EffectFactory effects) {
-        int[] languageIndexOrder = new int[this.languages.length];
-        for (int i = languageIndex; i < this.languages.length; i++) {
-            languageIndexOrder[i - languageIndex] = i;
-        }
-        for (int i = 0; i < languageIndex; i++) {
-            languageIndexOrder[languages.length - languageIndex + i] = i;
-        }
+        int[] languageIndexOrder = this.getOrderedMenuItemIndexes(languages, languageIndex);
 
         List<MenuItem> languageMenuItems = new ArrayList<>();
         for (int i = 0; i < languageIndexOrder.length; i++) {
@@ -389,23 +383,11 @@ public class OptionsState extends BasicGameState {
 
         ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
         this.languageMenu = new ScrollableMenu(languageMenuItems, container, resourceManager, effects);
-        int resolutionMenuX = width * 4 / 6;
-        int resolutionMenuY = height * 4 / 10;
-        this.languageMenu.setMarginRight(width / 2 - resolutionMenuX);
-        this.languageMenu.setMarginTop(height / 2 - resolutionMenuY);
-        this.languageMenu.setMaxItems(1);
-        this.languageMenu.disableKeyboard();
-        this.languageMenu.enableRoundScroll();
+        this.configureOptionMenu(this.languageMenu, width * 4 / 6, height * 4 / 10);
     }
 
     private void createResolutionMenu(GameContainer container, EffectFactory effects) {
-        int [] modeIndexOrder = new int[displayModes.length];
-        for (int i = modeIndex; i < displayModes.length; i++) {
-            modeIndexOrder[i - modeIndex] = i;
-        }
-        for (int i = 0; i < modeIndex; i++) {
-            modeIndexOrder[displayModes.length - modeIndex + i] = i;
-        }
+        int [] modeIndexOrder = this.getOrderedMenuItemIndexes(displayModes, modeIndex);
 
         List<MenuItem> resolutionMenuItems = new ArrayList<>();
         for (int i = 0; i < modeIndexOrder.length; i++) {
@@ -437,12 +419,26 @@ public class OptionsState extends BasicGameState {
         }
         ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
         this.resolutionMenu = new ScrollableMenu(resolutionMenuItems, container, resourceManager, effects);
-        int resolutionMenuX = width * 4 / 6;
-        int resolutionMenuY = height * 2 / 10;
-        this.resolutionMenu.setMarginRight(width / 2 - resolutionMenuX);
-        this.resolutionMenu.setMarginTop(height / 2 - resolutionMenuY);
-        this.resolutionMenu.setMaxItems(1);
-        this.resolutionMenu.disableKeyboard();
-        this.resolutionMenu.enableRoundScroll();
+        this.configureOptionMenu(this.resolutionMenu, width * 4 / 6, height * 2 / 10);
+    }
+
+    private int[] getOrderedMenuItemIndexes(Object[] options, int selectedIndex) {
+        int[] orderedIndexes = new int[options.length];
+        for (int i = selectedIndex; i < options.length; i++) {
+            orderedIndexes[i - selectedIndex] = i;
+        }
+        for (int i = 0; i < selectedIndex; i++) {
+            orderedIndexes[options.length - selectedIndex + i] = i;
+        }
+
+        return orderedIndexes;
+    }
+
+    private void configureOptionMenu(ScrollableMenu menu, int resolutionMenuX, int resolutionMenuY) {
+        menu.setMarginRight(width / 2 - resolutionMenuX);
+        menu.setMarginTop(height / 2 - resolutionMenuY);
+        menu.setMaxItems(1);
+        menu.disableKeyboard();
+        menu.enableRoundScroll();
     }
 }
