@@ -9,13 +9,10 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.mockito.internal.util.collections.ArrayUtils;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
@@ -30,8 +27,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Configuration;
 import org.train.app.Game;
 import org.train.entity.Button;
-import org.train.entity.FlowLayout;
-import org.train.entity.Menu;
 import org.train.entity.MenuItem;
 import org.train.entity.ScrollableMenu;
 import org.train.factory.ButtonFactory;
@@ -43,11 +38,10 @@ import org.train.other.Translator;
 
 public class OptionsState extends BasicGameState {
 
-    private boolean isMouseOverResolution,
-            isMouseOverAutoscale, isMouseOverScale, isFullscreen, isAutoscale, isHolding;
+    private boolean isMouseOverResolution, isMouseOverScale, isFullscreen, isAutoscale, isHolding;
     private int width, height, languageIndex, modeIndex, scale, holdCounter;
     private Font ubuntuSmall, ubuntuMedium, ubuntuLarge;
-    private Rectangle autoscaleRectangle, scaleRectangle;
+    private Rectangle scaleRectangle;
     private DisplayMode displayModes[];
     private Dimension size;
     private Image wall, wallPreview;
@@ -58,7 +52,7 @@ public class OptionsState extends BasicGameState {
 
     private Button backBtn, saveBtn;
 
-    private ScrollableMenu resolutionMenu, languageMenu, fullscreenMenu;
+    private ScrollableMenu resolutionMenu, languageMenu, fullscreenMenu, autoscaleMenu;
 
     public OptionsState(int stateId) {
         super(stateId);
@@ -137,9 +131,7 @@ public class OptionsState extends BasicGameState {
         this.createResolutionMenu(container, effects);
         this.createLanguageMenu(container, effects);
         this.createFullscreenMenu(container, effects);
-
-        autoscaleRectangle = new Rectangle();
-        setAutoscaleRectangle();
+        this.createAutoscaleMenu(container, effects);
 
         scaleRectangle = new Rectangle();
         setScaleRectangle();
@@ -165,9 +157,7 @@ public class OptionsState extends BasicGameState {
         this.resolutionMenu.render(container, game, g);
         this.languageMenu.render(container, game, g);
         this.fullscreenMenu.render(container, game, g);
-        drawString(g, ubuntuMedium, isFullscreen ? yes : no, width / 6 * 4, height * 3 / 10);
-        g.setColor((isMouseOverAutoscale) ? Color.blue : Color.red);
-        drawString(g, ubuntuMedium, isAutoscale ? yes : no, width / 6 * 4, height * 5 / 10);
+        this.autoscaleMenu.render(container, game, g);
         g.setColor((isAutoscale) ? Color.darkGray : (isMouseOverScale) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, scaleText, width / 6 * 4, height * 6 / 10);
 
@@ -190,7 +180,7 @@ public class OptionsState extends BasicGameState {
         this.resolutionMenu.update(container, game, delta);
         this.languageMenu.update(container, game, delta);
         this.fullscreenMenu.update(container, game, delta);
-        isMouseOverAutoscale = autoscaleRectangle.contains(mouse);
+        this.autoscaleMenu.update(container, game, delta);
         isMouseOverScale = scaleRectangle.contains(mouse) && !isAutoscale;
         this.saveBtn.update(container, game, delta);
         this.backBtn.update(container, game, delta);
@@ -202,12 +192,6 @@ public class OptionsState extends BasicGameState {
         }
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);
-        }
-        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-            if (isMouseOverAutoscale) {
-                isAutoscale = !isAutoscale;
-                setAutoscaleRectangle();
-            }
         }
         if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
             if (isMouseOverScale && scale < 512 && size.width > 7 && size.height > 7) {
@@ -286,11 +270,6 @@ public class OptionsState extends BasicGameState {
         g.drawString(text, x - width / 2, y - height / 2);
     }
 
-    private void setAutoscaleRectangle() {
-        String text = isAutoscale ? yes : no;
-        setRectangle(autoscaleRectangle, text, width * 4 / 6, height * 5 / 10);
-    }
-
     private void setScaleRectangle() {
         size = this.container.getComponent(LevelController.class)
                 .getOptimalLevelDimension(width, height, scale / 100f);
@@ -341,6 +320,40 @@ public class OptionsState extends BasicGameState {
     private void translate() {
         yes = translator.translate("yes");
         no = translator.translate("no");
+    }
+
+    private void createAutoscaleMenu(GameContainer container, EffectFactory effects) {
+        String[] items = new String[2];
+        if (isAutoscale) {
+            items[0] = yes;
+            items[1] = no;
+        } else {
+            items[0] = no;
+            items[1] = yes;
+        }
+
+        List<MenuItem> autoscaleMenuItems = new ArrayList<>();
+        for (String text : items) {
+            MenuItem menuItem = new MenuItem(text, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    isAutoscale = !isAutoscale;
+                    autoscaleMenu.scrollDown();
+                }
+            }, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    isAutoscale = !isAutoscale;
+                    autoscaleMenu.scrollUp();
+                }
+            });
+
+            autoscaleMenuItems.add(menuItem);
+        }
+
+        ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
+        this.autoscaleMenu = new ScrollableMenu(autoscaleMenuItems, container, resourceManager, effects);
+        this.configureOptionMenu(this.autoscaleMenu, width * 4 / 6, height * 5 / 10);
     }
 
     private void createFullscreenMenu(GameContainer container, EffectFactory effects) {
