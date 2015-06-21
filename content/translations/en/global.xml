@@ -148,6 +148,10 @@
                 <source>Options.UnavailableResolution</source>
                 <target>Unavailable</target>
             </trans-unit>
+            <trans-unit>
+                <source>Options.SoundEnabled</source>
+                <target>Enable sound</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

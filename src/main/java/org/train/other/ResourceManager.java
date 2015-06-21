@@ -10,7 +10,6 @@ import org.dom4j.io.SAXReader;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
 import org.newdawn.slick.font.effects.Effect;
 import org.train.app.Configuration;
 import org.train.factory.FontFactory;
@@ -56,7 +55,9 @@ public class ResourceManager {
             for (Object el : document.selectNodes("/resources/resource[@type='sound']")) {
                 Element soundEl = (Element) el;
                 String soundPath = config.get("contentPath") + soundEl.getText();
-                this.sounds.put(soundEl.attributeValue("id"), new Sound(soundPath));
+                Sound sound = new Sound(soundPath);
+                sound.setConfiguration(this.config);
+                this.sounds.put(soundEl.attributeValue("id"), sound);
             }
 
             for (Object el : document.selectNodes("/resources/resource[@type='truck']")) {

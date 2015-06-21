@@ -38,7 +38,7 @@ import org.train.other.Translator;
 
 public class OptionsState extends BasicGameState {
 
-    private boolean isMouseOverResolution, isMouseOverScale, isFullscreen, isAutoscale, isHolding;
+    private boolean isMouseOverResolution, isMouseOverScale, isFullscreen, isAutoscale, isHolding, soundEnabled;
     private int width, height, languageIndex, modeIndex, scale, holdCounter;
     private Font ubuntuSmall, ubuntuMedium, ubuntuLarge;
     private Rectangle scaleRectangle;
@@ -52,7 +52,7 @@ public class OptionsState extends BasicGameState {
 
     private Button backBtn, saveBtn;
 
-    private ScrollableMenu resolutionMenu, languageMenu, fullscreenMenu, autoscaleMenu;
+    private ScrollableMenu resolutionMenu, languageMenu, fullscreenMenu, autoscaleMenu, soundEnabledMenu;
 
     public OptionsState(int stateId) {
         super(stateId);
@@ -127,11 +127,13 @@ public class OptionsState extends BasicGameState {
 
         isFullscreen = container.isFullscreen();
         isAutoscale = Boolean.parseBoolean(configuration.get("autoscale"));
+        soundEnabled = Boolean.parseBoolean(configuration.get("soundEnabled"));
 
         this.createResolutionMenu(container, effects);
         this.createLanguageMenu(container, effects);
         this.createFullscreenMenu(container, effects);
         this.createAutoscaleMenu(container, effects);
+        this.createSoundEnabledMenu(container, effects);
 
         scaleRectangle = new Rectangle();
         setScaleRectangle();
@@ -150,6 +152,7 @@ public class OptionsState extends BasicGameState {
         drawString(g, ubuntuMedium, translator.translate("Resolution") + ":", width / 6 * 2, height * 2 / 10);
         drawString(g, ubuntuMedium, translator.translate("Fullscreen") + ":", width / 6 * 2, height * 3 / 10);
         drawString(g, ubuntuMedium, translator.translate("Language") + ":", width / 6 * 2, height * 4 / 10);
+        drawString(g, ubuntuMedium, translator.translate("Options.SoundEnabled") + ":", width / 6 * 2, height * 8 / 10);
         drawString(g, ubuntuMedium, translator.translate("Autoscale") + ":", width / 6 * 2, height * 5 / 10);
         drawString(g, ubuntuMedium, translator.translate("Scale") + ":", width / 6 * 2, height * 6 / 10);
 
@@ -157,6 +160,7 @@ public class OptionsState extends BasicGameState {
         this.resolutionMenu.render(container, game, g);
         this.languageMenu.render(container, game, g);
         this.fullscreenMenu.render(container, game, g);
+        this.soundEnabledMenu.render(container, game, g);
         this.autoscaleMenu.render(container, game, g);
         g.setColor((isAutoscale) ? Color.darkGray : (isMouseOverScale) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, scaleText, width / 6 * 4, height * 6 / 10);
@@ -181,6 +185,7 @@ public class OptionsState extends BasicGameState {
         this.languageMenu.update(container, game, delta);
         this.fullscreenMenu.update(container, game, delta);
         this.autoscaleMenu.update(container, game, delta);
+        this.soundEnabledMenu.update(container, game, delta);
         isMouseOverScale = scaleRectangle.contains(mouse) && !isAutoscale;
         this.saveBtn.update(container, game, delta);
         this.backBtn.update(container, game, delta);
@@ -244,6 +249,7 @@ public class OptionsState extends BasicGameState {
             configuration.set("fullscreen", String.valueOf(isFullscreen));
             configuration.set("autoscale", String.valueOf(isAutoscale));
             configuration.set("scale", String.valueOf(scale / 100f));
+            configuration.set("soundEnabled", String.valueOf(soundEnabled));
 
             if (displayModes.length != 0) {
                 configuration.set("width", String.valueOf(displayModes[modeIndex].getWidth()));
@@ -320,6 +326,40 @@ public class OptionsState extends BasicGameState {
     private void translate() {
         yes = translator.translate("yes");
         no = translator.translate("no");
+    }
+
+    private void createSoundEnabledMenu(GameContainer container, EffectFactory effects) {
+        String[] items = new String[2];
+        if (soundEnabled) {
+            items[0] = yes;
+            items[1] = no;
+        } else {
+            items[0] = no;
+            items[1] = yes;
+        }
+
+        List<MenuItem> soundEnabledMenuItems = new ArrayList<>();
+        for (String text : items) {
+            MenuItem menuItem = new MenuItem(text, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    soundEnabled = !soundEnabled;
+                    soundEnabledMenu.scrollDown();
+                }
+            }, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    soundEnabled = !soundEnabled;
+                    soundEnabledMenu.scrollUp();
+                }
+            });
+
+            soundEnabledMenuItems.add(menuItem);
+        }
+
+        ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
+        this.soundEnabledMenu = new ScrollableMenu(soundEnabledMenuItems, container, resourceManager, effects);
+        this.configureOptionMenu(this.soundEnabledMenu, width * 4 / 6, height * 8 / 10);
     }
 
     private void createAutoscaleMenu(GameContainer container, EffectFactory effects) {

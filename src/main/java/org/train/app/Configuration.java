@@ -49,6 +49,7 @@ public class Configuration {
         properties.put("levelsPath", "content/levels/");
         properties.put("graphicsPath", "content/graphics/");
         properties.put("nativesPath", "natives/");
+        properties.put("soundEnabled", "true");
 
         for (String key : properties.keySet()) {
             if (!this.properties.containsKey(key)) {
