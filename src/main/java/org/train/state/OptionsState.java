@@ -9,10 +9,13 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.mockito.internal.util.collections.ArrayUtils;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
@@ -40,11 +43,11 @@ import org.train.other.Translator;
 
 public class OptionsState extends BasicGameState {
 
-    private boolean isMouseOverResolution, isMouseOverFullscreen,
+    private boolean isMouseOverResolution,
             isMouseOverAutoscale, isMouseOverScale, isFullscreen, isAutoscale, isHolding;
     private int width, height, languageIndex, modeIndex, scale, holdCounter;
     private Font ubuntuSmall, ubuntuMedium, ubuntuLarge;
-    private Rectangle fullscreenRectangle, autoscaleRectangle, scaleRectangle;
+    private Rectangle autoscaleRectangle, scaleRectangle;
     private DisplayMode displayModes[];
     private Dimension size;
     private Image wall, wallPreview;
@@ -55,7 +58,7 @@ public class OptionsState extends BasicGameState {
 
     private Button backBtn, saveBtn;
 
-    private ScrollableMenu resolutionMenu, languageMenu;
+    private ScrollableMenu resolutionMenu, languageMenu, fullscreenMenu;
 
     public OptionsState(int stateId) {
         super(stateId);
@@ -133,9 +136,7 @@ public class OptionsState extends BasicGameState {
 
         this.createResolutionMenu(container, effects);
         this.createLanguageMenu(container, effects);
-
-        fullscreenRectangle = new Rectangle();
-        setFullscreenRectangle();
+        this.createFullscreenMenu(container, effects);
 
         autoscaleRectangle = new Rectangle();
         setAutoscaleRectangle();
@@ -163,7 +164,7 @@ public class OptionsState extends BasicGameState {
         g.setColor((isMouseOverResolution) ? Color.blue : Color.red);
         this.resolutionMenu.render(container, game, g);
         this.languageMenu.render(container, game, g);
-        g.setColor((isMouseOverFullscreen) ? Color.blue : Color.red);
+        this.fullscreenMenu.render(container, game, g);
         drawString(g, ubuntuMedium, isFullscreen ? yes : no, width / 6 * 4, height * 3 / 10);
         g.setColor((isMouseOverAutoscale) ? Color.blue : Color.red);
         drawString(g, ubuntuMedium, isAutoscale ? yes : no, width / 6 * 4, height * 5 / 10);
@@ -188,7 +189,7 @@ public class OptionsState extends BasicGameState {
 
         this.resolutionMenu.update(container, game, delta);
         this.languageMenu.update(container, game, delta);
-        isMouseOverFullscreen = fullscreenRectangle.contains(mouse);
+        this.fullscreenMenu.update(container, game, delta);
         isMouseOverAutoscale = autoscaleRectangle.contains(mouse);
         isMouseOverScale = scaleRectangle.contains(mouse) && !isAutoscale;
         this.saveBtn.update(container, game, delta);
@@ -203,10 +204,6 @@ public class OptionsState extends BasicGameState {
             game.enterState(Game.MENU_STATE);
         }
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-            if (isMouseOverFullscreen) {
-                isFullscreen = !isFullscreen;
-                setFullscreenRectangle();
-            }
             if (isMouseOverAutoscale) {
                 isAutoscale = !isAutoscale;
                 setAutoscaleRectangle();
@@ -289,11 +286,6 @@ public class OptionsState extends BasicGameState {
         g.drawString(text, x - width / 2, y - height / 2);
     }
 
-    private void setFullscreenRectangle() {
-        String text = isFullscreen ? yes : no;
-        setRectangle(fullscreenRectangle, text, width * 4 / 6, height * 3 / 10);
-    }
-
     private void setAutoscaleRectangle() {
         String text = isAutoscale ? yes : no;
         setRectangle(autoscaleRectangle, text, width * 4 / 6, height * 5 / 10);
@@ -349,6 +341,40 @@ public class OptionsState extends BasicGameState {
     private void translate() {
         yes = translator.translate("yes");
         no = translator.translate("no");
+    }
+
+    private void createFullscreenMenu(GameContainer container, EffectFactory effects) {
+        String[] items = new String[2];
+        if (isFullscreen) {
+            items[0] = yes;
+            items[1] = no;
+        } else {
+            items[0] = no;
+            items[1] = yes;
+        }
+
+        List<MenuItem> fullscreenMenuItems = new ArrayList<>();
+        for (String text : items) {
+            MenuItem menuItem = new MenuItem(text, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    isFullscreen = !isFullscreen;
+                    fullscreenMenu.scrollDown();
+                }
+            }, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    isFullscreen = !isFullscreen;
+                    fullscreenMenu.scrollUp();
+                }
+            });
+
+            fullscreenMenuItems.add(menuItem);
+        }
+
+        ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
+        this.fullscreenMenu = new ScrollableMenu(fullscreenMenuItems, container, resourceManager, effects);
+        this.configureOptionMenu(this.fullscreenMenu, width * 4 / 6, height * 3 / 10);
     }
 
     private void createLanguageMenu(GameContainer container, EffectFactory effects) {
