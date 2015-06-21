@@ -1,66 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-	<!-- images -->
-	<resource type="image" id="active">graphics/active.png</resource>
-	<resource type="image" id="arrow">graphics/arrow.png</resource>
-	<resource type="image" id="arrowDisabled">graphics/arrowDisabled.png</resource>
-	<resource type="image" id="arrowMouseOver">graphics/arrowMouseOver.png</resource>
-	<resource type="image" id="empty">graphics/empty.png</resource>
-	<resource type="image" id="gate">graphics/gate.png</resource>
-	<resource type="image" id="gateOpen">graphics/gateOpen.png</resource>
-	<resource type="image" id="itemMenu">graphics/itemMenu.png</resource>
-	<resource type="image" id="message">graphics/message.png</resource>
-	<resource type="image" id="pause">graphics/pause.png</resource>
-	<resource type="image" id="save">graphics/save.png</resource>
-	<resource type="image" id="train">graphics/train.png</resource>
-	<resource type="image" id="trainCrash">graphics/trainCrash.png</resource>
-	<resource type="image" id="tree">graphics/tree.png</resource>
-	<resource type="image" id="treeTruck">graphics/treeTruck.png</resource>
-	<resource type="image" id="cherry">graphics/cherry.png</resource>
-	<resource type="image" id="cherryTruck">graphics/cherryTruck.png</resource>
-	<resource type="image" id="apple">graphics/apple.png</resource>
-	<resource type="image" id="appleTruck">graphics/appleTruck.png</resource>
-	<resource type="image" id="diamond">graphics/diamond.png</resource>
-	<resource type="image" id="diamondTruck">graphics/diamondTruck.png</resource>
-	<resource type="image" id="lake">graphics/lake.png</resource>
-	<resource type="image" id="lakeTruck">graphics/lakeTruck.png</resource>
-	<resource type="image" id="elephant">graphics/elephant.png</resource>
-	<resource type="image" id="elephantTruck">graphics/elephantTruck.png</resource>
-	<resource type="image" id="try">graphics/try.png</resource>
-	<resource type="image" id="wall">graphics/wall.png</resource>
+    <!-- images -->
+    <resource type="image" id="active">graphics/active.png</resource>
+    <resource type="image" id="arrow">graphics/arrow.png</resource>
+    <resource type="image" id="arrowDisabled">graphics/arrowDisabled.png</resource>
+    <resource type="image" id="arrowMouseOver">graphics/arrowMouseOver.png</resource>
+    <resource type="image" id="empty">graphics/empty.png</resource>
+    <resource type="image" id="gate">graphics/gate.png</resource>
+    <resource type="image" id="gateOpen">graphics/gateOpen.png</resource>
+    <resource type="image" id="itemMenu">graphics/itemMenu.png</resource>
+    <resource type="image" id="message">graphics/message.png</resource>
+    <resource type="image" id="pause">graphics/pause.png</resource>
+    <resource type="image" id="save">graphics/save.png</resource>
+    <resource type="image" id="train">graphics/train.png</resource>
+    <resource type="image" id="trainCrash">graphics/trainCrash.png</resource>
+    <resource type="image" id="tree">graphics/tree.png</resource>
+    <resource type="image" id="treeTruck">graphics/treeTruck.png</resource>
+    <resource type="image" id="cherry">graphics/cherry.png</resource>
+    <resource type="image" id="cherryTruck">graphics/cherryTruck.png</resource>
+    <resource type="image" id="apple">graphics/apple.png</resource>
+    <resource type="image" id="appleTruck">graphics/appleTruck.png</resource>
+    <resource type="image" id="diamond">graphics/diamond.png</resource>
+    <resource type="image" id="diamondTruck">graphics/diamondTruck.png</resource>
+    <resource type="image" id="lake">graphics/lake.png</resource>
+    <resource type="image" id="lakeTruck">graphics/lakeTruck.png</resource>
+    <resource type="image" id="elephant">graphics/elephant.png</resource>
+    <resource type="image" id="elephantTruck">graphics/elephantTruck.png</resource>
+    <resource type="image" id="try">graphics/try.png</resource>
+    <resource type="image" id="wall">graphics/wall.png</resource>
 
-	<!-- fonts -->
-	<resource type="font" id="ubuntu">fonts/ubuntu.ttf</resource>
+    <!-- fonts -->
+    <resource type="font" id="ubuntu">fonts/ubuntu.ttf</resource>
 
-	<!-- sounds -->
+    <!-- sounds -->
     <resource type="sound" id="intro">sounds/1933__rhumphries__rbh-nyc-subway-pass.ogg</resource>
     <resource type="sound" id="win">sounds/68999__guitarguy1985__airhorn-short.ogg</resource>
     <resource type="sound" id="menu">sounds/124998__captain-k-man__bass-kick-drum-soft-hit.ogg</resource>
     <resource type="sound" id="ingame">sounds/133887__aroth4__steam-machine.ogg</resource>
 
-	<!-- trucks -->
-	<resource type="truck" id="tree">
-		<truck image="treeTruck"/>
-		<item image="tree"/>
-	</resource>
-	<resource type="truck" id="cherry">
-		<truck image="cherryTruck"/>
-		<item image="cherry"/>
-	</resource>
-	<resource type="truck" id="apple">
-		<truck image="appleTruck"/>
-		<item image="apple"/>
-	</resource>
-	<resource type="truck" id="diamond">
-		<truck image="diamondTruck"/>
-		<item image="diamond"/>
-	</resource>
-	<resource type="truck" id="lake">
-		<truck image="lakeTruck"/>
-		<item image="lake"/>
-	</resource>
-	<resource type="truck" id="elephant">
-		<truck image="elephantTruck"/>
-		<item image="elephant"/>
-	</resource>
+    <!-- trucks -->
+    <resource type="truck" id="tree">
+        <truck image="treeTruck"/>
+        <item image="tree"/>
+    </resource>
+    <resource type="truck" id="cherry">
+        <truck image="cherryTruck"/>
+        <item image="cherry"/>
+    </resource>
+    <resource type="truck" id="apple">
+        <truck image="appleTruck"/>
+        <item image="apple"/>
+    </resource>
+    <resource type="truck" id="diamond">
+        <truck image="diamondTruck"/>
+        <item image="diamond"/>
+    </resource>
+    <resource type="truck" id="lake">
+        <truck image="lakeTruck"/>
+        <item image="lake"/>
+    </resource>
+    <resource type="truck" id="elephant">
+        <truck image="elephantTruck"/>
+        <item image="elephant"/>
+    </resource>
 </resources>
