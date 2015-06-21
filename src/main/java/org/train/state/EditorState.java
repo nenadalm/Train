@@ -70,6 +70,9 @@ public class EditorState extends BasicGameState {
         this.resourceManager = this.container.getComponent(ResourceManager.class);
         this.translator = this.container.getComponent(Translator.class);
         this.fieldPosition = new Point(0, 0);
+
+        this.levelController = this.container.getComponent(LevelController.class);
+        this.loadLevel(container);
     }
 
     @Override
@@ -79,9 +82,6 @@ public class EditorState extends BasicGameState {
         this.itemMenu = this.resourceManager.getImage("itemMenu");
         this.active = this.resourceManager.getImage("active");
         this.activeItem = new LevelItem("wall", this.resourceManager.getImage("wall"), Item.WALL);
-
-        this.levelController = this.container.getComponent(LevelController.class);
-        this.loadLevel(container);
 
         this.imageMenuItems = new ArrayList<ImageMenuItem>();
         this.initTopMenuListeners(game, this.resourceManager, container.getInput());
