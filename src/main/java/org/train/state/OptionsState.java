@@ -496,6 +496,15 @@ public class OptionsState extends BasicGameState {
             });
             resolutionMenuItems.add(menuItem);
         }
+        if (resolutionMenuItems.size() == 0) {
+            String text = translator.translate("Options.UnavailableResolution");
+            MenuItem menuItem = new MenuItem(text, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                }
+            });
+            resolutionMenuItems.add(menuItem);
+        }
         ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
         this.resolutionMenu = new ScrollableMenu(resolutionMenuItems, container, resourceManager, effects);
         this.configureOptionMenu(this.resolutionMenu, width * 4 / 6, height * 2 / 10);
