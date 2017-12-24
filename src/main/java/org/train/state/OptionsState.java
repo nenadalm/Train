@@ -77,7 +77,7 @@ public class OptionsState extends BasicGameState {
         this.createSaveButton(game);
 
         translate();
-        wall = new Image(configuration.get("contentPath") + "graphics/wall.png");
+        wall = new Image(configuration.getPath("contentPath") + "graphics/wall.png");
         wallPreview = wall.getScaledCopy(scale / 512f);
 
         ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();
@@ -108,7 +108,7 @@ public class OptionsState extends BasicGameState {
             index++;
         }
 
-        File translations = new File(configuration.get("contentPath") + "translations/");
+        File translations = new File(configuration.getPath("contentPath") + "translations/");
         translations.listFiles();
         ArrayList<String> names = new ArrayList<String>();
         index = 0;

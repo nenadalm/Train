@@ -126,6 +126,10 @@
                                     <fileset dir="content"
                                         includes="**/*" excludes="save*" />
                                 </copy>
+                                <copy todir="target/content">
+                                    <fileset dir="content"
+                                        includes="**/*" excludes="save*" />
+                                </copy>
 
                                 <mkdir dir="build/Train/natives" />
                                 <copy todir="build/Train/natives">

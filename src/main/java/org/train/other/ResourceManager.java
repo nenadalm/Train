@@ -38,21 +38,22 @@ public class ResourceManager {
     private void loadResources() {
         try {
             SAXReader reader = new SAXReader();
-            Document document = reader.read(new File(config.get("contentPath") + "resources.xml"));
+            Document document = reader.read(new File(config.getPath("contentPath") + "resources.xml"));
 
             for (Object el : document.selectNodes("/resources/resource[@type='image']")) {
                 Element imageEl = (Element) el;
-                this.images.put(imageEl.attributeValue("id"), new Image(config.get("contentPath") + imageEl.getText()));
+                this.images.put(imageEl.attributeValue("id"),
+                        new Image(config.getPath("contentPath") + imageEl.getText()));
             }
 
             for (Object el : document.selectNodes("/resources/resource[@type='font']")) {
                 Element fontEl = (Element) el;
-                this.fonts.put(fontEl.attributeValue("id"), config.get("contentPath") + fontEl.getText());
+                this.fonts.put(fontEl.attributeValue("id"), config.getPath("contentPath") + fontEl.getText());
             }
 
             for (Object el : document.selectNodes("/resources/resource[@type='sound']")) {
                 Element soundEl = (Element) el;
-                String soundPath = config.get("contentPath") + soundEl.getText();
+                String soundPath = config.getPath("contentPath") + soundEl.getText();
                 Sound sound = new Sound(soundPath);
                 sound.setConfiguration(this.config);
                 this.sounds.put(soundEl.attributeValue("id"), sound);

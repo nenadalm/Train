@@ -63,7 +63,7 @@ public class LevelManager {
     }
 
     private String[] getLevelFileNames(String packageFileName) {
-        File levelPackage = new File(this.config.get("levelsPath") + packageFileName);
+        File levelPackage = new File(this.config.getPath("levelsPath") + packageFileName);
         String levelFileNames[] = levelPackage.list();
         Arrays.sort(levelFileNames);
 
@@ -71,7 +71,7 @@ public class LevelManager {
     }
 
     private String[] getPackageFilenames() {
-        return new File(this.config.get("levelsPath")).list();
+        return new File(this.config.getPath("levelsPath")).list();
     }
 
     public void saveLevel(Level level) {
@@ -79,7 +79,7 @@ public class LevelManager {
             String levelFileName = this.getLevelFileName(level.getLevelIndex(), level.getLevelName());
             String packageFileName = this.getPackageFileName(level.getPackageIndex(), level.getPackageName());
 
-            File file = new File(this.config.get("levelsPath") + packageFileName + '/' + levelFileName);
+            File file = new File(this.config.getPath("levelsPath") + packageFileName + '/' + levelFileName);
             file.createNewFile();
             String levelString = this.levelToString(level);
             FileWriter fw = new FileWriter(file);
@@ -222,12 +222,12 @@ public class LevelManager {
     private String getLevelPath(int packageIndex, String packageName, int levelIndex, String levelName) {
         String levelFileName = this.getLevelFileName(levelIndex, levelName);
         String packageFileName = this.getPackageFileName(packageIndex, packageName);
-        return String.format("%1$s%2$s/%3$s", this.config.get("levelsPath"), packageFileName, levelFileName);
+        return String.format("%1$s%2$s/%3$s", this.config.getPath("levelsPath"), packageFileName, levelFileName);
     }
 
     private String getPackagePath(int packageIndex, String packageName) {
         String packageFileName = this.getPackageFileName(packageIndex, packageName);
-        return String.format("%1$s%2$s", this.config.get("levelsPath"), packageFileName);
+        return String.format("%1$s%2$s", this.config.getPath("levelsPath"), packageFileName);
     }
 
     public void createPackage(int packageIndex, String packageName) {
@@ -271,7 +271,7 @@ public class LevelManager {
     }
 
     public void repairLevelsNames() {
-        File pkg = new File(this.config.get("levelsPath"));
+        File pkg = new File(this.config.getPath("levelsPath"));
         File packages[] = pkg.listFiles();
         Arrays.sort(packages);
         for (int i = 0; i < packages.length; i++) {
@@ -289,7 +289,7 @@ public class LevelManager {
     }
 
     public void repairPackagesNames() {
-        File pkg = new File(this.config.get("levelsPath"));
+        File pkg = new File(this.config.getPath("levelsPath"));
         File packages[] = pkg.listFiles();
         Arrays.sort(packages);
         for (int i = 0; i < packages.length; i++) {

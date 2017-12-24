@@ -86,7 +86,7 @@ public class LevelController {
     }
 
     public void removeLevel(String levelName) {
-        File file = new File(this.config.get("levelsPath"));
+        File file = new File(this.config.getPath("levelsPath"));
         file.delete();
         this.loadLevels();
     }

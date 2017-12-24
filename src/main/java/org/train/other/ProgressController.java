@@ -14,48 +14,48 @@ public class ProgressController {
     private byte[] progresses;
 
     public ProgressController(Configuration config) {
-	this.config = config;
+        this.config = config;
     }
 
     public Progress getCurrentProgress() {
-	if (this.progress == null) {
-	    this.loadProgress();
-	}
+        if (this.progress == null) {
+            this.loadProgress();
+        }
 
-	return this.progress;
+        return this.progress;
     }
 
     public void updateProgress(int packageIndex, int finishedLevelIndex) {
-	if (this.progresses[packageIndex] < (byte) (finishedLevelIndex + 1)) {
-	    this.progresses[packageIndex] = (byte) (finishedLevelIndex + 1);
-	}
-	try {
-	    FileOutputStream fos = new FileOutputStream(this.getProgressFile());
-	    fos.write(this.progresses);
-	    fos.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+        if (this.progresses[packageIndex] < (byte) (finishedLevelIndex + 1)) {
+            this.progresses[packageIndex] = (byte) (finishedLevelIndex + 1);
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(this.getProgressFile());
+            fos.write(this.progresses);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadProgress() {
-	File saveFile = this.getProgressFile();
-	this.progresses = new byte[100];
-	try {
-	    if (!saveFile.exists()) {
-		saveFile.createNewFile();
-	    }
-	    FileInputStream in = new FileInputStream(saveFile);
-	    in.read(this.progresses);
-	    in.close();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+        File saveFile = this.getProgressFile();
+        this.progresses = new byte[100];
+        try {
+            if (!saveFile.exists()) {
+                saveFile.createNewFile();
+            }
+            FileInputStream in = new FileInputStream(saveFile);
+            in.read(this.progresses);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-	this.progress = new Progress(this.progresses);
+        this.progress = new Progress(this.progresses);
     }
 
     private File getProgressFile() {
-	return new File(this.config.get("contentPath") + "save");
+        return new File(this.config.getPath("contentPath") + "save");
     }
 }
