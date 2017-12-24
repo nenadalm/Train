@@ -50,12 +50,17 @@ public class GameState extends BasicGameState {
 	container.getInput().clearKeyPressedRecord();
     }
 
+    @Override
+    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+	container.setMouseGrabbed(false);
+    }
+
     private void initMenuItems(final GameContainer container, final StateBasedGame game) {
 	MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
 	menuBuilder.addMenuItem(this.translator.translate("Game.Menu.Continue"), new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
-		GameState.this.state = State.PLAYING;
+		GameState.this.enterState(container, State.PLAYING);
 		GameState.this.menu.close();
 		GameState.this.gameOverMenu.close();
 	    }
@@ -117,7 +122,7 @@ public class GameState extends BasicGameState {
 
 	    LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
 	    levelHelper.adjustLevelToContainer(container, level);
-	    this.state = State.PLAYING;
+	    this.enterState(container, State.PLAYING);
 
 	    if (!this.level.isValid()) {
 		this.messageBox.showConfirm(this.translator.translate("Game.LevelIsInvalid"), new ActionListener() {
@@ -154,10 +159,10 @@ public class GameState extends BasicGameState {
 	switch (this.state) {
 	case PLAYING:
 	    if (this.level.isOver()) {
-		this.state = State.CRASHED;
+		this.enterState(container, State.CRASHED);
 		this.gameOverMenu.show();
 	    } else if (this.level.isFinished()) {
-		this.state = State.WON;
+		this.enterState(container, State.WON);
 		if (this.levelController.nextLevelExist()) {
 		    this.levelController.updateProgress();
 		    this.showLevelFinishedConfirmationBox(container, game);
@@ -166,7 +171,7 @@ public class GameState extends BasicGameState {
 		    this.showCongratulationConfirmationBox(game);
 		}
 	    } else if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-		this.state = State.PAUSED;
+		this.enterState(container, State.PAUSED);
 		this.menu.show();
 	    }
 	    this.level.update(container, game, delta);
@@ -174,7 +179,7 @@ public class GameState extends BasicGameState {
 	case PAUSED:
 	    if (input.isKeyPressed(Input.KEY_ESCAPE)) {
 		this.menu.close();
-		this.state = State.PLAYING;
+		this.enterState(container, State.PLAYING);
 	    }
 	    break;
 	case CRASHED:
@@ -187,6 +192,11 @@ public class GameState extends BasicGameState {
 	this.gameOverMenu.update(container, game, delta);
 	this.messageBox.update(container, game, delta);
 	input.clearKeyPressedRecord();
+    }
+
+    private void enterState(final GameContainer container, State s) {
+	container.setMouseGrabbed(s == State.PLAYING);
+	this.state = s;
     }
 
     private void showCongratulationConfirmationBox(final StateBasedGame game) {
