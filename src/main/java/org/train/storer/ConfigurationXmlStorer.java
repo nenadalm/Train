@@ -56,11 +56,9 @@ public class ConfigurationXmlStorer implements ConfigurationStorer {
         int i = 0;
         boolean updated = false;
         while (i < nodeList.getLength()) {
-            if (nodeList.item(i).hasAttributes()
-                    && nodeList.item(i).getAttributes().getNamedItem("name") != null) {
+            if (nodeList.item(i).hasAttributes() && nodeList.item(i).getAttributes().getNamedItem("name") != null) {
 
-                if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue()
-                        .equals(configName)) {
+                if (nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(configName)) {
                     nodeList.item(i).setTextContent(property.getValue());
                     updated = true;
                     break;

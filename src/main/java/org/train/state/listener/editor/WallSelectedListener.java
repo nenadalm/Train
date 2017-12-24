@@ -10,12 +10,12 @@ import org.train.state.EditorState;
 public class WallSelectedListener extends ItemSelectedListener {
 
     public WallSelectedListener(EditorState editorState, Image image) {
-        super(editorState, image);
+	super(editorState, image);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        this.editorState.setActiveItem(new LevelItem("wall", this.image, Item.WALL));
+	super.actionPerformed(e);
+	this.editorState.setActiveItem(new LevelItem("wall", this.image, Item.WALL));
     }
 }

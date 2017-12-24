@@ -9,7 +9,7 @@ public abstract class AbstractMouseListener implements MouseListener {
 
     @Override
     public void setInput(Input input) {
-        this.input = input;
+	this.input = input;
     }
 
     @Override

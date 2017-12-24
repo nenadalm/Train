@@ -24,8 +24,7 @@ public class Translator {
     }
 
     private void loadTranslations(String scope) {
-        TranslationLoader translationLoader = this.translationLoaderFactory.getLoader(scope,
-                this.languageCode);
+        TranslationLoader translationLoader = this.translationLoaderFactory.getLoader(scope, this.languageCode);
         this.translations.put(scope, translationLoader.load());
     }
 

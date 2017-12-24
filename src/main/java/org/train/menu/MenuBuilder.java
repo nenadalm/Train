@@ -21,8 +21,8 @@ public class MenuBuilder {
     private int menuItemMargin = 30;
     private Translator translator;
 
-    public MenuBuilder(EffectFactory effectFactory, ResourceManager resourceManager,
-            GameContainer gameContainer, Translator translator) {
+    public MenuBuilder(EffectFactory effectFactory, ResourceManager resourceManager, GameContainer gameContainer,
+            Translator translator) {
         this.effectFactory = effectFactory;
         this.resourceManager = resourceManager;
         this.container = gameContainer;
@@ -45,8 +45,8 @@ public class MenuBuilder {
         if (this.menuItemModels.size() > 0) {
             this.menuItems = new ArrayList<MenuItem>();
             for (org.train.model.MenuItem menuItemModel : menuItemModels) {
-                this.menuItems.add(new MenuItem(this.translator.translate(menuItemModel.getText()),
-                        menuItemModel.getListener()));
+                this.menuItems.add(
+                        new MenuItem(this.translator.translate(menuItemModel.getText()), menuItemModel.getListener()));
                 this.menuItems.get(this.menuItems.size() - 1).setMargin(menuItemModel.getMargin());
             }
 
@@ -55,8 +55,7 @@ public class MenuBuilder {
                 item.setMargin(this.menuItemMargin);
             }
         }
-        Menu menu = new Menu(this.menuItems, this.container, this.resourceManager,
-                this.effectFactory);
+        Menu menu = new Menu(this.menuItems, this.container, this.resourceManager, this.effectFactory);
 
         if (this.menuItemModels.size() == 0) {
             menu.setBackgroundColor(Color.lightGray);

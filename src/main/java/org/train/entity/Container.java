@@ -14,15 +14,15 @@ public abstract class Container extends Entity {
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
-        super.render(container, game, g);
-        this.layout.render(g);
+	super.render(container, game, g);
+	this.layout.render(g);
     }
 
     public LayoutInterface getLayout() {
-        return this.layout;
+	return this.layout;
     }
 
     public void setLayout(LayoutInterface layout) {
-        this.layout = layout;
+	this.layout = layout;
     }
 }

@@ -10,12 +10,12 @@ import org.train.state.EditorState;
 public class GateSelectedListener extends ItemSelectedListener {
 
     public GateSelectedListener(EditorState editorState, Image image) {
-        super(editorState, image);
+	super(editorState, image);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        this.editorState.setActiveItem(new LevelItem("gate", image, Item.GATE));
+	super.actionPerformed(e);
+	this.editorState.setActiveItem(new LevelItem("gate", image, Item.GATE));
     }
 }

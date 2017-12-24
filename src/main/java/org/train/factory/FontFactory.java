@@ -28,8 +28,8 @@ public class FontFactory {
             this.type_size_effectFont.get(type).put(size, new HashMap<Effect, Font>());
         }
         if (!this.type_size_effectFont.get(type).get(size).containsKey(effect)) {
-            UnicodeFont font = new UnicodeFont(String.format("%1$sfonts/%2$s.ttf",
-                    config.get("contentPath"), type), size, false, false);
+            UnicodeFont font = new UnicodeFont(String.format("%1$sfonts/%2$s.ttf", config.get("contentPath"), type),
+                    size, false, false);
             font.addGlyphs(32, 382);
             font.getEffects().add(effect);
             font.loadGlyphs();

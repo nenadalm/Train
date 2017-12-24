@@ -98,8 +98,7 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         if (this.level == null) {
             this.loadLevel(container);
         }
@@ -107,17 +106,15 @@ public class EditorState extends BasicGameState {
         this.level.render(container, game, g);
 
         if (this.topMenu.isShowed()) {
-            this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight()
-                    * this.level.getScale());
+            this.itemMenu.draw(0, 0, container.getWidth(), this.itemMenu.getHeight() * this.level.getScale());
         } else {
-            this.itemMenu.draw(0, -this.level.getImageSize(), container.getWidth(), this.itemMenu
-                    .getHeight() * this.level.getScale());
+            this.itemMenu.draw(0, -this.level.getImageSize(), container.getWidth(),
+                    this.itemMenu.getHeight() * this.level.getScale());
         }
         this.topMenu.render(container, game, g);
         if (this.showActive) {
-            this.active.draw(this.fieldPosition.getX(), this.fieldPosition.getY(), this.active
-                    .getWidth() * this.level.getScale(), this.active.getHeight()
-                    * this.level.getScale());
+            this.active.draw(this.fieldPosition.getX(), this.fieldPosition.getY(),
+                    this.active.getWidth() * this.level.getScale(), this.active.getHeight() * this.level.getScale());
         }
         this.messageBox.render(container, game, g);
     }
@@ -127,8 +124,7 @@ public class EditorState extends BasicGameState {
         int offsetY = this.level.getMarginTop();
         int levelWidth = this.level.getWidth();
         int levelHeight = this.level.getHeight();
-        if (mouseX > offsetX && mouseY > offsetY
-                && mouseX < offsetX + this.level.getImageSize() * levelWidth
+        if (mouseX > offsetX && mouseY > offsetY && mouseX < offsetX + this.level.getImageSize() * levelWidth
                 && mouseY < offsetY + this.level.getImageSize() * levelHeight) {
             return true;
         }
@@ -136,8 +132,7 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer container, final StateBasedGame game, int delta)
-            throws SlickException {
+    public void update(GameContainer container, final StateBasedGame game, int delta) throws SlickException {
 
         Input input = container.getInput();
         int mouseX = input.getMouseX();
@@ -148,8 +143,8 @@ public class EditorState extends BasicGameState {
         int indexY;
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            this.messageBox
-                    .showConfirm(this.translator.translate("Editor.Menu.ExitWithoutSaving"), new ActionListener() {
+            this.messageBox.showConfirm(this.translator.translate("Editor.Menu.ExitWithoutSaving"),
+                    new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
                             EditorState.this.level = null;
@@ -201,32 +196,31 @@ public class EditorState extends BasicGameState {
 
     private void setItemPosition(Point gridPosition) {
         // remove position
-        Item item = this.level.getLevelItems()[(int) gridPosition.getX()][(int) gridPosition.getY()]
-                .getType();
+        Item item = this.level.getLevelItems()[(int) gridPosition.getX()][(int) gridPosition.getY()].getType();
         switch (item) {
-            case TRAIN:
-                this.trainPosition = null;
-                break;
-            case GATE:
-                this.gatePosition = null;
-            default:
+        case TRAIN:
+            this.trainPosition = null;
+            break;
+        case GATE:
+            this.gatePosition = null;
+        default:
         }
         // load position
         switch (this.activeItem.getType()) {
-            case TRAIN:
-                if (this.trainPosition != null) {
-                    this.level.setLevelItem(this.activeItem, this.trainPosition);
-                }
-                this.trainPosition = gridPosition;
-                break;
-            case GATE:
-                if (this.gatePosition != null) {
-                    this.level.setLevelItem(this.activeItem, this.gatePosition);
-                }
-                this.gatePosition = gridPosition;
-                break;
-            default:
-                break;
+        case TRAIN:
+            if (this.trainPosition != null) {
+                this.level.setLevelItem(this.activeItem, this.trainPosition);
+            }
+            this.trainPosition = gridPosition;
+            break;
+        case GATE:
+            if (this.gatePosition != null) {
+                this.level.setLevelItem(this.activeItem, this.gatePosition);
+            }
+            this.gatePosition = gridPosition;
+            break;
+        default:
+            break;
         }
         this.level.setLevelItem(this.activeItem, gridPosition);
     }
@@ -249,8 +243,8 @@ public class EditorState extends BasicGameState {
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
                 this.setItemPosition(gridPosition);
             } else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
-                this.level.setLevelItem(new LevelItem("empty", this.resourceManager
-                        .getImage("empty"), Item.EMPTY), gridPosition);
+                this.level.setLevelItem(new LevelItem("empty", this.resourceManager.getImage("empty"), Item.EMPTY),
+                        gridPosition);
             }
         }
     }
@@ -273,8 +267,7 @@ public class EditorState extends BasicGameState {
         this.activeItem = item;
     }
 
-    private void initTopMenuListeners(final StateBasedGame game, ResourceManager resourceManager,
-            Input input) {
+    private void initTopMenuListeners(final StateBasedGame game, ResourceManager resourceManager, Input input) {
         Image train = this.resourceManager.getImage("train");
         Image gate = this.resourceManager.getImage("gate");
         Image wall = this.resourceManager.getImage("wall");
@@ -291,14 +284,14 @@ public class EditorState extends BasicGameState {
         for (String name : this.resourceManager.getTrucks().keySet()) {
             Truck t = this.resourceManager.getTrucks().get(name);
             itemSelectedListeners.add(new TreeSelectedListener(this, name, t.getItem()));
-            this.imageMenuItems.add(new ImageMenuItem(t.getItem(), itemSelectedListeners
-                    .get(itemSelectedListeners.size() - 1)));
+            this.imageMenuItems
+                    .add(new ImageMenuItem(t.getItem(), itemSelectedListeners.get(itemSelectedListeners.size() - 1)));
         }
 
         final ItemSelectedListener wallSelectedListener = new WallSelectedListener(this, wall);
         this.imageMenuItems.add(new ImageMenuItem(wall, wallSelectedListener));
-        final ItemSelectedListener saveSelectedListener = new SaveSelectedListener(this, level,
-                this.levelController, this.translator, messageBox, game);
+        final ItemSelectedListener saveSelectedListener = new SaveSelectedListener(this, level, this.levelController,
+                this.translator, messageBox, game);
         this.imageMenuItems.add(new ImageMenuItem(save, saveSelectedListener));
         final ItemSelectedListener testSelectedListener = new TestSelectedListener(this, game);
         this.imageMenuItems.add(new ImageMenuItem(test, testSelectedListener));
@@ -311,28 +304,28 @@ public class EditorState extends BasicGameState {
             @Override
             public void keyPressed(int key, char c) {
                 switch (c) {
-                    case 't':
-                        trainSelectedListener.actionPerformed(null);
-                        break;
-                    case 'g':
-                        gateSelectedListener.actionPerformed(null);
-                        break;
-                    case 'w':
-                        wallSelectedListener.actionPerformed(null);
-                        break;
-                    case 's':
-                        saveSelectedListener.actionPerformed(null);
-                        break;
-                    case 'r':
-                        testSelectedListener.actionPerformed(null);
-                        break;
-                    default:
-                        if (c >= '0' && c <= '9') {
-                            int index = Integer.valueOf(String.valueOf(c)) - 1;
-                            if (index < itemSelectedListeners.size()) {
-                                itemSelectedListeners.get(index).actionPerformed(null);
-                            }
+                case 't':
+                    trainSelectedListener.actionPerformed(null);
+                    break;
+                case 'g':
+                    gateSelectedListener.actionPerformed(null);
+                    break;
+                case 'w':
+                    wallSelectedListener.actionPerformed(null);
+                    break;
+                case 's':
+                    saveSelectedListener.actionPerformed(null);
+                    break;
+                case 'r':
+                    testSelectedListener.actionPerformed(null);
+                    break;
+                default:
+                    if (c >= '0' && c <= '9') {
+                        int index = Integer.valueOf(String.valueOf(c)) - 1;
+                        if (index < itemSelectedListeners.size()) {
+                            itemSelectedListeners.get(index).actionPerformed(null);
                         }
+                    }
                 }
             }
         });

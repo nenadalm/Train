@@ -29,12 +29,11 @@ public class EffectFactory {
             this.gradientEffect.put(topColor, new HashMap<Color, Map<Float, GradientEffect>>());
         }
         if (!this.gradientEffect.get(topColor).containsKey(bottomColor)) {
-            this.gradientEffect.get(topColor)
-                    .put(bottomColor, new HashMap<Float, GradientEffect>());
+            this.gradientEffect.get(topColor).put(bottomColor, new HashMap<Float, GradientEffect>());
         }
         if (!this.gradientEffect.get(topColor).get(bottomColor).containsKey(scale)) {
-            this.gradientEffect.get(topColor).get(bottomColor)
-                    .put(scale, new GradientEffect(topColor, bottomColor, scale));
+            this.gradientEffect.get(topColor).get(bottomColor).put(scale,
+                    new GradientEffect(topColor, bottomColor, scale));
         }
         return this.gradientEffect.get(topColor).get(bottomColor).get(scale);
     }

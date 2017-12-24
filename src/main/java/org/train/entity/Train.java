@@ -22,22 +22,22 @@ public class Train extends LevelItem {
 
         float rotation = 0;
         switch ((int) direction.getX()) {
-            case -1:
-                rotation = 180;
-                this.setFlippedVertical(true);
-                break;
-            case 1:
-                rotation = 0;
-                this.setFlippedVertical(false);
-                break;
+        case -1:
+            rotation = 180;
+            this.setFlippedVertical(true);
+            break;
+        case 1:
+            rotation = 0;
+            this.setFlippedVertical(false);
+            break;
         }
         switch ((int) direction.getY()) {
-            case -1:
-                rotation = -90;
-                break;
-            case 1:
-                rotation = 90;
-                break;
+        case -1:
+            rotation = -90;
+            break;
+        case 1:
+            rotation = 90;
+            break;
         }
         this.setRotation(rotation);
     }
@@ -67,8 +67,7 @@ public class Train extends LevelItem {
     }
 
     private void updateImage() {
-        this.image = this.original.getFlippedCopy(this.isFlippedHorizontal(),
-                this.isFlippedVertical());
+        this.image = this.original.getFlippedCopy(this.isFlippedHorizontal(), this.isFlippedVertical());
         int origin = (int) ((this.image.getWidth() * this.getScale()) / 2);
         this.image.setCenterOfRotation(origin, origin);
         this.image.setRotation(this.getRotation());

@@ -25,7 +25,7 @@ Setup project
 
 * format code
 
-    ```$ mvn java-formatter:format```
+    ```$ mvn formatter:format```
 
 Create distributable package
 ----------------------------

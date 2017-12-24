@@ -19,9 +19,8 @@ public class SaveSelectedListener extends ItemSelectedListener {
     private MessageBox messageBox;
     private StateBasedGame game;
 
-    public SaveSelectedListener(EditorState editorState, Level level,
-            LevelController levelController, Translator translator, MessageBox messageBox,
-            StateBasedGame game) {
+    public SaveSelectedListener(EditorState editorState, Level level, LevelController levelController,
+            Translator translator, MessageBox messageBox, StateBasedGame game) {
         super(editorState);
         this.level = level;
         this.levelController = levelController;

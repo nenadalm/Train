@@ -22,8 +22,7 @@ import org.xml.sax.SAXException;
 
 public class XmlHelper {
 
-    public static Document getDocument(File xml) throws ParserConfigurationException, SAXException,
-            IOException {
+    public static Document getDocument(File xml) throws ParserConfigurationException, SAXException, IOException {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = factory.newDocumentBuilder();

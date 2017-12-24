@@ -9,15 +9,13 @@ public class TranslatorTest {
     private Translator translator;
 
     public TranslatorTest() {
-        TranslationLoaderFactory factory = new TranslationLoaderFactory(
-                "testingContent/translations/");
+        TranslationLoaderFactory factory = new TranslationLoaderFactory("testingContent/translations/");
         this.translator = new Translator(factory, "en");
     }
 
     @Test
     public void testTranslateStringNotExist() {
-        Assert.assertEquals("Test.TranslationNotExist",
-                translator.translate("Test.TranslationNotExist"));
+        Assert.assertEquals("Test.TranslationNotExist", translator.translate("Test.TranslationNotExist"));
     }
 
     @Test
@@ -27,8 +25,7 @@ public class TranslatorTest {
 
     @Test
     public void testTranslateStringSpecificExist() {
-        Assert.assertEquals("TransSpecific",
-                translator.translate("Test.TranslationSpecific", "specific"));
+        Assert.assertEquals("TransSpecific", translator.translate("Test.TranslationSpecific", "specific"));
     }
 
     @Test

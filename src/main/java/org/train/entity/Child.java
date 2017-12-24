@@ -38,8 +38,7 @@ public abstract class Child extends BoxModel implements ChildInterface {
     }
 
     public void setPosition(Point position) {
-        this.setRectangle(new Rectangle(position.getX(), position.getY(), this.getWidth(), this
-                .getHeight()));
+        this.setRectangle(new Rectangle(position.getX(), position.getY(), this.getWidth(), this.getHeight()));
     }
 
     public Point getPosition() {

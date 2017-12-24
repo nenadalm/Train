@@ -10,13 +10,13 @@ import org.train.state.EditorState;
 public class TrainSelectedListener extends ItemSelectedListener {
 
     public TrainSelectedListener(EditorState editorState, Image image) {
-        super(editorState, image);
+	super(editorState, image);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        this.editorState.setActiveItem(new LevelItem("train", image, Item.TRAIN));
+	super.actionPerformed(e);
+	this.editorState.setActiveItem(new LevelItem("train", image, Item.TRAIN));
     }
 
 }

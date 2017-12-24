@@ -4,11 +4,11 @@ public class Border {
     private int width = 0;
 
     public int getWidth() {
-        return width;
+	return width;
     }
 
     public void setWidth(int width) {
-        this.width = width;
+	this.width = width;
     }
 
 }

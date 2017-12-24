@@ -11,32 +11,32 @@ public class LevelItem extends Entity implements Cloneable {
     private String name;
 
     public LevelItem(String name, Image image, Level.Item type) {
-        this.image = image;
-        this.type = type;
-        this.name = name;
+	this.image = image;
+	this.type = type;
+	this.name = name;
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
-        super.render(container, game, g);
+	super.render(container, game, g);
 
-        this.image.draw(this.getPosition().getX(), this.getPosition().getY(), this.getScale());
+	this.image.draw(this.getPosition().getX(), this.getPosition().getY(), this.getScale());
     }
 
     public void setImage(Image image) {
-        this.image = image;
+	this.image = image;
     }
 
     public Level.Item getType() {
-        return type;
+	return type;
     }
 
     public String getName() {
-        return name;
+	return name;
     }
 
     @Override
     public Object clone() {
-        return new LevelItem(this.name, this.image, this.type);
+	return new LevelItem(this.name, this.image, this.type);
     }
 }

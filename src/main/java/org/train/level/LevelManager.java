@@ -76,13 +76,10 @@ public class LevelManager {
 
     public void saveLevel(Level level) {
         try {
-            String levelFileName = this.getLevelFileName(level.getLevelIndex(),
-                    level.getLevelName());
-            String packageFileName = this.getPackageFileName(level.getPackageIndex(),
-                    level.getPackageName());
+            String levelFileName = this.getLevelFileName(level.getLevelIndex(), level.getLevelName());
+            String packageFileName = this.getPackageFileName(level.getPackageIndex(), level.getPackageName());
 
-            File file = new File(this.config.get("levelsPath") + packageFileName + '/'
-                    + levelFileName);
+            File file = new File(this.config.get("levelsPath") + packageFileName + '/' + levelFileName);
             file.createNewFile();
             String levelString = this.levelToString(level);
             FileWriter fw = new FileWriter(file);
@@ -114,8 +111,7 @@ public class LevelManager {
         return buffer.toString();
     }
 
-    public Level loadLevel(int packageIndex, int levelIndex, String packageName, String levelName)
-            throws Exception {
+    public Level loadLevel(int packageIndex, int levelIndex, String packageName, String levelName) throws Exception {
         // read lines from file
         String levelPath = this.getLevelPath(packageIndex, packageName, levelIndex, levelName);
         File file = new File(levelPath);
@@ -126,8 +122,7 @@ public class LevelManager {
             throw new Exception("Cannot read from file '" + file.getAbsolutePath() + "'.");
         }
 
-        Level level = new Level(0, 0, Integer.parseInt(this.config.get("refreshSpeed")),
-                this.resourceManager);
+        Level level = new Level(0, 0, Integer.parseInt(this.config.get("refreshSpeed")), this.resourceManager);
         level.setLevelItems(this.getLevelItemsFromLines(lines));
         level.setLevelIndex(levelIndex);
         level.setPackageIndex(packageIndex);
@@ -193,16 +188,16 @@ public class LevelManager {
 
     private Item getItemFromLetter(char letter) {
         switch (letter) {
-            case 'W':
-                return Item.WALL;
-            case 'G':
-                return Item.GATE;
-            case 'T':
-                return Item.ITEM;
-            case 'V':
-                return Item.TRAIN;
-            case 'E':
-                return Item.EMPTY;
+        case 'W':
+            return Item.WALL;
+        case 'G':
+            return Item.GATE;
+        case 'T':
+            return Item.ITEM;
+        case 'V':
+            return Item.TRAIN;
+        case 'E':
+            return Item.EMPTY;
         }
 
         throw new RuntimeException(String.format("Invalid letter %1$", letter));
@@ -224,12 +219,10 @@ public class LevelManager {
         return fileName.replaceFirst(".*?_", "");
     }
 
-    private String getLevelPath(int packageIndex, String packageName, int levelIndex,
-            String levelName) {
+    private String getLevelPath(int packageIndex, String packageName, int levelIndex, String levelName) {
         String levelFileName = this.getLevelFileName(levelIndex, levelName);
         String packageFileName = this.getPackageFileName(packageIndex, packageName);
-        return String.format("%1$s%2$s/%3$s", this.config.get("levelsPath"), packageFileName,
-                levelFileName);
+        return String.format("%1$s%2$s/%3$s", this.config.get("levelsPath"), packageFileName, levelFileName);
     }
 
     private String getPackagePath(int packageIndex, String packageName) {
@@ -251,8 +244,8 @@ public class LevelManager {
         beingRenamedPackage.renameTo(renamedPackage);
     }
 
-    public void renameLevel(int packageIndex, String packageName, int oldIndex, String oldName,
-            int newIndex, String newName) {
+    public void renameLevel(int packageIndex, String packageName, int oldIndex, String oldName, int newIndex,
+            String newName) {
         String path = this.getLevelPath(packageIndex, packageName, oldIndex, oldName);
         File level = new File(path);
         path = this.getLevelPath(packageIndex, packageName, newIndex, newName);

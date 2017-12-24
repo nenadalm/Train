@@ -19,20 +19,13 @@ public class EditorListFactory {
 
     public List create(GameContainer container, Font font) {
         java.util.List<ListItem> editorListItems = new ArrayList<ListItem>();
-        editorListItems.add(new ListItem(new TextView(this.translator.translate("Controls.Editor"),
-                font, Color.blue)));
-        editorListItems.add(new ListItem(new TextView(this.getText("Controls.ShowMenu", "e"), font,
-                Color.red)));
-        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Train", "t"), font,
-                Color.red)));
-        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Gate", "g"), font,
-                Color.red)));
-        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Item", "1-9"), font,
-                Color.red)));
-        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Test", "r"), font,
-                Color.red)));
-        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Wall", "w"), font,
-                Color.red)));
+        editorListItems.add(new ListItem(new TextView(this.translator.translate("Controls.Editor"), font, Color.blue)));
+        editorListItems.add(new ListItem(new TextView(this.getText("Controls.ShowMenu", "e"), font, Color.red)));
+        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Train", "t"), font, Color.red)));
+        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Gate", "g"), font, Color.red)));
+        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Item", "1-9"), font, Color.red)));
+        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Test", "r"), font, Color.red)));
+        editorListItems.add(new ListItem(new TextView(this.getText("Controls.Wall", "w"), font, Color.red)));
 
         return new List(editorListItems, container);
     }

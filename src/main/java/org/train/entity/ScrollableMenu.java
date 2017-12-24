@@ -17,8 +17,8 @@ public class ScrollableMenu extends Menu implements Scrollable {
     private MouseListener mouseListener;
     private boolean roundScroll = false;
 
-    public ScrollableMenu(List<? extends MenuItem> items, GameContainer container,
-            ResourceManager resourceManager, EffectFactory effectFactory) {
+    public ScrollableMenu(List<? extends MenuItem> items, GameContainer container, ResourceManager resourceManager,
+            EffectFactory effectFactory) {
 
         super(items, container, resourceManager, effectFactory);
         this.children = items;
@@ -84,8 +84,8 @@ public class ScrollableMenu extends Menu implements Scrollable {
     @Override
     public Rectangle getOccupiedArea() {
         return new Rectangle(getPosition().getX() - getPaddingLeft() - getMarginRight(),
-                getPosition().getY() - getPaddingTop(), getWidth() + getPaddingRight()
-                        + getPaddingLeft(), getHeight() + getPaddingBottom() + getPaddingTop());
+                getPosition().getY() - getPaddingTop(), getWidth() + getPaddingRight() + getPaddingLeft(),
+                getHeight() + getPaddingBottom() + getPaddingTop());
     }
 
     public void enableRoundScroll() {

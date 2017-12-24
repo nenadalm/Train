@@ -35,8 +35,8 @@ public class PicoContainerFactory {
 
         String translationsPath = config.get("contentPath") + "translations/";
         container.addComponent(new TranslationLoaderFactory(translationsPath));
-        container.addComponent(new Translator(container
-                .getComponent(TranslationLoaderFactory.class), config.get("language")));
+        container.addComponent(
+                new Translator(container.getComponent(TranslationLoaderFactory.class), config.get("language")));
 
         container.addComponent(new Game("Train", container));
         container.addComponent(AppGameContainer.class);

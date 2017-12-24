@@ -29,8 +29,8 @@ public class Menu extends Container {
         return this.items;
     }
 
-    public Menu(List<? extends MenuItem> items, GameContainer container,
-            ResourceManager resourceManager, EffectFactory effectFactory) {
+    public Menu(List<? extends MenuItem> items, GameContainer container, ResourceManager resourceManager,
+            EffectFactory effectFactory) {
         if (items.size() == 0) {
             this.close();
             return;
@@ -95,8 +95,7 @@ public class Menu extends Container {
         for (Rectangle r : this.getLayout().getRectangles()) {
             if (r.contains(mouseX, mouseY) && this.items.get(counter).isEnabled()) {
                 if (this.items.get(this.active) != this.selected) {
-                    this.items.get(this.active).setColor(
-                            items.get(this.active).getNormalColor());
+                    this.items.get(this.active).setColor(items.get(this.active).getNormalColor());
                 }
                 if (this.lastActiveItem != counter) {
                     this.overSound.play();

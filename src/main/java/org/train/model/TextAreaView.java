@@ -77,8 +77,7 @@ public class TextAreaView implements ViewInterface {
 
         for (TextView textView : this.textViews) {
             textView.setPosition(nextPosition);
-            nextPosition = new Point(nextPosition.getX(), nextPosition.getY()
-                    + textView.getHeight() + 10);
+            nextPosition = new Point(nextPosition.getX(), nextPosition.getY() + textView.getHeight() + 10);
         }
     }
 }

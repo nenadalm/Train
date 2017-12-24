@@ -4,6 +4,6 @@ public abstract class AbstractMenuFactory implements MenuFactoryInterface {
     protected MenuBuilder menuBuilder;
 
     public AbstractMenuFactory(MenuBuilder menuBuilder) {
-        this.menuBuilder = menuBuilder;
+	this.menuBuilder = menuBuilder;
     }
 }

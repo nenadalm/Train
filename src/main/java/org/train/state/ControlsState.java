@@ -51,14 +51,12 @@ public class ControlsState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         this.childContainer.render(container, game, g);
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta)
-            throws SlickException {
+    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 
         if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);

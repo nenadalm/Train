@@ -31,32 +31,32 @@ public class Game extends StateBasedGame {
     private DefaultPicoContainer container;
 
     public Game(String title, DefaultPicoContainer container) {
-        super(title);
-        this.container = container;
+	super(title);
+	this.container = container;
     }
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException {
-        LevelController levelController = this.container.getComponent(LevelController.class);
-        levelController.repairPackagesNames();
-        levelController.repairLevelsNames();
+	LevelController levelController = this.container.getComponent(LevelController.class);
+	levelController.repairPackagesNames();
+	levelController.repairLevelsNames();
 
-        this.addState(new MenuState(Game.MENU_STATE));
-        this.addState(new ControlsState(Game.CONTROLS_STATE));
-        this.addState(new GameState(Game.GAME_STATE));
-        this.addState(new MenuForGameState(Game.MENU_FOR_GAME_STATE));
-        this.addState(new OptionsState(Game.OPTIONS_STATE));
-        this.addState(new TestGameState(Game.TEST_GAME_STATE));
-        this.addState(new EditorState(Game.EDITOR_STATE));
-        this.addState(new MenuForEditorState(Game.MENU_FOR_EDITOR_STATE));
+	this.addState(new MenuState(Game.MENU_STATE));
+	this.addState(new ControlsState(Game.CONTROLS_STATE));
+	this.addState(new GameState(Game.GAME_STATE));
+	this.addState(new MenuForGameState(Game.MENU_FOR_GAME_STATE));
+	this.addState(new OptionsState(Game.OPTIONS_STATE));
+	this.addState(new TestGameState(Game.TEST_GAME_STATE));
+	this.addState(new EditorState(Game.EDITOR_STATE));
+	this.addState(new MenuForEditorState(Game.MENU_FOR_EDITOR_STATE));
     }
 
     @Override
     public void addState(org.newdawn.slick.state.GameState state) {
-        if (state instanceof BasicGameState) {
-            ((BasicGameState) state).setContainer(this.container);
-        }
+	if (state instanceof BasicGameState) {
+	    ((BasicGameState) state).setContainer(this.container);
+	}
 
-        super.addState(state);
+	super.addState(state);
     }
 }

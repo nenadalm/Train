@@ -12,13 +12,13 @@ public class TreeSelectedListener extends ItemSelectedListener {
     private String name;
 
     public TreeSelectedListener(EditorState editorState, String name, Image image) {
-        super(editorState, image);
-        this.name = name;
+	super(editorState, image);
+	this.name = name;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        this.editorState.setActiveItem(new LevelItem(this.name, this.image, Item.ITEM));
+	super.actionPerformed(e);
+	this.editorState.setActiveItem(new LevelItem(this.name, this.image, Item.ITEM));
     }
 }

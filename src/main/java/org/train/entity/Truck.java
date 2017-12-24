@@ -38,8 +38,7 @@ public class Truck extends LevelItem {
     }
 
     private void updateImage() {
-        this.image = this.original.getFlippedCopy(this.isFlippedHorizontal(),
-                this.isFlippedVertical());
+        this.image = this.original.getFlippedCopy(this.isFlippedHorizontal(), this.isFlippedVertical());
         int origin = (int) ((this.image.getWidth() * this.getScale()) / 2);
         this.image.setCenterOfRotation(origin, origin);
         this.image.setRotation(this.getRotation());

@@ -9,8 +9,7 @@ public class ScrollListener extends AbstractMouseListener {
 
     @Override
     public boolean isAcceptingInput() {
-        return this.scrollable.getOccupiedArea().contains(this.input.getMouseX(),
-                this.input.getMouseY());
+        return this.scrollable.getOccupiedArea().contains(this.input.getMouseX(), this.input.getMouseY());
     }
 
     @Override

@@ -34,8 +34,8 @@ public class LevelHelper {
     }
 
     public void adjustLevelToContainer(GameContainer container, Level level) {
-        float scale = this.computeScale(container, level.getOriginalImageSize(), new Dimension(
-                level.getWidth(), level.getHeight()));
+        float scale = this.computeScale(container, level.getOriginalImageSize(),
+                new Dimension(level.getWidth(), level.getHeight()));
         level.setScale(scale);
         int width = level.getWidth() * (int) (level.getOriginalImageSize() * scale);
         int height = level.getHeight() * (int) (level.getOriginalImageSize() * scale);

@@ -26,8 +26,7 @@ public class ButtonFactory {
 
     public ButtonFactory(ResourceManager resourceManager) {
         this.overSound = resourceManager.getSound("menu");
-        this.defaultFont = new TrueTypeFont(new java.awt.Font("ubuntu", java.awt.Font.PLAIN, 40),
-                true);
+        this.defaultFont = new TrueTypeFont(new java.awt.Font("ubuntu", java.awt.Font.PLAIN, 40), true);
         this.defaultColor = Color.red;
         this.defaultText = "";
         this.listener = new ActionListener() {
@@ -102,8 +101,8 @@ public class ButtonFactory {
     }
 
     public Button createButton() {
-        Button button = new Button(this.createNormalView(), this.createOverView(), this
-                .createDisabledView(), this.listener);
+        Button button = new Button(this.createNormalView(), this.createOverView(), this.createDisabledView(),
+                this.listener);
         button.setOverSound(this.overSound);
 
         return button;

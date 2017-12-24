@@ -83,8 +83,7 @@ public class MenuItem extends Child {
 
     @Override
     public int getHeight() {
-        return this.getFont().getHeight(this.getText()) + this.getPaddingBottom()
-                + this.getPaddingTop();
+        return this.getFont().getHeight(this.getText()) + this.getPaddingBottom() + this.getPaddingTop();
     }
 
     public boolean isEnabled() {

@@ -42,14 +42,12 @@ public class ResourceManager {
 
             for (Object el : document.selectNodes("/resources/resource[@type='image']")) {
                 Element imageEl = (Element) el;
-                this.images.put(imageEl.attributeValue("id"), new Image(config.get("contentPath")
-                        + imageEl.getText()));
+                this.images.put(imageEl.attributeValue("id"), new Image(config.get("contentPath") + imageEl.getText()));
             }
 
             for (Object el : document.selectNodes("/resources/resource[@type='font']")) {
                 Element fontEl = (Element) el;
-                this.fonts.put(fontEl.attributeValue("id"),
-                        config.get("contentPath") + fontEl.getText());
+                this.fonts.put(fontEl.attributeValue("id"), config.get("contentPath") + fontEl.getText());
             }
 
             for (Object el : document.selectNodes("/resources/resource[@type='sound']")) {
@@ -64,8 +62,8 @@ public class ResourceManager {
                 Element truckEl = (Element) el;
                 String truckImg = truckEl.element("truck").attributeValue("image");
                 String itemImg = truckEl.element("item").attributeValue("image");
-                this.trucks.put(truckEl.attributeValue("id"), new Truck(this.getImage(truckImg),
-                        this.getImage(itemImg)));
+                this.trucks.put(truckEl.attributeValue("id"),
+                        new Truck(this.getImage(truckImg), this.getImage(itemImg)));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -31,8 +31,7 @@ public class MenuState extends BasicGameState {
     }
 
     @Override
-    public void init(final GameContainer container, final StateBasedGame game)
-            throws SlickException {
+    public void init(final GameContainer container, final StateBasedGame game) throws SlickException {
         this.intro = this.container.getComponent(ResourceManager.class).getSound("intro");
         this.intro.play();
     }
@@ -49,10 +48,8 @@ public class MenuState extends BasicGameState {
         Font ubuntuLarge = fonts.getFont("ubuntu", container.getWidth() / 16, whiteEffect);
 
         this.trainVersion = new TextView("Train " + Game.VERSION, ubuntuLarge, Color.white);
-        float trainVersionX = (int) (this.trainVersion.getWidth() / 1.75)
-                - this.trainVersion.getWidth() / 2;
-        float trainVersionY = (int) (this.trainVersion.getHeight() / 1.5)
-                - this.trainVersion.getHeight() / 2;
+        float trainVersionX = (int) (this.trainVersion.getWidth() / 1.75) - this.trainVersion.getWidth() / 2;
+        float trainVersionY = (int) (this.trainVersion.getHeight() / 1.5) - this.trainVersion.getHeight() / 2;
         this.trainVersion.setPosition(new Point(trainVersionX, trainVersionY));
     }
 
@@ -62,15 +59,13 @@ public class MenuState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         this.trainVersion.render(g);
         this.menu.render(container, game, g);
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta)
-            throws SlickException {
+    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
         Input input = container.getInput();
 
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {

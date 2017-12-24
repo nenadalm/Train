@@ -9,32 +9,32 @@ public class ImageView implements ViewInterface {
     private Point position;
 
     public ImageView(Image image) {
-        this.image = image;
-        this.position = new Point(0, 0);
+	this.image = image;
+	this.position = new Point(0, 0);
     }
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(this.image, this.getPosition().getX(), this.getPosition().getY());
+	g.drawImage(this.image, this.getPosition().getX(), this.getPosition().getY());
     }
 
     @Override
     public Point getPosition() {
-        return position;
+	return position;
     }
 
     @Override
     public void setPosition(Point position) {
-        this.position = position;
+	this.position = position;
     }
 
     @Override
     public int getWidth() {
-        return this.image.getWidth();
+	return this.image.getWidth();
     }
 
     @Override
     public int getHeight() {
-        return this.image.getHeight();
+	return this.image.getHeight();
     }
 }

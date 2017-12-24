@@ -84,8 +84,7 @@ public class OptionsState extends BasicGameState {
         GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice graphicsDevice = environment.getDefaultScreenDevice();
         for (DisplayMode mode : graphicsDevice.getDisplayModes()) {
-            if (mode.getRefreshRate() == 60
-                    && (mode.getBitDepth() == 32 || mode.getBitDepth() == -1)) {
+            if (mode.getRefreshRate() == 60 && (mode.getBitDepth() == 32 || mode.getBitDepth() == -1)) {
                 modes.add(mode);
             }
         }
@@ -140,8 +139,7 @@ public class OptionsState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         g.setFont(ubuntuLarge);
         g.setColor(Color.white);
 
@@ -176,8 +174,7 @@ public class OptionsState extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta)
-            throws SlickException {
+    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
         Input input = container.getInput();
         Point mouse = new Point(input.getMouseX(), input.getMouseY());
 
@@ -254,9 +251,8 @@ public class OptionsState extends BasicGameState {
             if (displayModes.length != 0) {
                 configuration.set("width", String.valueOf(displayModes[modeIndex].getWidth()));
                 configuration.set("height", String.valueOf(displayModes[modeIndex].getHeight()));
-                ((AppGameContainer) container)
-                        .setDisplayMode(displayModes[modeIndex].getWidth(), displayModes[modeIndex]
-                                .getHeight(), isFullscreen);
+                ((AppGameContainer) container).setDisplayMode(displayModes[modeIndex].getWidth(),
+                        displayModes[modeIndex].getHeight(), isFullscreen);
             }
 
             configuration.saveChanges();
@@ -277,8 +273,7 @@ public class OptionsState extends BasicGameState {
     }
 
     private void setScaleRectangle() {
-        size = this.container.getComponent(LevelController.class)
-                .getOptimalLevelDimension(width, height, scale / 100f);
+        size = this.container.getComponent(LevelController.class).getOptimalLevelDimension(width, height, scale / 100f);
         sizeText = String.format("[%1$02d , %2$02d]", size.width, size.height);
         scaleText = String.format("%1$d.%2$02dx", scale / 100, scale % 100);
         wallPreview = wall.getScaledCopy(scale / 512f);
@@ -295,23 +290,23 @@ public class OptionsState extends BasicGameState {
     private void createBackButton(final StateBasedGame game) {
         ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
         this.backBtn = buttonFactory.setDefaultColor(Color.white).setDisabledColor(Color.darkGray)
-                .setOverColor(Color.red).setDefaultText(translator.translate("back"))
-                .setDefaultFont(ubuntuMedium).setListener(new ActionListener() {
+                .setOverColor(Color.red).setDefaultText(translator.translate("back")).setDefaultFont(ubuntuMedium)
+                .setListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         game.enterState(Game.MENU_STATE);
                     }
                 }).createButton();
 
-        this.backBtn.setPosition(new org.newdawn.slick.geom.Point((int) (width / 1.5 - this.backBtn
-                .getWidth() / 2), (int) (height - this.backBtn.getHeight() * 1.2f)));
+        this.backBtn.setPosition(new org.newdawn.slick.geom.Point((int) (width / 1.5 - this.backBtn.getWidth() / 2),
+                (int) (height - this.backBtn.getHeight() * 1.2f)));
     }
 
     private void createSaveButton(final StateBasedGame game) {
         ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
         this.saveBtn = buttonFactory.setDefaultColor(Color.white).setDisabledColor(Color.darkGray)
-                .setOverColor(Color.red).setDefaultText(translator.translate("save"))
-                .setDefaultFont(ubuntuMedium).setListener(new ActionListener() {
+                .setOverColor(Color.red).setDefaultText(translator.translate("save")).setDefaultFont(ubuntuMedium)
+                .setListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         saveOptions(game.getContainer(), game);
@@ -319,8 +314,8 @@ public class OptionsState extends BasicGameState {
                     }
                 }).createButton();
 
-        this.saveBtn.setPosition(new org.newdawn.slick.geom.Point(width / 3
-                - this.saveBtn.getWidth() / 2, (int) (height - this.backBtn.getHeight() * 1.2f)));
+        this.saveBtn.setPosition(new org.newdawn.slick.geom.Point(width / 3 - this.saveBtn.getWidth() / 2,
+                (int) (height - this.backBtn.getHeight() * 1.2f)));
     }
 
     private void translate() {
@@ -466,14 +461,13 @@ public class OptionsState extends BasicGameState {
     }
 
     private void createResolutionMenu(GameContainer container, EffectFactory effects) {
-        int [] modeIndexOrder = this.getOrderedMenuItemIndexes(displayModes, modeIndex);
+        int[] modeIndexOrder = this.getOrderedMenuItemIndexes(displayModes, modeIndex);
 
         List<MenuItem> resolutionMenuItems = new ArrayList<>();
         for (int i = 0; i < modeIndexOrder.length; i++) {
             DisplayMode displayMode = displayModes[modeIndexOrder[i]];
 
-            String text = String
-                .format("%1$dx%2$d", displayMode.getWidth(), displayMode.getHeight());
+            String text = String.format("%1$dx%2$d", displayMode.getWidth(), displayMode.getHeight());
 
             MenuItem menuItem = new MenuItem(text, new ActionListener() {
                 @Override

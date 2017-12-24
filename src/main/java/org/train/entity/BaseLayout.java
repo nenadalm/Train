@@ -39,9 +39,10 @@ public abstract class BaseLayout implements LayoutInterface {
 
             org.newdawn.slick.geom.Point childPosition = this.calculateChildPosition(child, index);
 
-            this.rectangles.add(new Rectangle(childPosition.getX()
-                    - this.container.getMarginRight() + this.container.getPadding().getLeft(),
-                    childPosition.getY() - this.container.getMarginTop() + this.container.getPaddingTop(), width, height));
+            this.rectangles.add(new Rectangle(
+                    childPosition.getX() - this.container.getMarginRight() + this.container.getPadding().getLeft(),
+                    childPosition.getY() - this.container.getMarginTop() + this.container.getPaddingTop(), width,
+                    height));
             index++;
         }
 

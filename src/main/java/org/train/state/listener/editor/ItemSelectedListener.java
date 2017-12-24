@@ -12,16 +12,16 @@ public class ItemSelectedListener implements ActionListener {
     protected Image image;
 
     public ItemSelectedListener(EditorState editorState) {
-        this(editorState, null);
+	this(editorState, null);
     }
 
     public ItemSelectedListener(EditorState editorState, Image image) {
-        this.editorState = editorState;
-        this.image = image;
+	this.editorState = editorState;
+	this.image = image;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.editorState.getTopMenu().close();
+	this.editorState.getTopMenu().close();
     }
 }

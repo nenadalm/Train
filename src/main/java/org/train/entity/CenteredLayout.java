@@ -24,8 +24,7 @@ public class CenteredLayout extends BaseLayout {
         int lastMarginBottom = 0;
         for (ChildInterface child : this.container.getChildren()) {
             Margin itemMargin = child.getMargin();
-            Rectangle addition = new Rectangle(itemMargin.getLeft(), itemMargin.getTop()
-                    + lastMarginBottom, 0, 0);
+            Rectangle addition = new Rectangle(itemMargin.getLeft(), itemMargin.getTop() + lastMarginBottom, 0, 0);
             Rectangle r = this.rectangles.get(index);
             r.setX(r.getX() + addition.getX());
             r.setY(r.getY() + addition.getY() + offsetY);
@@ -54,21 +53,18 @@ public class CenteredLayout extends BaseLayout {
 
     @Override
     protected void setContainerPosition() {
-        this.container.setPosition(new Point(this.gameContainer.getWidth() / 2
-                - this.calculateContainerWidth() / 2, this.gameContainer.getHeight() / 2
-                - this.calculateContainerHeight() / 2));
+        this.container.setPosition(new Point(this.gameContainer.getWidth() / 2 - this.calculateContainerWidth() / 2,
+                this.gameContainer.getHeight() / 2 - this.calculateContainerHeight() / 2));
     }
 
     @Override
-    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child,
-            int childIndex) {
+    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child, int childIndex) {
         if (childIndex == 0) {
             this.lastOffsetY = 0;
         }
 
         int x = this.gameContainer.getWidth() / 2 - (int) (child.getWidth() * child.getScale()) / 2;
-        int y = this.gameContainer.getHeight() / 2 - this.calculateContainerHeight() / 2
-                + this.lastOffsetY;
+        int y = this.gameContainer.getHeight() / 2 - this.calculateContainerHeight() / 2 + this.lastOffsetY;
         this.lastOffsetY += (int) (child.getHeight() * child.getScale());
 
         return new org.newdawn.slick.geom.Point(x, y);

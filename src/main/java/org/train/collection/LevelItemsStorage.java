@@ -8,59 +8,59 @@ public class LevelItemsStorage {
     private LevelItem[][] levelItems;
 
     public void setLevelItems(LevelItem[][] levelItems) {
-        this.levelItems = levelItems;
+	this.levelItems = levelItems;
     }
 
     public LevelItem[][] getLevelItems() {
-        return levelItems;
+	return levelItems;
     }
 
     public int getConsumableItemsCount() {
-        int counter = 0;
-        for (int i = 0; i < this.levelItems.length; i++) {
-            for (int j = 0; j < this.levelItems[0].length; j++) {
-                if (this.levelItems[i][j].getType() == Item.ITEM) {
-                    counter++;
-                }
-            }
-        }
+	int counter = 0;
+	for (int i = 0; i < this.levelItems.length; i++) {
+	    for (int j = 0; j < this.levelItems[0].length; j++) {
+		if (this.levelItems[i][j].getType() == Item.ITEM) {
+		    counter++;
+		}
+	    }
+	}
 
-        return counter;
+	return counter;
     }
 
     public Point findTrainCoordinates() {
-        return this.findItemCoordinates(Item.TRAIN);
+	return this.findItemCoordinates(Item.TRAIN);
     }
 
     public Point findGateCoordinates() {
-        return this.findItemCoordinates(Item.GATE);
+	return this.findItemCoordinates(Item.GATE);
     }
 
     public LevelItem findGate() {
-        return this.findLevelItem(Item.GATE);
+	return this.findLevelItem(Item.GATE);
     }
 
     private LevelItem findLevelItem(Item item) {
-        for (int i = 0; i < this.levelItems.length; i++) {
-            for (int j = 0; j < this.levelItems[0].length; j++) {
-                if (this.levelItems[i][j].getType() == item) {
-                    return this.levelItems[i][j];
-                }
-            }
-        }
+	for (int i = 0; i < this.levelItems.length; i++) {
+	    for (int j = 0; j < this.levelItems[0].length; j++) {
+		if (this.levelItems[i][j].getType() == item) {
+		    return this.levelItems[i][j];
+		}
+	    }
+	}
 
-        return null;
+	return null;
     }
 
     private Point findItemCoordinates(Item item) {
-        for (int i = 0; i < this.levelItems.length; i++) {
-            for (int j = 0; j < this.levelItems[0].length; j++) {
-                if (this.levelItems[i][j].getType() == item) {
-                    return new Point(i, j);
-                }
-            }
-        }
+	for (int i = 0; i < this.levelItems.length; i++) {
+	    for (int j = 0; j < this.levelItems[0].length; j++) {
+		if (this.levelItems[i][j].getType() == item) {
+		    return new Point(i, j);
+		}
+	    }
+	}
 
-        return null;
+	return null;
     }
 }

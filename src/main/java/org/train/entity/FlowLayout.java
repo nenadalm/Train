@@ -30,8 +30,7 @@ public class FlowLayout extends BaseLayout {
     }
 
     @Override
-    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child,
-            int childIndex) {
+    protected org.newdawn.slick.geom.Point calculateChildPosition(ChildInterface child, int childIndex) {
         int x = (int) (child.getWidth() * child.getScale()) * childIndex;
         int y = 0;
 

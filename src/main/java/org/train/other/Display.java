@@ -14,8 +14,7 @@ public class Display {
 
     public Display(Configuration configuration) {
         this.configuration = configuration;
-        this.graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice();
+        this.graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     }
 
     public Dimension getOptimalDisplaySize() {

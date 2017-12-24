@@ -28,17 +28,14 @@ public class TestGameState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         this.level.render(container, game, g);
 
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta)
-            throws SlickException {
-        if (this.level.isFinished() || this.level.isOver()
-                || container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+        if (this.level.isFinished() || this.level.isOver() || container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
             game.enterState(Game.EDITOR_STATE);
         }
 

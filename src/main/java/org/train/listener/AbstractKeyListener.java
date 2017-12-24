@@ -8,7 +8,7 @@ public abstract class AbstractKeyListener implements KeyListener {
 
     @Override
     public void setInput(Input input) {
-        this.input = input;
+	this.input = input;
     }
 
     @Override

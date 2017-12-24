@@ -23,15 +23,14 @@ public class LevelController {
     private LevelManager levelManager;
     private ProgressController progressController;
 
-    public LevelController(Configuration config, ResourceManager resourceManager,
-            LevelManager levelManager, ProgressController progressController) {
+    public LevelController(Configuration config, ResourceManager resourceManager, LevelManager levelManager,
+            ProgressController progressController) {
         this.levelManager = levelManager;
         this.progressController = progressController;
         this.resourceManager = resourceManager;
         this.config = config;
         this.loadLevels();
-        this.level = new Level(1, 1, Integer.parseInt(this.config.get("refreshSpeed")),
-                resourceManager);
+        this.level = new Level(1, 1, Integer.parseInt(this.config.get("refreshSpeed")), resourceManager);
     }
 
     public Level getCurrentLevel() {
@@ -65,13 +64,11 @@ public class LevelController {
     }
 
     public boolean nextLevelExist() {
-        return (this.levels[this.level.getPackageIndex()].getLevelNames().size() > this.level
-                .getLevelIndex() + 1);
+        return (this.levels[this.level.getPackageIndex()].getLevelNames().size() > this.level.getLevelIndex() + 1);
     }
 
     public void updateProgress() {
-        this.progressController.updateProgress(this.level.getPackageIndex(),
-                this.level.getLevelIndex());
+        this.progressController.updateProgress(this.level.getPackageIndex(), this.level.getLevelIndex());
     }
 
     public void loadNextLevel() {
@@ -111,10 +108,9 @@ public class LevelController {
         return levels;
     }
 
-    public void createLevel(int packageIndex, String packageName, int levelIndex, String levelName,
-            int width, int height) {
-        Level level = new Level(width, height, Integer.parseInt(this.config.get("refreshSpeed")),
-                this.resourceManager);
+    public void createLevel(int packageIndex, String packageName, int levelIndex, String levelName, int width,
+            int height) {
+        Level level = new Level(width, height, Integer.parseInt(this.config.get("refreshSpeed")), this.resourceManager);
         level.setPackageIndex(packageIndex);
         level.setPackageName(packageName);
         level.setLevelIndex(levelIndex);
@@ -135,8 +131,7 @@ public class LevelController {
                 if (levelArray.length > i && levelArray[0].length > j) {
                     newLevelItems[i][j] = levelArray[i][j];
                 } else {
-                    newLevelItems[i][j] = new LevelItem("empty",
-                            this.resourceManager.getImage("empty"), Item.EMPTY);
+                    newLevelItems[i][j] = new LevelItem("empty", this.resourceManager.getImage("empty"), Item.EMPTY);
                 }
             }
         }
@@ -151,8 +146,7 @@ public class LevelController {
         String levelName = levelPackage.getLevelNames().get(levelIndex);
 
         try {
-            Level level = this.levelManager.loadLevel(packageIndex, levelIndex, packageName,
-                    levelName);
+            Level level = this.levelManager.loadLevel(packageIndex, levelIndex, packageName, levelName);
 
             return new Dimension(level.getWidth(), level.getHeight());
         } catch (Exception e) {
@@ -172,10 +166,9 @@ public class LevelController {
         this.loadLevels();
     }
 
-    public void renameLevel(int packageIndex, String packageName, int oldIndex, String oldName,
-            int newIndex, String newName) {
-        this.levelManager.renameLevel(packageIndex, packageName, oldIndex, oldName, newIndex,
-                newName);
+    public void renameLevel(int packageIndex, String packageName, int oldIndex, String oldName, int newIndex,
+            String newName) {
+        this.levelManager.renameLevel(packageIndex, packageName, oldIndex, oldName, newIndex, newName);
         this.loadLevels();
     }
 
@@ -201,8 +194,8 @@ public class LevelController {
     private void renumberLevels(int packageIndex) {
         for (int i = 0; i < this.levels[packageIndex].getLevelNames().size(); i++) {
             this.renameLevel(packageIndex, this.levels[packageIndex].getName(), i + 1,
-                    this.levels[packageIndex].getLevelNames().get(i), i, this.levels[packageIndex]
-                            .getLevelNames().get(i));
+                    this.levels[packageIndex].getLevelNames().get(i), i,
+                    this.levels[packageIndex].getLevelNames().get(i));
         }
     }
 }

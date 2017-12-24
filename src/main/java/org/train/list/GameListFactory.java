@@ -19,16 +19,11 @@ public class GameListFactory {
 
     public List create(GameContainer container, Font font) {
         java.util.List<ListItem> gameListItems = new ArrayList<ListItem>();
-        gameListItems.add(new ListItem(new TextView(this.translator.translate("Controls.Game"),
-                font, Color.blue)));
-        gameListItems.add(new ListItem(new TextView(this.getText("Controls.Up", "up"), font,
-                Color.red)));
-        gameListItems.add(new ListItem(new TextView(this.getText("Controls.Down", "down"), font,
-                Color.red)));
-        gameListItems.add(new ListItem(new TextView(this.getText("Controls.Left", "left"), font,
-                Color.red)));
-        gameListItems.add(new ListItem(new TextView(this.getText("Controls.Right", "right"), font,
-                Color.red)));
+        gameListItems.add(new ListItem(new TextView(this.translator.translate("Controls.Game"), font, Color.blue)));
+        gameListItems.add(new ListItem(new TextView(this.getText("Controls.Up", "up"), font, Color.red)));
+        gameListItems.add(new ListItem(new TextView(this.getText("Controls.Down", "down"), font, Color.red)));
+        gameListItems.add(new ListItem(new TextView(this.getText("Controls.Left", "left"), font, Color.red)));
+        gameListItems.add(new ListItem(new TextView(this.getText("Controls.Right", "right"), font, Color.red)));
 
         return new List(gameListItems, container);
     }

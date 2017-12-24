@@ -30,23 +30,20 @@ public class MessageBox extends Entity {
     private TextAreaView textMessage;
     private Button yesButton, noButton;
 
-    public MessageBox(GameContainer container, Translator translator,
-            ResourceManager resourceManager, FontFactory fontFactory, EffectFactory effectFactory,
-            ButtonFactory buttonFactory) {
+    public MessageBox(GameContainer container, Translator translator, ResourceManager resourceManager,
+            FontFactory fontFactory, EffectFactory effectFactory, ButtonFactory buttonFactory) {
         this.addComponent(new RectangleComponent());
 
         try {
             int fontWidth = container.getWidth() / 20;
-            this.font = fontFactory.getFont("ubuntu", fontWidth,
-                    effectFactory.getColorEffect(java.awt.Color.WHITE));
+            this.font = fontFactory.getFont("ubuntu", fontWidth, effectFactory.getColorEffect(java.awt.Color.WHITE));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         int width = (int) (container.getWidth() / 1.5);
         int height = container.getHeight() / 3;
-        this.setPosition(new Point(container.getWidth() / 2 - width / 2, container.getHeight() / 2
-                - height / 2));
+        this.setPosition(new Point(container.getWidth() / 2 - width / 2, container.getHeight() / 2 - height / 2));
         this.setWidth(width);
         this.setHeight(height);
 
@@ -55,8 +52,8 @@ public class MessageBox extends Entity {
 
     public void showConfirm(String text, ActionListener yesListener, ActionListener noListener) {
         this.textMessage = new TextAreaView(text, this.font, this.textColor, this.getWidth());
-        this.textMessage.setPosition(new org.newdawn.slick.geom.Point(this.getPosition().getX(),
-                this.getPosition().getY()));
+        this.textMessage
+                .setPosition(new org.newdawn.slick.geom.Point(this.getPosition().getX(), this.getPosition().getY()));
         this.yesListener = yesListener;
         this.noListener = noListener;
         this.show = true;
@@ -115,31 +112,29 @@ public class MessageBox extends Entity {
         String yesButtonText = translator.translate("yes");
         String noButtonText = translator.translate("no");
 
-        this.yesButton = buttonFactory.setDefaultText(yesButtonText)
-                .setListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        show = false;
-                        yesListener.actionPerformed(null);
-                    }
-                }).createButton();
+        this.yesButton = buttonFactory.setDefaultText(yesButtonText).setListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                show = false;
+                yesListener.actionPerformed(null);
+            }
+        }).createButton();
 
-        this.noButton = buttonFactory.setDefaultText(noButtonText)
-                .setListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        show = false;
-                        noListener.actionPerformed(null);
-                    }
-                }).createButton();
+        this.noButton = buttonFactory.setDefaultText(noButtonText).setListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                show = false;
+                noListener.actionPerformed(null);
+            }
+        }).createButton();
 
         String buttonsText = yesButtonText + noButtonText;
         int buttonsWidth = buttonFactory.getDefaultFont().getWidth(buttonsText);
         int buttonsHeight = buttonFactory.getDefaultFont().getHeight(buttonsText);
 
-        this.yesButton.setPosition(new org.newdawn.slick.geom.Point(this.getCenterX()
-                - buttonsWidth, this.getMaxY() - buttonsHeight));
-        this.noButton.setPosition(new org.newdawn.slick.geom.Point(
-                this.getCenterX() + buttonsWidth, this.getMaxY() - buttonsHeight));
+        this.yesButton.setPosition(
+                new org.newdawn.slick.geom.Point(this.getCenterX() - buttonsWidth, this.getMaxY() - buttonsHeight));
+        this.noButton.setPosition(
+                new org.newdawn.slick.geom.Point(this.getCenterX() + buttonsWidth, this.getMaxY() - buttonsHeight));
     }
 }

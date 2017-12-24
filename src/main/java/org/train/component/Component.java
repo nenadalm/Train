@@ -10,7 +10,7 @@ public abstract class Component {
     protected Entity owner;
 
     public void setOwnerEntity(Entity owner) {
-        this.owner = owner;
+	this.owner = owner;
     }
 
     public abstract void update(GameContainer container, StateBasedGame game, int delta);
