@@ -18,6 +18,13 @@ import org.train.menu.MenuBuilder;
 import org.train.other.LevelController;
 import org.train.other.Translator;
 
+enum State {
+	PLAYING,
+	PAUSED,
+	CRASHED,
+	WON
+}
+
 public class GameState extends BasicGameState {
 
     private Level level = null;
@@ -27,6 +34,7 @@ public class GameState extends BasicGameState {
     private LevelController levelController;
     private MessageBox messageBox;
     private boolean wasFinished = false;
+    private State state = null;
 
     public GameState(int stateId) {
         super(stateId);
@@ -52,6 +60,7 @@ public class GameState extends BasicGameState {
                 .addMenuItem(this.translator.translate("Game.Menu.Continue"), new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent arg0) {
+                    	GameState.this.state = State.PLAYING;
                         GameState.this.menu.close();
                         GameState.this.gameOverMenu.close();
                     }
@@ -122,6 +131,7 @@ public class GameState extends BasicGameState {
 
             LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
             levelHelper.adjustLevelToContainer(container, level);
+            this.state = State.PLAYING;
 
             if (!this.level.isValid()) {
                 this.messageBox.showConfirm(this.translator.translate("Game.LevelIsInvalid"),
@@ -157,58 +167,70 @@ public class GameState extends BasicGameState {
     public void update(final GameContainer container, final StateBasedGame game, int delta)
             throws SlickException {
         Input input = container.getInput();
-        if (this.level.isOver()) {
-            this.gameOverMenu.show();
-        } else if (this.level.isFinished()) {
-            if (this.levelController.nextLevelExist()) {
-                if (!this.wasFinished) {
-                    this.wasFinished = true;
-                    this.levelController.updateProgress();
+
+        switch (this.state) {
+        	case PLAYING:
+        		if (this.level.isOver()) {
+        			this.state = State.CRASHED;
+        			this.gameOverMenu.show();
+        		} else if (this.level.isFinished()) {
+        			this.state = State.WON;
+        			if (this.levelController.nextLevelExist()) {
+                        if (!this.wasFinished) {
+                            this.wasFinished = true;
+                            this.levelController.updateProgress();
+                        }
+                        this.messageBox.showConfirm(this.translator.translate("Game.LevelFinished"),
+                                new ActionListener() {
+
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        GameState.this.levelController.loadNextLevel();
+                                        GameState.this.initLevel(container, game);
+                                    }
+                                }, new ActionListener() {
+
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        game.enterState(Game.MENU_STATE);
+                                    }
+                                });
+                    } else {
+                        this.messageBox.showConfirm(this.translator.translate("Game.Congratulation"),
+                                new ActionListener() {
+
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        game.enterState(Game.MENU_FOR_GAME_STATE);
+                                    }
+                                }, new ActionListener() {
+
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        game.enterState(Game.MENU_STATE);
+                                    }
+                                });
+                    }
+        		} else if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+		        	this.state = State.PAUSED;
+		            this.menu.show();
+		        }
+        		this.level.update(container, game, delta);
+        		break;
+        	case PAUSED:
+        		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+                    this.menu.close();
+                    this.state = State.PLAYING;
                 }
-                this.messageBox.showConfirm(this.translator.translate("Game.LevelFinished"),
-                        new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                GameState.this.levelController.loadNextLevel();
-                                GameState.this.initLevel(container, game);
-                            }
-                        }, new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                game.enterState(Game.MENU_STATE);
-                            }
-                        });
-            } else {
-                this.messageBox.showConfirm(this.translator.translate("Game.Congratulation"),
-                        new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                game.enterState(Game.MENU_FOR_GAME_STATE);
-                            }
-                        }, new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                game.enterState(Game.MENU_STATE);
-                            }
-                        });
-            }
-        } else if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            this.menu.show();
+        		break;
+        	case CRASHED:
+        		break;
+        	case WON:
+        		break;
         }
 
         this.menu.update(container, game, delta);
         this.gameOverMenu.update(container, game, delta);
-        if (this.menu.isShowed()) {
-            if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-                this.menu.close();
-            }
-        } else if (!this.gameOverMenu.isShowed()) {
-            this.level.update(container, game, delta);
-        }
         this.messageBox.update(container, game, delta);
         input.clearKeyPressedRecord();
     }
