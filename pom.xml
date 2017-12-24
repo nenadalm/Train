@@ -115,25 +115,31 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <tasks>
-                                <delete dir="build"/>
+                                <delete dir="build" />
 
-                                <mkdir dir="build/Train/content"/>
+                                <mkdir dir="build/Train/content" />
                                 <copy todir="build/Train/content">
-                                    <fileset dir="content" includes="**/*" excludes="save*"/>
+                                    <fileset dir="content"
+                                        includes="**/*" excludes="save*" />
                                 </copy>
 
-                                <mkdir dir="build/Train/natives"/>
+                                <mkdir dir="build/Train/natives" />
                                 <copy todir="build/Train/natives">
-                                    <fileset dir="target/natives" includes="*"/>
+                                    <fileset dir="target/natives"
+                                        includes="*" />
                                 </copy>
 
                                 <copy todir="build/Train">
-                                   <fileset dir="target" includes="*-jar-with-dependencies.jar"/>
-                                    <mapper type="merge" from="*" to="Train.jar"/>
+                                    <fileset dir="target"
+                                        includes="*-jar-with-dependencies.jar" />
+                                    <mapper type="merge" from="*"
+                                        to="Train.jar" />
                                 </copy>
 
-                                <zip destfile="build/Train.zip" basedir="build/Train"/>
-                                <tar destfile="build/Train.tar.bz2" basedir="build/Train" compression="bzip2"/>
+                                <zip destfile="build/Train.zip"
+                                    basedir="build/Train" />
+                                <tar destfile="build/Train.tar.bz2"
+                                    basedir="build/Train" compression="bzip2" />
                             </tasks>
                         </configuration>
                         <goals>
@@ -142,16 +148,17 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>in-project</id>
-            <name>In Project Repo</name>
-            <url>file://${basedir}/lib</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -175,9 +182,9 @@
             <version>2.8.4</version>
         </dependency>
         <dependency>
-            <groupId>slick</groupId>
-            <artifactId>slick</artifactId>
-            <version>237</version>
+            <groupId>org.slick2d</groupId>
+            <artifactId>slick2d-core</artifactId>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.jcraft</groupId>

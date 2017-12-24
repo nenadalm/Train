@@ -36,6 +36,11 @@ Create distributable package
 
 * it'll put all necessary files for run into build/
 
+Show outdated dependencies
+--------------------------
+
+```$ mvn versions:display-dependency-updates```
+
 BSD License
 -----------
 
