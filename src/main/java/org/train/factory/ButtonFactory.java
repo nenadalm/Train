@@ -18,6 +18,7 @@ public class ButtonFactory {
     private Font defaultFont;
     private Color defaultColor;
     private Image normalImage, overImage, disabledImage;
+    private float scale;
 
     private String defaultText;
     private Color normalColor, overColor, disabledColor;
@@ -29,6 +30,7 @@ public class ButtonFactory {
         this.defaultFont = new TrueTypeFont(new java.awt.Font("ubuntu", java.awt.Font.PLAIN, 40), true);
         this.defaultColor = Color.red;
         this.defaultText = "";
+        this.scale = 1;
         this.listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -100,6 +102,12 @@ public class ButtonFactory {
         return this;
     }
 
+    public ButtonFactory setScale(float scale) {
+        this.scale = scale;
+
+        return this;
+    }
+
     public Button createButton() {
         Button button = new Button(this.createNormalView(), this.createOverView(), this.createDisabledView(),
                 this.listener);
@@ -133,7 +141,7 @@ public class ButtonFactory {
     }
 
     private ViewInterface createView(Image img) {
-        return new ImageView(img);
+        return new ImageView(img, this.scale);
     }
 
     private ViewInterface createView(String text, Font font, Color color) {

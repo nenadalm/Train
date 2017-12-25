@@ -7,34 +7,36 @@ import org.newdawn.slick.geom.Point;
 public class ImageView implements ViewInterface {
     private Image image;
     private Point position;
+    private float scale;
 
-    public ImageView(Image image) {
-	this.image = image;
-	this.position = new Point(0, 0);
+    public ImageView(Image image, float scale) {
+        this.image = image;
+        this.position = new Point(0, 0);
+        this.scale = scale;
     }
 
     @Override
     public void render(Graphics g) {
-	g.drawImage(this.image, this.getPosition().getX(), this.getPosition().getY());
+        this.image.draw(this.getPosition().getX(), this.getPosition().getY(), this.scale);
     }
 
     @Override
     public Point getPosition() {
-	return position;
+        return position;
     }
 
     @Override
     public void setPosition(Point position) {
-	this.position = position;
+        this.position = position;
     }
 
     @Override
     public int getWidth() {
-	return this.image.getWidth();
+        return this.image.getWidth();
     }
 
     @Override
     public int getHeight() {
-	return this.image.getHeight();
+        return this.image.getHeight();
     }
 }

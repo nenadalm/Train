@@ -15,6 +15,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Configuration;
@@ -635,56 +636,56 @@ public class MenuForEditorState extends BasicGameState {
         ResourceManager resourceManager = this.container.getComponent(ResourceManager.class);
         ButtonFactory buttonFactory = this.container.getComponent(ButtonFactory.class);
 
-        Image arrowUpImage = resourceManager.getImage("arrow").getScaledCopy(width / 2000f);
-        Image arrowUpMouseOverImage = resourceManager.getImage("arrowMouseOver").getScaledCopy(width / 2000f);
-        Image arrowUpDisabledImage = resourceManager.getImage("arrowDisabled").getScaledCopy(width / 2000f);
+        Image arrowUpImage = resourceManager.getImage("arrow");
+        Image arrowUpMouseOverImage = resourceManager.getImage("arrowMouseOver");
+        Image arrowUpDisabledImage = resourceManager.getImage("arrowDisabled");
+        float arrowScale = width / 2000f;
+        float arrowHeight = arrowUpImage.getHeight() * arrowScale;
 
-        this.levelArrowUp = buttonFactory.setNormalImage(arrowUpImage).setOverImage(arrowUpMouseOverImage)
-                .setDisabledImage(arrowUpDisabledImage).setListener(new ActionListener() {
+        this.levelArrowUp = buttonFactory.setScale(arrowScale).setNormalImage(arrowUpImage)
+                .setOverImage(arrowUpMouseOverImage).setDisabledImage(arrowUpDisabledImage)
+                .setListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         infoText = "";
                         levelsMenu.showPrev();
                     }
                 }).createButton();
-        this.levelArrowUp.setRectangle(new org.newdawn.slick.geom.Rectangle(width * 7 / 12, height * 3 / 12,
-                arrowUpImage.getWidth(), arrowUpImage.getHeight()));
+        this.levelArrowUp.setPosition(new Point(width * 7 / 12, height * 3 / 12 - arrowHeight));
 
-        this.packageArrowUp = buttonFactory.setNormalImage(arrowUpImage).setOverImage(arrowUpMouseOverImage)
-                .setDisabledImage(arrowUpDisabledImage).setListener(new ActionListener() {
+        this.packageArrowUp = buttonFactory.setScale(arrowScale).setNormalImage(arrowUpImage)
+                .setOverImage(arrowUpMouseOverImage).setDisabledImage(arrowUpDisabledImage)
+                .setListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         infoText = "";
                         packagesMenu.showPrev();
                     }
                 }).createButton();
-        this.packageArrowUp.setRectangle(new org.newdawn.slick.geom.Rectangle(width / 12, height * 3 / 12,
-                arrowUpImage.getWidth(), arrowUpImage.getHeight()));
+        this.packageArrowUp.setPosition(new Point(width / 12, height * 3 / 12 - arrowHeight));
 
         Image arrowDown = arrowUpImage.getFlippedCopy(false, true);
         Image arrowDisabledDown = arrowUpDisabledImage.getFlippedCopy(false, true);
         Image arrowMouseOverDown = arrowUpMouseOverImage.getFlippedCopy(false, true);
 
-        this.packageArrowDown = buttonFactory.setNormalImage(arrowDown).setOverImage(arrowMouseOverDown)
-                .setDisabledImage(arrowDisabledDown).setListener(new ActionListener() {
+        this.packageArrowDown = buttonFactory.setScale(arrowScale).setNormalImage(arrowDown)
+                .setOverImage(arrowMouseOverDown).setDisabledImage(arrowDisabledDown).setListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         infoText = "";
                         packagesMenu.showNext();
                     }
                 }).createButton();
-        this.packageArrowDown.setRectangle(new org.newdawn.slick.geom.Rectangle(width / 12, height * 9 / 12,
-                arrowDown.getWidth(), arrowDown.getHeight()));
+        this.packageArrowDown.setPosition(new Point(width / 12, height * 9 / 12));
 
-        this.levelArrowDown = buttonFactory.setNormalImage(arrowDown).setOverImage(arrowMouseOverDown)
-                .setDisabledImage(arrowDisabledDown).setListener(new ActionListener() {
+        this.levelArrowDown = buttonFactory.setScale(arrowScale).setNormalImage(arrowDown)
+                .setOverImage(arrowMouseOverDown).setDisabledImage(arrowDisabledDown).setListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         infoText = "";
                         levelsMenu.showNext();
                     }
                 }).createButton();
-        this.levelArrowDown.setRectangle(new org.newdawn.slick.geom.Rectangle(width * 7 / 12, height * 9 / 12,
-                arrowDown.getWidth(), arrowDown.getHeight()));
+        this.levelArrowDown.setPosition(new Point(width * 7 / 12, height * 9 / 12));
     }
 }
