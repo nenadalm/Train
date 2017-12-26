@@ -61,6 +61,10 @@ public class EditorState extends BasicGameState {
     private Point gatePosition = null;
     private Point trainPosition = null;
 
+    // true if switching to testing mode (after switching back, level is not
+    // reloaded)
+    private boolean testing = false;
+
     public EditorState(int stateId) {
         super(stateId);
     }
@@ -72,7 +76,6 @@ public class EditorState extends BasicGameState {
         this.fieldPosition = new Point(0, 0);
 
         this.levelController = this.container.getComponent(LevelController.class);
-        this.loadLevel(container);
     }
 
     @Override
@@ -86,6 +89,11 @@ public class EditorState extends BasicGameState {
         this.imageMenuItems = new ArrayList<ImageMenuItem>();
         this.initTopMenuListeners(game, this.resourceManager, container.getInput());
 
+        if (this.testing) {
+            this.testing = false;
+        } else {
+            this.loadLevel(container);
+        }
         for (ImageMenuItem item : this.imageMenuItems) {
             item.setScale(this.level.getScale());
         }
@@ -99,10 +107,6 @@ public class EditorState extends BasicGameState {
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-        if (this.level == null) {
-            this.loadLevel(container);
-        }
-
         this.level.render(container, game, g);
 
         if (this.topMenu.isShowed()) {
@@ -329,5 +333,9 @@ public class EditorState extends BasicGameState {
                 }
             }
         });
+    }
+
+    public void setTesting(boolean testing) {
+        this.testing = testing;
     }
 }

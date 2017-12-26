@@ -25,6 +25,12 @@ public class TestGameState extends BasicGameState {
 
         this.level = levelController.getCurrentLevelModified();
         levelHelper.adjustLevelToContainer(container, this.level);
+        container.setMouseGrabbed(true);
+    }
+
+    @Override
+    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+        container.setMouseGrabbed(false);
     }
 
     @Override

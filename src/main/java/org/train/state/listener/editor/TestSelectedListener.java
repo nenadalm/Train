@@ -11,12 +11,13 @@ public class TestSelectedListener extends ItemSelectedListener {
     private StateBasedGame game;
 
     public TestSelectedListener(EditorState editorState, StateBasedGame game) {
-	super(editorState);
-	this.game = game;
+        super(editorState);
+        this.game = game;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-	game.enterState(Game.TEST_GAME_STATE);
+        this.editorState.setTesting(true);
+        game.enterState(Game.TEST_GAME_STATE);
     }
 }
