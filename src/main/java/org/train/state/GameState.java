@@ -1,7 +1,6 @@
 package org.train.state;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -14,6 +13,7 @@ import org.train.entity.Level;
 import org.train.entity.Menu;
 import org.train.entity.MessageBox;
 import org.train.helper.LevelHelper;
+import org.train.listener.LevelStateChangeListener;
 import org.train.menu.MenuBuilder;
 import org.train.other.LevelController;
 import org.train.other.Translator;
@@ -56,87 +56,75 @@ public class GameState extends BasicGameState {
     }
 
     private void initMenuItems(final GameContainer container, final StateBasedGame game) {
-        MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
-        menuBuilder.addMenuItem(this.translator.translate("Game.Menu.Continue"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                GameState.this.enterState(container, State.PLAYING);
-                GameState.this.menu.close();
-                GameState.this.gameOverMenu.close();
-            }
-        }).addMenuItem(this.translator.translate("Game.Menu.RepeatLevel"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.initLevel(container, game);
-                GameState.this.menu.close();
-                GameState.this.gameOverMenu.close();
-            }
-        }).addMenuItem(this.translator.translate("Game.Menu.Menu"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.menu.close();
-                GameState.this.gameOverMenu.close();
-                game.enterState(Game.MENU_FOR_GAME_STATE);
-            }
-        }).addMenuItem(this.translator.translate("Game.Menu.MainMenu"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.menu.close();
-                GameState.this.gameOverMenu.close();
-                game.enterState(Game.MENU_STATE);
-            }
-        });
-        this.menu = menuBuilder.getMenu();
+        this.menu = this.container.getComponent(MenuBuilder.class)
+                .addMenuItem(this.translator.translate("Game.Menu.Continue"), (ActionEvent arg0) -> {
+                    GameState.this.enterState(container, State.PLAYING);
+                    GameState.this.menu.close();
+                    GameState.this.gameOverMenu.close();
+                }).addMenuItem(this.translator.translate("Game.Menu.RepeatLevel"), (ActionEvent e) -> {
+                    GameState.this.initLevel(container, game);
+                    GameState.this.menu.close();
+                    GameState.this.gameOverMenu.close();
+                }).addMenuItem(this.translator.translate("Game.Menu.Menu"), (ActionEvent e) -> {
+                    GameState.this.menu.close();
+                    GameState.this.gameOverMenu.close();
+                    game.enterState(Game.MENU_FOR_GAME_STATE);
+                }).addMenuItem(this.translator.translate("Game.Menu.MainMenu"), (ActionEvent e) -> {
+                    GameState.this.menu.close();
+                    GameState.this.gameOverMenu.close();
+                    game.enterState(Game.MENU_STATE);
+                }).getMenu();
     }
 
     private void initGameOverMenuItems(final GameContainer container, final StateBasedGame game) {
-        MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
-        menuBuilder.addMenuItem(this.translator.translate("Game.Menu.RepeatLevel"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.initLevel(container, game);
-                GameState.this.menu.close();
-                GameState.this.gameOverMenu.close();
-            }
-        }).addMenuItem(this.translator.translate("Game.Menu.Menu"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.menu.close();
-                GameState.this.gameOverMenu.close();
-                game.enterState(Game.MENU_FOR_GAME_STATE);
-            }
-        }).addMenuItem(this.translator.translate("Game.Menu.MainMenu"), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.menu.close();
-                GameState.this.gameOverMenu.close();
-                game.enterState(Game.MENU_STATE);
-            }
-        });
-        this.gameOverMenu = menuBuilder.getMenu();
+        this.gameOverMenu = this.container.getComponent(MenuBuilder.class)
+                .addMenuItem(this.translator.translate("Game.Menu.RepeatLevel"), (ActionEvent e) -> {
+                    GameState.this.initLevel(container, game);
+                    GameState.this.menu.close();
+                    GameState.this.gameOverMenu.close();
+                }).addMenuItem(this.translator.translate("Game.Menu.Menu"), (ActionEvent e) -> {
+                    GameState.this.menu.close();
+                    GameState.this.gameOverMenu.close();
+                    game.enterState(Game.MENU_FOR_GAME_STATE);
+                }).addMenuItem(this.translator.translate("Game.Menu.MainMenu"), (ActionEvent e) -> {
+                    GameState.this.menu.close();
+                    GameState.this.gameOverMenu.close();
+                    game.enterState(Game.MENU_STATE);
+                }).getMenu();
     }
 
     private void initLevel(GameContainer container, final StateBasedGame game) {
         try {
             this.level = this.levelController.getCurrentLevel();
+            this.level.addStateChangeListener(new LevelStateChangeListener() {
+                @Override
+                public void levelOver() {
+                    GameState.this.enterState(container, State.CRASHED);
+                    GameState.this.gameOverMenu.show();
+                }
+
+                @Override
+                public void levelFinished() {
+                    GameState.this.enterState(container, State.WON);
+                    if (GameState.this.levelController.nextLevelExist()) {
+                        GameState.this.levelController.updateProgress();
+                        GameState.this.showLevelFinishedConfirmationBox(container, game);
+
+                    } else {
+                        GameState.this.showCongratulationConfirmationBox(game);
+                    }
+                }
+            });
 
             LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
             levelHelper.adjustLevelToContainer(container, level);
             this.enterState(container, State.PLAYING);
 
             if (!this.level.isValid()) {
-                this.messageBox.showConfirm(this.translator.translate("Game.LevelIsInvalid"), new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent arg0) {
-                        game.enterState(Game.EDITOR_STATE);
-                    }
-                }, new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        game.enterState(Game.MENU_FOR_GAME_STATE);
-                    }
+                this.messageBox.showConfirm(this.translator.translate("Game.LevelIsInvalid"), (ActionEvent arg0) -> {
+                    game.enterState(Game.EDITOR_STATE);
+                }, (ActionEvent e) -> {
+                    game.enterState(Game.MENU_FOR_GAME_STATE);
                 });
             }
         } catch (Exception e) {
@@ -158,19 +146,7 @@ public class GameState extends BasicGameState {
 
         switch (this.state) {
         case PLAYING:
-            if (this.level.isOver()) {
-                this.enterState(container, State.CRASHED);
-                this.gameOverMenu.show();
-            } else if (this.level.isFinished()) {
-                this.enterState(container, State.WON);
-                if (this.levelController.nextLevelExist()) {
-                    this.levelController.updateProgress();
-                    this.showLevelFinishedConfirmationBox(container, game);
-
-                } else {
-                    this.showCongratulationConfirmationBox(game);
-                }
-            } else if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            if (input.isKeyPressed(Input.KEY_ESCAPE)) {
                 this.enterState(container, State.PAUSED);
                 this.menu.show();
             }
@@ -200,35 +176,19 @@ public class GameState extends BasicGameState {
     }
 
     private void showCongratulationConfirmationBox(final StateBasedGame game) {
-        this.messageBox.showConfirm(this.translator.translate("Game.Congratulation"), new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                game.enterState(Game.MENU_FOR_GAME_STATE);
-            }
-        }, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                game.enterState(Game.MENU_STATE);
-            }
+        this.messageBox.showConfirm(this.translator.translate("Game.Congratulation"), (ActionEvent e) -> {
+            game.enterState(Game.MENU_FOR_GAME_STATE);
+        }, (ActionEvent e) -> {
+            game.enterState(Game.MENU_STATE);
         });
     }
 
     private void showLevelFinishedConfirmationBox(final GameContainer container, final StateBasedGame game) {
-        this.messageBox.showConfirm(this.translator.translate("Game.LevelFinished"), new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameState.this.levelController.loadNextLevel();
-                GameState.this.initLevel(container, game);
-            }
-        }, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                game.enterState(Game.MENU_STATE);
-            }
+        this.messageBox.showConfirm(this.translator.translate("Game.LevelFinished"), (ActionEvent e) -> {
+            GameState.this.levelController.loadNextLevel();
+            GameState.this.initLevel(container, game);
+        }, (ActionEvent e) -> {
+            game.enterState(Game.MENU_STATE);
         });
     }
 }

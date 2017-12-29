@@ -17,6 +17,7 @@ import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.collection.LevelItemsStorage;
+import org.train.listener.LevelStateChangeListener;
 import org.train.other.ResourceManager;
 
 public class Level extends Entity implements Cloneable {
@@ -43,6 +44,7 @@ public class Level extends Entity implements Cloneable {
     private Queue<Integer> keys = new LinkedList<Integer>();
     private Sound winSound;
     private Sound moveSound;
+    private List<LevelStateChangeListener> levelStateChangeListeners = new ArrayList<LevelStateChangeListener>();
 
     public Level(int width, int height, int refreshSpeed, ResourceManager resourceManager) {
         this.winSound = resourceManager.getSound("win");
@@ -192,10 +194,8 @@ public class Level extends Entity implements Cloneable {
 
         this.openGateIfItemsAreJustCollected();
 
-        Input input = gc.getInput();
-
         if (!this.isGameOver && !this.isGameWon) {
-            this.storeMovementKeysInQueue(input);
+            this.storeMovementKeysInQueue(gc.getInput());
 
             this.time += delta;
             if (this.time >= this.interval) {
@@ -212,6 +212,16 @@ public class Level extends Entity implements Cloneable {
                 }
 
                 this.time = 0;
+            }
+
+            if (this.isGameOver) {
+                for (LevelStateChangeListener listener : this.levelStateChangeListeners) {
+                    listener.levelOver();
+                }
+            } else if (this.isGameWon) {
+                for (LevelStateChangeListener listener : this.levelStateChangeListeners) {
+                    listener.levelFinished();
+                }
             }
         }
     }
@@ -359,6 +369,9 @@ public class Level extends Entity implements Cloneable {
     private void doCrash() {
         this.train.setImage(this.resourceManager.getImage("trainCrash"));
         this.isGameOver = true;
+        for (LevelStateChangeListener listener : this.levelStateChangeListeners) {
+            listener.levelOver();
+        }
     }
 
     public Train getTrain() {
@@ -455,5 +468,9 @@ public class Level extends Entity implements Cloneable {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public void addStateChangeListener(LevelStateChangeListener listener) {
+        this.levelStateChangeListeners.add(listener);
     }
 }
