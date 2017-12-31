@@ -45,6 +45,10 @@
                 <target>Level is not playable. Gate is missing. Do you really want leave editor?</target>
             </trans-unit>
             <trans-unit>
+                <source>Editor.Message.LevelImpassable</source>
+                <target>Level is not playable. There is no route from train to gate. Do you really want leave editor?</target>
+            </trans-unit>
+            <trans-unit>
                 <source>Game.Menu.Continue</source>
                 <target>Continue</target>
             </trans-unit>

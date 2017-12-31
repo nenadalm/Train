@@ -258,13 +258,13 @@ public class Level extends Entity implements Cloneable {
         Integer key = this.keys.poll();
         if (key != null) {
             if (key == Keyboard.KEY_UP) {
-                this.trainDirectionPrepared = new Coordinate(0, -1);
+                this.trainDirectionPrepared = Coordinate.UP;
             } else if (key == Keyboard.KEY_DOWN) {
-                this.trainDirectionPrepared = new Coordinate(0, 1);
+                this.trainDirectionPrepared = Coordinate.DOWN;
             } else if (key == Keyboard.KEY_LEFT) {
-                this.trainDirectionPrepared = new Coordinate(-1, 0);
+                this.trainDirectionPrepared = Coordinate.LEFT;
             } else if (key == Keyboard.KEY_RIGHT) {
-                this.trainDirectionPrepared = new Coordinate(1, 0);
+                this.trainDirectionPrepared = Coordinate.RIGHT;
             }
         }
 
@@ -296,8 +296,7 @@ public class Level extends Entity implements Cloneable {
     }
 
     private boolean trainCrashed(Coordinate newPoint) {
-        if (newPoint.x < 0 || newPoint.y < 0 || newPoint.x > this.levelItems.length - 1
-                || newPoint.y > this.levelItems[0].length - 1) {
+        if (!newPoint.isValidFor(this.levelItems)) {
             return true;
         }
         if (this.levelItems[newPoint.x][newPoint.y].getType() == Item.WALL
@@ -385,10 +384,9 @@ public class Level extends Entity implements Cloneable {
             }
         }
 
-        try {
-            this.train.setPosition(LevelItemUtil.findItemCoordinates(this.levelItems, Item.TRAIN).toPoint());
-        } catch (Exception e) {
-            e.printStackTrace();
+        Coordinate trainCoordinates = LevelItemUtil.findItemCoordinates(this.levelItems, Item.TRAIN);
+        if (trainCoordinates != null) {
+            this.train.setPosition(trainCoordinates.toPoint());
         }
         this.itemsToWin = LevelItemUtil.getConsumableItemsCount(this.levelItems);
         this.playable = this.isValid();
@@ -417,7 +415,7 @@ public class Level extends Entity implements Cloneable {
     }
 
     public boolean isValid() {
-        return LevelValidator.validate(this) == null;
+        return LevelValidator.validateLevelItems(this.levelItems) == null;
     }
 
     public Coordinate findTrainPosition() {

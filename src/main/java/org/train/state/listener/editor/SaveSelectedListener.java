@@ -34,7 +34,7 @@ public class SaveSelectedListener extends ItemSelectedListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
-        LevelValidationError error = LevelValidator.validate(this.level);
+        LevelValidationError error = LevelValidator.validateLevelItems(this.level.getLevelItems());
         if (error != null) {
             String message = "";
             switch (error) {
@@ -43,6 +43,9 @@ public class SaveSelectedListener extends ItemSelectedListener {
                 break;
             case MISSING_GATE:
                 message = this.translator.translate("Editor.Message.GateMissing");
+                break;
+            case IMPASSABLE:
+                message = this.translator.translate("Editor.Message.LevelImpassable");
                 break;
             }
             this.messageBox.showConfirm(message, new ActionListener() {
