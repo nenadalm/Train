@@ -1,6 +1,7 @@
 package org.train.level;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import org.train.entity.Level.Item;
 import org.train.entity.LevelItem;
@@ -12,20 +13,27 @@ public class LevelValidator {
             return LevelValidationError.MISSING_TRAIN;
         }
 
-        if (LevelItemUtil.findItemCoordinates(levelItems, Item.GATE) == null) {
+        Coordinate gateCoordinates = LevelItemUtil.findItemCoordinates(levelItems, Item.GATE);
+        if (gateCoordinates == null) {
             return LevelValidationError.MISSING_GATE;
         }
 
-        if (!LevelValidator.pathExistsFromTrainToGate(levelItems)) {
+        if (!LevelValidator.pathExistsFromTrainToCoordinates(levelItems, gateCoordinates)) {
             return LevelValidationError.IMPASSABLE;
+        }
+
+        List<Coordinate> itemCoordinates = LevelItemUtil.findItemCoordinatesList(levelItems, Item.ITEM);
+        for (Coordinate c : itemCoordinates) {
+            if (!LevelValidator.pathExistsFromTrainToCoordinates(levelItems, c)) {
+                return LevelValidationError.UNREACHABLE_CONSUMABLE;
+            }
         }
 
         return null;
     }
 
-    private static boolean pathExistsFromTrainToGate(LevelItem[][] levelItems) {
+    private static boolean pathExistsFromTrainToCoordinates(LevelItem[][] levelItems, Coordinate target) {
         Coordinate trainCoordinates = LevelItemUtil.findItemCoordinates(levelItems, Item.TRAIN);
-        Coordinate gateCoordinates = LevelItemUtil.findItemCoordinates(levelItems, Item.GATE);
 
         boolean[][] path = new boolean[levelItems.length][levelItems[0].length];
         path[trainCoordinates.x][trainCoordinates.y] = true;
@@ -41,7 +49,7 @@ public class LevelValidator {
             }
 
             for (Coordinate trainPosition : trainPositions) {
-                if (trainPosition.equals(gateCoordinates)) {
+                if (trainPosition.equals(target)) {
                     return true;
                 }
             }

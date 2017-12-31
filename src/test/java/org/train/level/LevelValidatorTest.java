@@ -31,11 +31,16 @@ public class LevelValidatorTest {
                 { LevelValidatorTest.createLevelItems(new Item[][] { { Item.EMPTY, Item.WALL, Item.EMPTY },
                         { Item.TRAIN, Item.WALL, Item.EMPTY }, { Item.EMPTY, Item.WALL, Item.GATE } }),
                         LevelValidationError.IMPASSABLE },
+                { LevelValidatorTest.createLevelItems(new Item[][] { { Item.TRAIN, Item.WALL, Item.ITEM },
+                        { Item.EMPTY, Item.EMPTY, Item.WALL }, { Item.EMPTY, Item.EMPTY, Item.GATE } }),
+                        LevelValidationError.UNREACHABLE_CONSUMABLE },
                 /// valid levels
                 { LevelValidatorTest.createLevelItems(new Item[][] { { Item.EMPTY, Item.EMPTY, Item.EMPTY },
                         { Item.TRAIN, Item.EMPTY, Item.EMPTY }, { Item.EMPTY, Item.EMPTY, Item.GATE } }), null },
                 { LevelValidatorTest.createLevelItems(new Item[][] { { Item.TRAIN, Item.WALL, Item.EMPTY },
-                        { Item.EMPTY, Item.EMPTY, Item.EMPTY }, { Item.EMPTY, Item.WALL, Item.GATE } }), null } });
+                        { Item.EMPTY, Item.EMPTY, Item.EMPTY }, { Item.EMPTY, Item.WALL, Item.GATE } }), null },
+                { LevelValidatorTest.createLevelItems(new Item[][] { { Item.TRAIN, Item.WALL, Item.EMPTY },
+                        { Item.EMPTY, Item.EMPTY, Item.ITEM }, { Item.EMPTY, Item.WALL, Item.GATE } }), null } });
     }
 
     @Parameter

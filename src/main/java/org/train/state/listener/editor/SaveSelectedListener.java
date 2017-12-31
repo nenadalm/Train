@@ -47,6 +47,9 @@ public class SaveSelectedListener extends ItemSelectedListener {
             case IMPASSABLE:
                 message = this.translator.translate("Editor.Message.LevelImpassable");
                 break;
+            case UNREACHABLE_CONSUMABLE:
+                message = this.translator.translate("Editor.Message.UnreachableConsumable");
+                break;
             }
             this.messageBox.showConfirm(message, new ActionListener() {
 

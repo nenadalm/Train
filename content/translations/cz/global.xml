@@ -213,6 +213,10 @@
                 <target>Level není hratelný. Nelze se dostat od vlaku k bráně. Opravdu chceš ukončit editor?</target>
             </trans-unit>
             <trans-unit>
+                <source>Editor.Message.UnreachableConsumable</source>
+                <target>Level není hratelný. Nelze sebrat všechny předměty. Opravdu chceš ukončit editor?</target>
+            </trans-unit>
+            <trans-unit>
                 <source>Controls.Game</source>
                 <target>Hra</target>
             </trans-unit>

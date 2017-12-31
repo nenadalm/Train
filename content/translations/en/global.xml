@@ -49,6 +49,10 @@
                 <target>Level is not playable. There is no route from train to gate. Do you really want leave editor?</target>
             </trans-unit>
             <trans-unit>
+                <source>Editor.Message.UnreachableConsumable</source>
+                <target>Level is not playable. It's not possible to collect all items. Do you really want leave editor?</target>
+            </trans-unit>
+            <trans-unit>
                 <source>Game.Menu.Continue</source>
                 <target>Continue</target>
             </trans-unit>
