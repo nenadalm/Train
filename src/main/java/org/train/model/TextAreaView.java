@@ -66,10 +66,15 @@ public class TextAreaView implements ViewInterface {
             this.textViews.add(textView);
 
             this.width = Math.max(this.width, textView.getWidth());
-            this.height = Math.max(this.height, textView.getHeight());
         }
 
         this.recomputeTextViewPositions();
+
+        TextView firstView = this.textViews.get(0);
+        TextView lastView = this.textViews.get(this.textViews.size() - 1);
+
+        this.height = (int) ((lastView.getPosition().getY() + lastView.getHeight()) - firstView.getPosition().getY());
+
     }
 
     private void recomputeTextViewPositions() {
