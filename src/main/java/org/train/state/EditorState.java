@@ -25,6 +25,7 @@ import org.train.entity.MessageBox;
 import org.train.factory.EffectFactory;
 import org.train.helper.LevelHelper;
 import org.train.listener.AbstractKeyListener;
+import org.train.model.Coordinate;
 import org.train.model.Truck;
 import org.train.other.LevelController;
 import org.train.other.ResourceManager;
@@ -58,8 +59,8 @@ public class EditorState extends BasicGameState {
     private Translator translator;
     private boolean wasTopMenuShowed = false;
 
-    private Point gatePosition = null;
-    private Point trainPosition = null;
+    private Coordinate gatePosition = null;
+    private Coordinate trainPosition = null;
 
     // true if switching to testing mode (after switching back, level is not
     // reloaded)
@@ -176,7 +177,7 @@ public class EditorState extends BasicGameState {
             int width = indexX * this.level.getImageSize();
             int height = indexY * this.level.getImageSize();
             this.fieldPosition.setLocation(offsetX + width, offsetY + height);
-            Point gridPosition = new Point(indexX, indexY);
+            Coordinate gridPosition = new Coordinate(indexX, indexY);
 
             if (this.topMenu.isShowed()) {
                 this.updateMenu(game, input);
@@ -199,9 +200,9 @@ public class EditorState extends BasicGameState {
         levelHelper.adjustLevelToContainer(container, level);
     }
 
-    private void setItemPosition(Point gridPosition) {
+    private void setItemPosition(Coordinate gridPosition) {
         // remove position
-        Item item = this.level.getLevelItems()[(int) gridPosition.getX()][(int) gridPosition.getY()].getType();
+        Item item = this.level.getLevelItems()[gridPosition.x][gridPosition.y].getType();
         switch (item) {
         case TRAIN:
             this.trainPosition = null;
@@ -230,7 +231,7 @@ public class EditorState extends BasicGameState {
         this.level.setLevelItem(this.activeItem, gridPosition);
     }
 
-    private void updateEditor(Point gridPosition, Input input) {
+    private void updateEditor(Coordinate gridPosition, Input input) {
         int mouseX = input.getMouseX();
         int mouseY = input.getMouseY();
         if (mouseY < 10) {

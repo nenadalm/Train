@@ -1,8 +1,8 @@
 package org.train.level;
 
-import org.newdawn.slick.geom.Point;
 import org.train.entity.Level.Item;
 import org.train.entity.LevelItem;
+import org.train.model.Coordinate;
 
 public class LevelItemUtil {
     public static int getConsumableItemsCount(LevelItem[][] levelItems) {
@@ -18,11 +18,11 @@ public class LevelItemUtil {
         return counter;
     }
 
-    public static Point findItemCoordinates(LevelItem[][] levelItems, Item item) {
+    public static Coordinate findItemCoordinates(LevelItem[][] levelItems, Item item) {
         for (int i = 0; i < levelItems.length; i++) {
             for (int j = 0; j < levelItems[0].length; j++) {
                 if (levelItems[i][j].getType() == item) {
-                    return new Point(i, j);
+                    return new Coordinate(i, j);
                 }
             }
         }

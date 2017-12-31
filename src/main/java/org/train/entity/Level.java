@@ -19,6 +19,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.train.level.LevelItemUtil;
 import org.train.level.LevelValidator;
 import org.train.listener.LevelStateChangeListener;
+import org.train.model.Coordinate;
 import org.train.other.ResourceManager;
 
 public class Level extends Entity implements Cloneable {
@@ -39,7 +40,7 @@ public class Level extends Entity implements Cloneable {
     private int itemsToWin = 0;
     private int originalImageSize;
     private int imageSize;
-    private Point trainDirectionPrepared = new Point(0, 0);
+    private Coordinate trainDirectionPrepared = new Coordinate(0, 0);
     private ResourceManager resourceManager;
     private boolean playable = false;
     private Queue<Integer> keys = new LinkedList<Integer>();
@@ -81,11 +82,11 @@ public class Level extends Entity implements Cloneable {
         return this.levelItems.length;
     }
 
-    public void setLevelItem(LevelItem levelItem, Point position) {
+    public void setLevelItem(LevelItem levelItem, Coordinate position) {
         LevelItem clonedItem = (LevelItem) levelItem.clone();
         clonedItem.setPosition(this.getItemPosition(position));
         clonedItem.setScale(this.getScale());
-        this.levelItems[(int) position.getX()][(int) position.getY()] = clonedItem;
+        this.levelItems[position.x][(int) position.y] = clonedItem;
     }
 
     @Override
@@ -200,9 +201,9 @@ public class Level extends Entity implements Cloneable {
             if (this.time >= this.interval) {
                 this.changeTrainDirectionBasedOnKeysInQueue();
 
-                Point lastPoint = LevelItemUtil.findItemCoordinates(this.levelItems, Item.TRAIN);
-                Point newPoint = new Point(lastPoint.getX() + this.trainDirectionPrepared.getX(),
-                        lastPoint.getY() + this.trainDirectionPrepared.getY());
+                Coordinate lastPoint = LevelItemUtil.findItemCoordinates(this.levelItems, Item.TRAIN);
+                Coordinate newPoint = new Coordinate(lastPoint.x + this.trainDirectionPrepared.x,
+                        lastPoint.y + this.trainDirectionPrepared.y);
 
                 if (this.trainCrashed(newPoint)) {
                     this.doCrash();
@@ -225,13 +226,12 @@ public class Level extends Entity implements Cloneable {
         }
     }
 
-    private void moveTrain(Point lastPoint, Point newPoint) {
-        if (this.levelItems[(int) newPoint.getX()][(int) newPoint.getY()].getType() == Item.ITEM) {
-            this.addTruck(lastPoint, this.levelItems[(int) newPoint.getX()][(int) newPoint.getY()]);
+    private void moveTrain(Coordinate lastPoint, Coordinate newPoint) {
+        if (this.levelItems[newPoint.x][newPoint.y].getType() == Item.ITEM) {
+            this.addTruck(lastPoint, this.levelItems[newPoint.x][(int) newPoint.y]);
             this.itemsToWin--;
         } else {
-            if (this.itemsToWin == 0
-                    && this.levelItems[(int) newPoint.getX()][(int) newPoint.getY()].getType() == Item.GATE) {
+            if (this.itemsToWin == 0 && this.levelItems[newPoint.x][newPoint.y].getType() == Item.GATE) {
                 this.isGameWon = true;
                 this.moveSound.stop();
                 this.winSound.play();
@@ -243,7 +243,7 @@ public class Level extends Entity implements Cloneable {
                 LevelItem empty = new LevelItem("empty", this.images.get(Item.EMPTY), Item.EMPTY);
                 empty.setPosition(this.getItemPosition(lastPoint));
                 empty.setScale(this.getScale());
-                this.levelItems[(int) lastPoint.getX()][(int) lastPoint.getY()] = empty;
+                this.levelItems[lastPoint.x][lastPoint.y] = empty;
             }
         }
         if (this.getTrain().getDirection().getX() != 0 || this.getTrain().getDirection().getY() != 0) {
@@ -251,24 +251,24 @@ public class Level extends Entity implements Cloneable {
         }
         this.train.setPosition(this.getItemPosition(newPoint));
         this.train.setScale(this.getScale());
-        this.levelItems[(int) newPoint.getX()][(int) newPoint.getY()] = this.train;
+        this.levelItems[newPoint.x][(int) newPoint.y] = this.train;
     }
 
     private void changeTrainDirectionBasedOnKeysInQueue() {
         Integer key = this.keys.poll();
         if (key != null) {
             if (key == Keyboard.KEY_UP) {
-                this.trainDirectionPrepared = new Point(0, -1);
+                this.trainDirectionPrepared = new Coordinate(0, -1);
             } else if (key == Keyboard.KEY_DOWN) {
-                this.trainDirectionPrepared = new Point(0, 1);
+                this.trainDirectionPrepared = new Coordinate(0, 1);
             } else if (key == Keyboard.KEY_LEFT) {
-                this.trainDirectionPrepared = new Point(-1, 0);
+                this.trainDirectionPrepared = new Coordinate(-1, 0);
             } else if (key == Keyboard.KEY_RIGHT) {
-                this.trainDirectionPrepared = new Point(1, 0);
+                this.trainDirectionPrepared = new Coordinate(1, 0);
             }
         }
 
-        this.train.setDirection(this.trainDirectionPrepared);
+        this.train.setDirection(this.trainDirectionPrepared.toPoint());
     }
 
     private void storeMovementKeysInQueue(Input input) {
@@ -295,23 +295,22 @@ public class Level extends Entity implements Cloneable {
         }
     }
 
-    private boolean trainCrashed(Point newPoint) {
-        if (newPoint.getX() < 0 || newPoint.getY() < 0 || newPoint.getX() > this.levelItems.length - 1
-                || newPoint.getY() > this.levelItems[0].length - 1) {
+    private boolean trainCrashed(Coordinate newPoint) {
+        if (newPoint.x < 0 || newPoint.y < 0 || newPoint.x > this.levelItems.length - 1
+                || newPoint.y > this.levelItems[0].length - 1) {
             return true;
         }
-        if (this.levelItems[(int) newPoint.getX()][(int) newPoint.getY()].getType() == Item.WALL
-                || this.levelItems[(int) newPoint.getX()][(int) newPoint.getY()].getType() == Item.TRUCK) {
+        if (this.levelItems[newPoint.x][newPoint.y].getType() == Item.WALL
+                || this.levelItems[(int) newPoint.x][(int) newPoint.y].getType() == Item.TRUCK) {
             return true;
         }
-        if (this.levelItems[(int) newPoint.getX()][(int) newPoint.getY()].getType() == Item.GATE
-                && this.itemsToWin != 0) {
+        if (this.levelItems[(int) newPoint.x][(int) newPoint.y].getType() == Item.GATE && this.itemsToWin != 0) {
             return true;
         }
         return false;
     }
 
-    private void moveTrucks(Point moveToPosition, float applyRotation, boolean flippedHorizontal,
+    private void moveTrucks(Coordinate moveToPosition, float applyRotation, boolean flippedHorizontal,
             boolean flippedVertical) {
         Point positionTemp = null;
         Truck truck = null;
@@ -331,7 +330,7 @@ public class Level extends Entity implements Cloneable {
             truck.setFlippedHorizontal(flippedHorizontal);
             truck.setFlippedVertical(flippedVertical);
 
-            this.levelItems[(int) moveToPosition.getX()][(int) moveToPosition.getY()] = truck;
+            this.levelItems[moveToPosition.x][moveToPosition.y] = truck;
 
             moveToPosition = this.getItemCoordinates(positionTemp);
             applyRotation = rotationTemp;
@@ -342,12 +341,12 @@ public class Level extends Entity implements Cloneable {
             LevelItem empty = new LevelItem("", this.images.get(Item.EMPTY), Item.EMPTY);
             empty.setPosition(this.getItemPosition(moveToPosition));
             empty.setScale(this.getScale());
-            Point coordinates = this.getItemCoordinates(positionTemp);
-            this.levelItems[(int) coordinates.getX()][(int) coordinates.getY()] = empty;
+            Coordinate coordinates = this.getItemCoordinates(positionTemp);
+            this.levelItems[coordinates.x][coordinates.y] = empty;
         }
     }
 
-    private void addTruck(Point position, LevelItem eatenItem) {
+    private void addTruck(Coordinate position, LevelItem eatenItem) {
         String resourceId = eatenItem.getName();
         Image item = this.resourceManager.getTruck(resourceId).getTruck();
 
@@ -357,7 +356,7 @@ public class Level extends Entity implements Cloneable {
         t.setRotation(this.train.getRotation());
         t.setFlippedHorizontal(train.isFlippedHorizontal());
         t.setFlippedVertical(train.isFlippedVertical());
-        this.levelItems[(int) position.getX()][(int) position.getY()] = t;
+        this.levelItems[position.x][position.y] = t;
         this.trucks.add(t);
     }
 
@@ -381,13 +380,13 @@ public class Level extends Entity implements Cloneable {
         this.levelItems = levelItems;
         for (int i = 0; i < levelItems.length; i++) {
             for (int j = 0; j < levelItems[0].length; j++) {
-                this.levelItems[i][j].setPosition(this.getItemPosition(new Point(i, j)));
+                this.levelItems[i][j].setPosition(this.getItemPosition(new Coordinate(i, j)));
                 this.levelItems[i][j].setScale(this.getScale());
             }
         }
 
         try {
-            this.train.setPosition(LevelItemUtil.findItemCoordinates(this.levelItems, Item.TRAIN));
+            this.train.setPosition(LevelItemUtil.findItemCoordinates(this.levelItems, Item.TRAIN).toPoint());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -395,14 +394,14 @@ public class Level extends Entity implements Cloneable {
         this.playable = this.isValid();
     }
 
-    private Point getItemCoordinates(Point position) {
-        return new Point((position.getX() - this.getMarginLeft()) / this.imageSize,
-                (position.getY() - this.getMarginTop()) / this.imageSize);
+    private Coordinate getItemCoordinates(Point position) {
+        return new Coordinate((int) ((position.getX() - this.getMarginLeft()) / this.imageSize),
+                (int) ((position.getY() - this.getMarginTop()) / this.imageSize));
     }
 
-    private Point getItemPosition(Point coordinates) {
-        return new Point(this.getMarginLeft() + coordinates.getX() * this.imageSize,
-                this.getMarginTop() + coordinates.getY() * this.imageSize);
+    private Point getItemPosition(Coordinate coordinates) {
+        return new Point(this.getMarginLeft() + coordinates.x * this.imageSize,
+                this.getMarginTop() + coordinates.y * this.imageSize);
     }
 
     @Override
@@ -418,14 +417,14 @@ public class Level extends Entity implements Cloneable {
     }
 
     public boolean isValid() {
-        return LevelValidator.validate(this) != null;
+        return LevelValidator.validate(this) == null;
     }
 
-    public Point findTrainPosition() {
+    public Coordinate findTrainPosition() {
         return LevelItemUtil.findItemCoordinates(this.levelItems, Item.TRAIN);
     }
 
-    public Point findGatePosition() {
+    public Coordinate findGatePosition() {
         return LevelItemUtil.findItemCoordinates(this.levelItems, Item.GATE);
     }
 
