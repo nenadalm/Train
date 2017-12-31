@@ -86,14 +86,15 @@ public class EditorState extends BasicGameState {
         this.active = this.resourceManager.getImage("active");
         this.activeItem = new LevelItem("wall", this.resourceManager.getImage("wall"), Item.WALL);
 
-        this.imageMenuItems = new ArrayList<ImageMenuItem>();
-        this.initTopMenuListeners(game, this.resourceManager, container.getInput());
-
         if (this.testing) {
             this.testing = false;
         } else {
             this.loadLevel(container);
         }
+
+        this.imageMenuItems = new ArrayList<ImageMenuItem>();
+        this.initTopMenuListeners(game, this.resourceManager, container.getInput());
+
         for (ImageMenuItem item : this.imageMenuItems) {
             item.setScale(this.level.getScale());
         }

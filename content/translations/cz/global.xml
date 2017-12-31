@@ -209,10 +209,6 @@
                 <target>Level není hratelný. Chybí brána. Opravdu chceš ukončit editor?</target>
             </trans-unit>
             <trans-unit>
-                <source>Editor.Message.TrainAndGateMissing</source>
-                <target>Level není hratelný. Chybí vlak a brána. Opravdu chceš ukončit editor?</target>
-            </trans-unit>
-            <trans-unit>
                 <source>Controls.Game</source>
                 <target>Hra</target>
             </trans-unit>

@@ -17,6 +17,7 @@ import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.level.LevelItemUtil;
+import org.train.level.LevelValidator;
 import org.train.listener.LevelStateChangeListener;
 import org.train.other.ResourceManager;
 
@@ -417,11 +418,7 @@ public class Level extends Entity implements Cloneable {
     }
 
     public boolean isValid() {
-        if (LevelItemUtil.findItemCoordinates(this.levelItems, Item.GATE) != null
-                && LevelItemUtil.findItemCoordinates(this.levelItems, Item.TRAIN) != null) {
-            return true;
-        }
-        return false;
+        return LevelValidator.validate(this) != null;
     }
 
     public Point findTrainPosition() {

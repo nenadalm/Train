@@ -37,10 +37,6 @@
                 <target>Exit to menu without saving?</target>
             </trans-unit>
             <trans-unit>
-                <source>Editor.Message.TrainAndGateMissing</source>
-                <target>Level is not playable. Train and gate are missing. Do you really want leave editor?</target>
-            </trans-unit>
-            <trans-unit>
                 <source>Editor.Message.TrainMissing</source>
                 <target>Level is not playable. Train is missing. Do you really want leave editor?</target>
             </trans-unit>

@@ -7,6 +7,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
 import org.train.entity.Level;
 import org.train.entity.MessageBox;
+import org.train.level.LevelValidationError;
+import org.train.level.LevelValidator;
 import org.train.other.LevelController;
 import org.train.other.Translator;
 import org.train.state.EditorState;
@@ -32,14 +34,16 @@ public class SaveSelectedListener extends ItemSelectedListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
-        if (!this.level.isValid()) {
+        LevelValidationError error = LevelValidator.validate(this.level);
+        if (error != null) {
             String message = "";
-            if (this.level.findTrainPosition() == null && this.level.findGatePosition() == null) {
-                message = this.translator.translate("Editor.Message.TrainAndGateMissing");
-            } else if (this.level.findTrainPosition() == null) {
+            switch (error) {
+            case MISSING_TRAIN:
                 message = this.translator.translate("Editor.Message.TrainMissing");
-            } else if (this.level.findGatePosition() == null) {
+                break;
+            case MISSING_GATE:
                 message = this.translator.translate("Editor.Message.GateMissing");
+                break;
             }
             this.messageBox.showConfirm(message, new ActionListener() {
 
