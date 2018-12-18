@@ -27,9 +27,33 @@ public class LevelValidator {
             if (!LevelValidator.pathExistsFromTrainToCoordinates(levelItems, c)) {
                 return LevelValidationError.UNREACHABLE_CONSUMABLE;
             }
+
+            if (LevelValidator.itemIsInDeadEnd(levelItems, c)) {
+                return LevelValidationError.DEAD_END_CONSUMABLE;
+            }
         }
 
         return null;
+    }
+
+    private static boolean itemIsInDeadEnd(LevelItem[][] levelItems, Coordinate item) {
+        Coordinate[] surroundingItems = { item.add(Coordinate.LEFT), item.add(Coordinate.UP),
+                item.add(Coordinate.RIGHT), item.add(Coordinate.DOWN), };
+
+        int obstacles = 0;
+        for (int i = 0; i < surroundingItems.length; i++) {
+            if (!surroundingItems[i].isValidFor(levelItems)) {
+                obstacles++;
+                continue;
+            }
+
+            Coordinate itemC = surroundingItems[i];
+            if (levelItems[itemC.x][itemC.y].getType() == Item.WALL) {
+                obstacles++;
+            }
+        }
+
+        return obstacles > 2;
     }
 
     private static boolean pathExistsFromTrainToCoordinates(LevelItem[][] levelItems, Coordinate target) {

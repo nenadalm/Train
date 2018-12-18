@@ -53,6 +53,10 @@
                 <target>Level is not playable. It's not possible to collect all items. Do you really want leave editor?</target>
             </trans-unit>
             <trans-unit>
+                <source>Editor.Message.DeadEndConsumable</source>
+                <target>Level is not playable. Some items are in dead end. Do you really want leave editor?</target>
+            </trans-unit>
+            <trans-unit>
                 <source>Game.Menu.Continue</source>
                 <target>Continue</target>
             </trans-unit>

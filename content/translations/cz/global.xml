@@ -217,6 +217,10 @@
                 <target>Level není hratelný. Nelze sebrat všechny předměty. Opravdu chceš ukončit editor?</target>
             </trans-unit>
             <trans-unit>
+                <source>Editor.Message.DeadEndConsumable</source>
+                <target>Level není hratelný. Některé předměty jsou ve slepé uličce. Opravdu chceš ukončit editor?</target>
+            </trans-unit>
+            <trans-unit>
                 <source>Controls.Game</source>
                 <target>Hra</target>
             </trans-unit>

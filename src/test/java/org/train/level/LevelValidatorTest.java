@@ -34,6 +34,9 @@ public class LevelValidatorTest {
                 { LevelValidatorTest.createLevelItems(new Item[][] { { Item.TRAIN, Item.WALL, Item.ITEM },
                         { Item.EMPTY, Item.EMPTY, Item.WALL }, { Item.EMPTY, Item.EMPTY, Item.GATE } }),
                         LevelValidationError.UNREACHABLE_CONSUMABLE },
+                { LevelValidatorTest.createLevelItems(new Item[][] { { Item.WALL, Item.WALL, Item.WALL },
+                        { Item.TRAIN, Item.ITEM, Item.WALL }, { Item.GATE, Item.WALL, Item.WALL }, }),
+                        LevelValidationError.DEAD_END_CONSUMABLE },
                 /// valid levels
                 { LevelValidatorTest.createLevelItems(new Item[][] { { Item.EMPTY, Item.EMPTY, Item.EMPTY },
                         { Item.TRAIN, Item.EMPTY, Item.EMPTY }, { Item.EMPTY, Item.EMPTY, Item.GATE } }), null },
