@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
@@ -28,37 +28,42 @@ public class ControlsState extends BasicGameState {
     }
 
     @Override
-    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-        FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = this.container.getComponent(EffectFactory.class);
-        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        Font font = fonts.getFont("ubuntu", container.getHeight() / 14, whiteEffect);
+    public void enter(GameContainer container, StateBasedGame game) {
+        try {
+            FontFactory fonts = this.container.getComponent(FontFactory.class);
+            EffectFactory effects = this.container.getComponent(EffectFactory.class);
+            ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
 
-        Translator translator = this.container.getComponent(Translator.class);
+            Font font = fonts.getFont("ubuntu", container.getHeight() / 14, whiteEffect);
 
-        GameListFactory gameListFactory = new GameListFactory(translator);
-        EditorListFactory editorListFactory = new EditorListFactory(translator);
+            Translator translator = this.container.getComponent(Translator.class);
 
-        java.util.List<List> listItems = new ArrayList<List>();
-        listItems.add(gameListFactory.create(container, font));
-        listItems.add(editorListFactory.create(container, font));
+            GameListFactory gameListFactory = new GameListFactory(translator);
+            EditorListFactory editorListFactory = new EditorListFactory(translator);
 
-        listItems.get(0).getMargin().setBottom(container.getHeight() / 10);
+            java.util.List<List> listItems = new ArrayList<List>();
+            listItems.add(gameListFactory.create(container, font));
+            listItems.add(editorListFactory.create(container, font));
 
-        this.childContainer = new ContainerImpl();
-        this.childContainer.setChildren(listItems);
-        this.childContainer.setLayout(new CenteredLayout(container, this.childContainer));
+            listItems.get(0).getMargin().setBottom(container.getHeight() / 10);
+
+            this.childContainer = new ContainerImpl();
+            this.childContainer.setChildren(listItems);
+            this.childContainer.setLayout(new CenteredLayout(container, this.childContainer));
+        } catch (SlickException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         this.childContainer.render(container, game, g);
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+    public void update(GameContainer container, StateBasedGame game, int delta) {
 
-        if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+        if (container.getInput().isKeyPressed(USKeyboard.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);
         }
     }

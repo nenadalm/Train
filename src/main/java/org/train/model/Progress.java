@@ -5,14 +5,14 @@ public class Progress {
     private byte progresses[];
 
     public Progress(byte progresses[]) {
-	this.progresses = progresses;
+        this.progresses = progresses;
     }
 
     public boolean isLevelAvailable(int packageIndex, int levelIndex) {
-	return this.getLastAvailableLevelIndex(packageIndex) >= levelIndex;
+        return this.getLastAvailableLevelIndex(packageIndex) >= levelIndex;
     }
 
     public byte getLastAvailableLevelIndex(int packageIndex) {
-	return this.progresses[packageIndex];
+        return this.progresses[packageIndex];
     }
 }

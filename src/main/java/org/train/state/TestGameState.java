@@ -2,7 +2,8 @@ package org.train.state;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
@@ -19,7 +20,7 @@ public class TestGameState extends BasicGameState {
     }
 
     @Override
-    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+    public void enter(GameContainer container, StateBasedGame game) {
         LevelController levelController = this.container.getComponent(LevelController.class);
         LevelHelper levelHelper = this.container.getComponent(LevelHelper.class);
 
@@ -29,19 +30,20 @@ public class TestGameState extends BasicGameState {
     }
 
     @Override
-    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+    public void leave(GameContainer container, StateBasedGame game) {
         container.setMouseGrabbed(false);
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         this.level.render(container, game, g);
 
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-        if (this.level.isFinished() || this.level.isOver() || container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+    public void update(GameContainer container, StateBasedGame game, int delta) {
+        if (this.level.isFinished() || this.level.isOver()
+                || container.getInput().isKeyPressed(USKeyboard.KEY_ESCAPE)) {
             game.enterState(Game.EDITOR_STATE);
         }
 

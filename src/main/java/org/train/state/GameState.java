@@ -5,7 +5,8 @@ import java.awt.event.ActionEvent;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
@@ -37,7 +38,7 @@ public class GameState extends BasicGameState {
     }
 
     @Override
-    public void enter(final GameContainer container, final StateBasedGame game) throws SlickException {
+    public void enter(final GameContainer container, final StateBasedGame game) {
         this.levelController = this.container.getComponent(LevelController.class);
         this.translator = this.container.getComponent(Translator.class);
         this.messageBox = this.container.getComponent(MessageBox.class);
@@ -51,7 +52,7 @@ public class GameState extends BasicGameState {
     }
 
     @Override
-    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+    public void leave(GameContainer container, StateBasedGame game) {
         container.setMouseGrabbed(false);
     }
 
@@ -133,7 +134,7 @@ public class GameState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         this.level.render(container, game, g);
         this.menu.render(container, game, g);
         this.gameOverMenu.render(container, game, g);
@@ -141,19 +142,19 @@ public class GameState extends BasicGameState {
     }
 
     @Override
-    public void update(final GameContainer container, final StateBasedGame game, int delta) throws SlickException {
+    public void update(final GameContainer container, final StateBasedGame game, int delta) {
         Input input = container.getInput();
 
         switch (this.state) {
         case PLAYING:
-            if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            if (input.isKeyPressed(USKeyboard.KEY_ESCAPE)) {
                 this.enterState(container, State.PAUSED);
                 this.menu.show();
             }
             this.level.update(container, game, delta);
             break;
         case PAUSED:
-            if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            if (input.isKeyPressed(USKeyboard.KEY_ESCAPE)) {
                 this.menu.close();
                 this.enterState(container, State.PLAYING);
             }

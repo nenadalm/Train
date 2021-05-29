@@ -3,6 +3,7 @@ package org.train.factory;
 import java.io.File;
 
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.DisplayMode;
 import org.picocontainer.Characteristics;
 import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.PicoContainer;
@@ -33,13 +34,18 @@ public class PicoContainerFactory {
         container.addComponent(Configuration.class);
         Configuration config = container.getComponent(Configuration.class);
 
+        boolean isFullscreen = Boolean.parseBoolean(config.get("fullscreen"));
+        var mode = isFullscreen ? DisplayMode.Opt.FULLSCREEN : DisplayMode.Opt.WINDOWED;
+        int width = Integer.valueOf(config.get("width"));
+        int height = Integer.valueOf(config.get("height"));
+
         String translationsPath = config.getPath("contentPath") + "translations/";
         container.addComponent(new TranslationLoaderFactory(translationsPath));
         container.addComponent(
                 new Translator(container.getComponent(TranslationLoaderFactory.class), config.get("language")));
 
         container.addComponent(new Game("Train", container));
-        container.addComponent(AppGameContainer.class);
+        container.addComponent(new AppGameContainer(container.getComponent(Game.class), width, height, mode));
         container.as(Characteristics.NO_CACHE).addComponent(MessageBox.class);
         container.addComponent(LevelController.class);
         container.addComponent(ResourceManager.class);

@@ -4,7 +4,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.font.effects.ColorEffect;
@@ -31,44 +32,48 @@ public class MenuState extends BasicGameState {
     }
 
     @Override
-    public void init(final GameContainer container, final StateBasedGame game) throws SlickException {
+    public void init(final GameContainer container, final StateBasedGame game) {
         this.intro = this.container.getComponent(ResourceManager.class).getSound("intro");
         this.intro.play();
     }
 
     @Override
-    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-        MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
-        MenuFactoryInterface mainMenuFactory = new MainMenuFactory(menuBuilder);
-        this.menu = mainMenuFactory.create(game, container);
+    public void enter(GameContainer container, StateBasedGame game) {
+        try {
+            MenuBuilder menuBuilder = this.container.getComponent(MenuBuilder.class);
+            MenuFactoryInterface mainMenuFactory = new MainMenuFactory(menuBuilder);
+            this.menu = mainMenuFactory.create(game, container);
 
-        FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = this.container.getComponent(EffectFactory.class);
-        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        Font ubuntuLarge = fonts.getFont("ubuntu", container.getWidth() / 16, whiteEffect);
+            FontFactory fonts = this.container.getComponent(FontFactory.class);
+            EffectFactory effects = this.container.getComponent(EffectFactory.class);
+            ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
+            Font ubuntuLarge = fonts.getFont("ubuntu", container.getWidth() / 16, whiteEffect);
 
-        this.trainVersion = new TextView("Train " + Game.VERSION, ubuntuLarge, Color.white);
-        float trainVersionX = (int) (this.trainVersion.getWidth() / 1.75) - this.trainVersion.getWidth() / 2;
-        float trainVersionY = (int) (this.trainVersion.getHeight() / 1.5) - this.trainVersion.getHeight() / 2;
-        this.trainVersion.setPosition(new Point(trainVersionX, trainVersionY));
+            this.trainVersion = new TextView("Train " + Game.VERSION, ubuntuLarge, Color.white);
+            float trainVersionX = (int) (this.trainVersion.getWidth() / 1.75) - this.trainVersion.getWidth() / 2;
+            float trainVersionY = (int) (this.trainVersion.getHeight() / 1.5) - this.trainVersion.getHeight() / 2;
+            this.trainVersion.setPosition(new Point(trainVersionX, trainVersionY));
+        } catch (SlickException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+    public void leave(GameContainer container, StateBasedGame game) {
         this.intro.stop();
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         this.trainVersion.render(g);
         this.menu.render(container, game, g);
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+    public void update(GameContainer container, StateBasedGame game, int delta) {
         Input input = container.getInput();
 
-        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+        if (input.isKeyPressed(USKeyboard.KEY_ESCAPE)) {
             container.exit();
         }
 

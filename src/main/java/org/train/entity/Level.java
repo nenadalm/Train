@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
@@ -257,13 +257,13 @@ public class Level extends Entity implements Cloneable {
     private void changeTrainDirectionBasedOnKeysInQueue() {
         Integer key = this.keys.poll();
         if (key != null) {
-            if (key == Keyboard.KEY_UP) {
+            if (key == USKeyboard.KEY_UP) {
                 this.trainDirectionPrepared = Coordinate.UP;
-            } else if (key == Keyboard.KEY_DOWN) {
+            } else if (key == USKeyboard.KEY_DOWN) {
                 this.trainDirectionPrepared = Coordinate.DOWN;
-            } else if (key == Keyboard.KEY_LEFT) {
+            } else if (key == USKeyboard.KEY_LEFT) {
                 this.trainDirectionPrepared = Coordinate.LEFT;
-            } else if (key == Keyboard.KEY_RIGHT) {
+            } else if (key == USKeyboard.KEY_RIGHT) {
                 this.trainDirectionPrepared = Coordinate.RIGHT;
             }
         }
@@ -272,14 +272,14 @@ public class Level extends Entity implements Cloneable {
     }
 
     private void storeMovementKeysInQueue(Input input) {
-        if (input.isKeyPressed(Keyboard.KEY_UP)) {
-            this.keys.add(Keyboard.KEY_UP);
-        } else if (input.isKeyPressed(Keyboard.KEY_DOWN)) {
-            this.keys.add(Keyboard.KEY_DOWN);
-        } else if (input.isKeyPressed(Keyboard.KEY_LEFT)) {
-            this.keys.add(Keyboard.KEY_LEFT);
-        } else if (input.isKeyPressed(Keyboard.KEY_RIGHT)) {
-            this.keys.add(Keyboard.KEY_RIGHT);
+        if (input.isKeyPressed(USKeyboard.KEY_UP)) {
+            this.keys.add(USKeyboard.KEY_UP);
+        } else if (input.isKeyPressed(USKeyboard.KEY_DOWN)) {
+            this.keys.add(USKeyboard.KEY_DOWN);
+        } else if (input.isKeyPressed(USKeyboard.KEY_LEFT)) {
+            this.keys.add(USKeyboard.KEY_LEFT);
+        } else if (input.isKeyPressed(USKeyboard.KEY_RIGHT)) {
+            this.keys.add(USKeyboard.KEY_RIGHT);
         }
     }
 

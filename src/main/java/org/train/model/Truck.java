@@ -7,15 +7,15 @@ public class Truck {
     private Image item;
 
     public Truck(Image truck, Image item) {
-	this.truck = truck;
-	this.item = item;
+        this.truck = truck;
+        this.item = item;
     }
 
     public Image getTruck() {
-	return truck;
+        return truck;
     }
 
     public Image getItem() {
-	return item;
+        return item;
     }
 }

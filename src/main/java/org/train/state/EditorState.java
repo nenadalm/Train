@@ -5,13 +5,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.StateBasedGame;
 import org.train.app.Game;
@@ -71,7 +70,7 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void init(GameContainer container, final StateBasedGame game) throws SlickException {
+    public void init(GameContainer container, final StateBasedGame game) {
         this.resourceManager = this.container.getComponent(ResourceManager.class);
         this.translator = this.container.getComponent(Translator.class);
         this.fieldPosition = new Point(0, 0);
@@ -80,7 +79,7 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+    public void enter(GameContainer container, StateBasedGame game) {
         this.messageBox = this.container.getComponent(MessageBox.class);
         this.messageBox.setBackgroundColor(Color.lightGray);
         this.itemMenu = this.resourceManager.getImage("itemMenu");
@@ -108,7 +107,7 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         this.level.render(container, game, g);
 
         if (this.topMenu.isShowed()) {
@@ -138,7 +137,7 @@ public class EditorState extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer container, final StateBasedGame game, int delta) throws SlickException {
+    public void update(GameContainer container, final StateBasedGame game, int delta) {
 
         Input input = container.getInput();
         int mouseX = input.getMouseX();
@@ -148,7 +147,7 @@ public class EditorState extends BasicGameState {
         int indexX;
         int indexY;
 
-        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+        if (input.isKeyPressed(USKeyboard.KEY_ESCAPE)) {
             this.messageBox.showConfirm(this.translator.translate("Editor.Menu.ExitWithoutSaving"),
                     new ActionListener() {
                         @Override
@@ -182,7 +181,7 @@ public class EditorState extends BasicGameState {
             if (this.topMenu.isShowed()) {
                 this.updateMenu(game, input);
                 this.wasTopMenuShowed = true;
-            } else if (!this.wasTopMenuShowed || !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+            } else if (!this.wasTopMenuShowed || !input.isMouseButtonDown(0)) {
                 this.wasTopMenuShowed = false;
                 this.updateEditor(gridPosition, input);
             }
@@ -237,7 +236,7 @@ public class EditorState extends BasicGameState {
         if (mouseY < 10) {
             this.topMenu.show();
         }
-        if (input.isKeyPressed(Keyboard.KEY_E)) {
+        if (input.isKeyPressed(USKeyboard.KEY_E)) {
             this.topMenu.show();
         }
         if (this.isCursorInLevelArea(mouseX, mouseY)) {
@@ -246,9 +245,9 @@ public class EditorState extends BasicGameState {
             this.showActive = false;
         }
         if (this.isCursorInLevelArea(mouseX, mouseY)) {
-            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+            if (input.isMouseButtonDown(0)) {
                 this.setItemPosition(gridPosition);
-            } else if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
+            } else if (input.isMouseButtonDown(1)) {
                 this.level.setLevelItem(new LevelItem("empty", this.resourceManager.getImage("empty"), Item.EMPTY),
                         gridPosition);
             }
@@ -301,7 +300,7 @@ public class EditorState extends BasicGameState {
         this.imageMenuItems.add(new ImageMenuItem(save, saveSelectedListener));
         final ItemSelectedListener testSelectedListener = new TestSelectedListener(this, game);
         this.imageMenuItems.add(new ImageMenuItem(test, testSelectedListener));
-        input.addKeyListener(new AbstractKeyListener() {
+        input.addListener(new AbstractKeyListener() {
             @Override
             public boolean isAcceptingInput() {
                 return true;

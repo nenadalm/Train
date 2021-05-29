@@ -20,7 +20,8 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
@@ -59,87 +60,91 @@ public class OptionsState extends BasicGameState {
     }
 
     @Override
-    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-        FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = this.container.getComponent(EffectFactory.class);
-        translator = this.container.getComponent(Translator.class);
-        configuration = this.container.getComponent(Configuration.class);
-        width = container.getWidth();
-        height = container.getHeight();
-        scale = (int) (Float.parseFloat(configuration.get("scale")) * 100);
+    public void enter(GameContainer container, StateBasedGame game) {
+        try {
+            FontFactory fonts = this.container.getComponent(FontFactory.class);
+            EffectFactory effects = this.container.getComponent(EffectFactory.class);
+            translator = this.container.getComponent(Translator.class);
+            configuration = this.container.getComponent(Configuration.class);
+            width = container.getWidth();
+            height = container.getHeight();
+            scale = (int) (Float.parseFloat(configuration.get("scale")) * 100);
 
-        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        ubuntuSmall = fonts.getFont("ubuntu", width / 40, whiteEffect);
-        ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
-        ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
+            ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
+            ubuntuSmall = fonts.getFont("ubuntu", width / 40, whiteEffect);
+            ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
+            ubuntuLarge = fonts.getFont("ubuntu", width / 16, whiteEffect);
 
-        this.createBackButton(game);
-        this.createSaveButton(game);
+            this.createBackButton(game);
+            this.createSaveButton(game);
 
-        translate();
-        wall = new Image(configuration.getPath("contentPath") + "graphics/wall.png");
-        wallPreview = wall.getScaledCopy(scale / 512f);
+            translate();
+            wall = new Image(configuration.getPath("contentPath") + "graphics/wall.png");
+            wallPreview = wall.getScaledCopy(scale / 512f);
 
-        ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();
-        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice graphicsDevice = environment.getDefaultScreenDevice();
-        for (DisplayMode mode : graphicsDevice.getDisplayModes()) {
-            if (mode.getRefreshRate() == 60 && (mode.getBitDepth() == 32 || mode.getBitDepth() == -1)) {
-                modes.add(mode);
-            }
-        }
-        Collections.sort(modes, new Comparator<DisplayMode>() {
-            @Override
-            public int compare(DisplayMode o1, DisplayMode o2) {
-                if (o1.getWidth() - o2.getWidth() != 0) {
-                    return o1.getWidth() - o2.getWidth();
-                }
-                return o1.getHeight() - o2.getHeight();
-            }
-        });
-        int index = 0;
-        displayModes = new DisplayMode[modes.size()];
-        modes.toArray(displayModes);
-        for (DisplayMode mode : displayModes) {
-            if (mode.getWidth() == width && mode.getHeight() == height) {
-                modeIndex = index;
-                break;
-            }
-            index++;
-        }
-
-        File translations = new File(configuration.getPath("contentPath") + "translations/");
-        translations.listFiles();
-        ArrayList<String> names = new ArrayList<String>();
-        index = 0;
-        for (File file : translations.listFiles()) {
-            if (file.isDirectory()) {
-                names.add(file.getName());
-                if (translator.getLanguageCode().equals(file.getName())) {
-                    languageIndex = index;
+            ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();
+            GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice graphicsDevice = environment.getDefaultScreenDevice();
+            for (DisplayMode mode : graphicsDevice.getDisplayModes()) {
+                if (mode.getRefreshRate() == 60 && (mode.getBitDepth() == 32 || mode.getBitDepth() == -1)) {
+                    modes.add(mode);
                 }
             }
-            index++;
+            Collections.sort(modes, new Comparator<DisplayMode>() {
+                @Override
+                public int compare(DisplayMode o1, DisplayMode o2) {
+                    if (o1.getWidth() - o2.getWidth() != 0) {
+                        return o1.getWidth() - o2.getWidth();
+                    }
+                    return o1.getHeight() - o2.getHeight();
+                }
+            });
+            int index = 0;
+            displayModes = new DisplayMode[modes.size()];
+            modes.toArray(displayModes);
+            for (DisplayMode mode : displayModes) {
+                if (mode.getWidth() == width && mode.getHeight() == height) {
+                    modeIndex = index;
+                    break;
+                }
+                index++;
+            }
+
+            File translations = new File(configuration.getPath("contentPath") + "translations/");
+            translations.listFiles();
+            ArrayList<String> names = new ArrayList<String>();
+            index = 0;
+            for (File file : translations.listFiles()) {
+                if (file.isDirectory()) {
+                    names.add(file.getName());
+                    if (translator.getLanguageCode().equals(file.getName())) {
+                        languageIndex = index;
+                    }
+                }
+                index++;
+            }
+            languages = new String[names.size()];
+            names.toArray(languages);
+
+            isFullscreen = container.isFullscreen();
+            isAutoscale = Boolean.parseBoolean(configuration.get("autoscale"));
+            soundEnabled = Boolean.parseBoolean(configuration.get("soundEnabled"));
+
+            this.createResolutionMenu(container, effects);
+            this.createLanguageMenu(container, effects);
+            this.createFullscreenMenu(container, effects);
+            this.createAutoscaleMenu(container, effects);
+            this.createSoundEnabledMenu(container, effects);
+
+            scaleRectangle = new Rectangle();
+            setScaleRectangle();
+        } catch (SlickException e) {
+            throw new RuntimeException(e);
         }
-        languages = new String[names.size()];
-        names.toArray(languages);
-
-        isFullscreen = container.isFullscreen();
-        isAutoscale = Boolean.parseBoolean(configuration.get("autoscale"));
-        soundEnabled = Boolean.parseBoolean(configuration.get("soundEnabled"));
-
-        this.createResolutionMenu(container, effects);
-        this.createLanguageMenu(container, effects);
-        this.createFullscreenMenu(container, effects);
-        this.createAutoscaleMenu(container, effects);
-        this.createSoundEnabledMenu(container, effects);
-
-        scaleRectangle = new Rectangle();
-        setScaleRectangle();
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         g.setFont(ubuntuLarge);
         g.setColor(Color.white);
 
@@ -174,7 +179,7 @@ public class OptionsState extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+    public void update(GameContainer container, StateBasedGame game, int delta) {
         Input input = container.getInput();
         Point mouse = new Point(input.getMouseX(), input.getMouseY());
 
@@ -188,14 +193,14 @@ public class OptionsState extends BasicGameState {
         this.backBtn.update(container, game, delta);
         isHolding = false;
 
-        if (input.isKeyPressed(Input.KEY_ENTER)) {
+        if (input.isKeyPressed(USKeyboard.KEY_ENTER)) {
             saveOptions(container, game);
             game.enterState(Game.MENU_STATE);
         }
-        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+        if (input.isKeyPressed(USKeyboard.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);
         }
-        if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+        if (input.isMouseButtonDown(0)) {
             if (isMouseOverScale && scale < 512 && size.width > 7 && size.height > 7) {
                 isHolding = true;
                 if (holdCounter == 0) {
@@ -215,7 +220,7 @@ public class OptionsState extends BasicGameState {
                 setScaleRectangle();
             }
         }
-        if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
+        if (input.isMouseButtonDown(1)) {
             if (isMouseOverScale && scale > 25 && size.width <= 100 && size.height <= 100) {
                 isHolding = true;
                 if (holdCounter == 0) {
@@ -241,29 +246,28 @@ public class OptionsState extends BasicGameState {
     }
 
     private void saveOptions(GameContainer container, StateBasedGame game) {
-        try {
-            configuration.set("language", languages[languageIndex]);
-            configuration.set("fullscreen", String.valueOf(isFullscreen));
-            configuration.set("autoscale", String.valueOf(isAutoscale));
-            configuration.set("scale", String.valueOf(scale / 100f));
-            configuration.set("soundEnabled", String.valueOf(soundEnabled));
+        configuration.set("language", languages[languageIndex]);
+        configuration.set("fullscreen", String.valueOf(isFullscreen));
+        configuration.set("autoscale", String.valueOf(isAutoscale));
+        configuration.set("scale", String.valueOf(scale / 100f));
+        configuration.set("soundEnabled", String.valueOf(soundEnabled));
 
-            if (displayModes.length != 0) {
-                configuration.set("width", String.valueOf(displayModes[modeIndex].getWidth()));
-                configuration.set("height", String.valueOf(displayModes[modeIndex].getHeight()));
-                ((AppGameContainer) container).setDisplayMode(displayModes[modeIndex].getWidth(),
-                        displayModes[modeIndex].getHeight(), isFullscreen);
-            }
+        if (displayModes.length != 0) {
+            configuration.set("width", String.valueOf(displayModes[modeIndex].getWidth()));
+            configuration.set("height", String.valueOf(displayModes[modeIndex].getHeight()));
+            var mode = isFullscreen ? org.newdawn.slick.DisplayMode.Opt.FULLSCREEN
+                    : org.newdawn.slick.DisplayMode.Opt.WINDOWED;
+            ((AppGameContainer) container).setDisplayMode(displayModes[modeIndex].getWidth(),
+                    displayModes[modeIndex].getHeight(), mode);
 
-            configuration.saveChanges();
-
-            if (!translator.getLanguageCode().equals(languages[languageIndex])) {
-                translate();
-            }
-            translator.setLanguage(languages[languageIndex]);
-        } catch (SlickException e) {
-            e.printStackTrace();
         }
+
+        configuration.saveChanges();
+
+        if (!translator.getLanguageCode().equals(languages[languageIndex])) {
+            translate();
+        }
+        translator.setLanguage(languages[languageIndex]);
     }
 
     private void drawString(Graphics g, Font font, String text, float x, float y) {

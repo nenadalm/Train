@@ -10,25 +10,25 @@ public class Sound extends org.newdawn.slick.Sound {
     private Configuration configuration;
 
     public Sound(InputStream in, String ref) throws SlickException {
-	super(in, ref);
+        super(in, ref);
     }
 
     public Sound(String ref) throws SlickException {
-	super(ref);
+        super(ref);
     }
 
     public Sound(URL url) throws SlickException {
-	super(url);
+        super(url);
     }
 
     @Override
     public void play() {
-	if (this.configuration == null || Boolean.parseBoolean(this.configuration.get("soundEnabled"))) {
-	    super.play();
-	}
+        if (this.configuration == null || Boolean.parseBoolean(this.configuration.get("soundEnabled"))) {
+            super.play();
+        }
     }
 
     public void setConfiguration(Configuration configuration) {
-	this.configuration = configuration;
+        this.configuration = configuration;
     }
 }

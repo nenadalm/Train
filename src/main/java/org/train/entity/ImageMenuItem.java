@@ -10,27 +10,27 @@ public class ImageMenuItem extends MenuItem {
     private Image image;
 
     public ImageMenuItem(Image image, ActionListener listener) {
-	super("", listener);
-	this.image = image;
+        super("", listener);
+        this.image = image;
     }
 
     public Image getImage() {
-	return this.image;
+        return this.image;
     }
 
     @Override
     public void render(Graphics g) {
-	this.image.draw(this.rectangle.getX(), this.rectangle.getY(), this.getScale());
+        this.image.draw(this.rectangle.getX(), this.rectangle.getY(), this.getScale());
     }
 
     @Override
     public int getWidth() {
-	return this.image.getWidth();
+        return this.image.getWidth();
     }
 
     @Override
     public int getHeight() {
-	return this.image.getHeight();
+        return this.image.getHeight();
     }
 
 }

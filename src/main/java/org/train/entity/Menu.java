@@ -7,7 +7,8 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
@@ -83,9 +84,9 @@ public class Menu extends Container {
         int mouseY = input.getMouseY();
 
         if (this.keyboardEnabled) {
-            if (input.isKeyPressed(Input.KEY_UP)) {
+            if (input.isKeyPressed(USKeyboard.KEY_UP)) {
                 this.markOver(this.active - 1);
-            } else if (input.isKeyPressed(Input.KEY_DOWN)) {
+            } else if (input.isKeyPressed(USKeyboard.KEY_DOWN)) {
                 this.markOver(this.active + 1);
             }
         }
@@ -119,8 +120,7 @@ public class Menu extends Container {
             }
         }
 
-        if ((over && input.isMousePressed(Input.MOUSE_LEFT_BUTTON))
-                || (this.keyboardEnabled && input.isKeyPressed(Input.KEY_ENTER))) {
+        if ((over && input.isMousePressed(0)) || (this.keyboardEnabled && input.isKeyPressed(USKeyboard.KEY_ENTER))) {
             if (this.selectable) {
                 if (this.selected != null) {
                     this.selected.setColor(this.selected.getNormalColor());
@@ -131,7 +131,7 @@ public class Menu extends Container {
             ActionListener listener = this.items.get(this.active).getListener();
             listener.actionPerformed(null);
         }
-        if (over && input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
+        if (over && input.isMousePressed(1)) {
             ActionListener listener = this.items.get(this.active).getListener2();
             if (listener != null) {
                 listener.actionPerformed(null);

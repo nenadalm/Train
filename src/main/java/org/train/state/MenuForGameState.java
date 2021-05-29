@@ -8,7 +8,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
@@ -53,116 +54,120 @@ public class MenuForGameState extends BasicGameState {
     }
 
     @Override
-    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-        FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = this.container.getComponent(EffectFactory.class);
-        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        GradientEffect gradientEffect = effects.getGradientEffect(java.awt.Color.WHITE, java.awt.Color.GRAY, 0.5f);
-        translator = this.container.getComponent(Translator.class);
-        width = container.getWidth();
-        height = container.getHeight();
+    public void enter(GameContainer container, StateBasedGame game) {
+        try {
+            FontFactory fonts = this.container.getComponent(FontFactory.class);
+            EffectFactory effects = this.container.getComponent(EffectFactory.class);
+            ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
+            GradientEffect gradientEffect = effects.getGradientEffect(java.awt.Color.WHITE, java.awt.Color.GRAY, 0.5f);
+            translator = this.container.getComponent(Translator.class);
+            width = container.getWidth();
+            height = container.getHeight();
 
-        ubuntuMedium = fonts.getFont("ubuntu", width / 26, whiteEffect);
-        ubuntuLarge = fonts.getFont("ubuntu", width / 16, gradientEffect);
+            ubuntuMedium = fonts.getFont("ubuntu", width / 26, whiteEffect);
+            ubuntuLarge = fonts.getFont("ubuntu", width / 16, gradientEffect);
 
-        levelController = this.container.getComponent(LevelController.class);
-        levelPackages = levelController.getLevels();
+            levelController = this.container.getComponent(LevelController.class);
+            levelPackages = levelController.getLevels();
 
-        this.packageNameViews = new TextView[this.levelPackages.size()];
-        for (int i = 0; i < this.levelPackages.size(); i++) {
-            this.packageNameViews[i] = new TextView(levelPackages.get(i).getName(), this.ubuntuMedium, Color.white);
-            this.packageNameViews[i].setPosition(
-                    new Point(width / 2 - this.packageNameViews[i].getWidth() / 2, height * 1 / 3 + height / 50));
+            this.packageNameViews = new TextView[this.levelPackages.size()];
+            for (int i = 0; i < this.levelPackages.size(); i++) {
+                this.packageNameViews[i] = new TextView(levelPackages.get(i).getName(), this.ubuntuMedium, Color.white);
+                this.packageNameViews[i].setPosition(
+                        new Point(width / 2 - this.packageNameViews[i].getWidth() / 2, height * 1 / 3 + height / 50));
 
+            }
+            this.levelNameViews = new TextView[this.levelPackages.size()][];
+            for (int i = 0; i < this.levelNameViews.length; i++) {
+                this.levelNameViews[i] = new TextView[this.levelPackages.get(i).getLevelNames().size()];
+
+                for (int j = 0; j < this.levelNameViews[i].length; j++) {
+                    this.levelNameViews[i][j] = new TextView(this.levelPackages.get(i).getLevelNames().get(j),
+                            this.ubuntuMedium, Color.white);
+
+                    this.levelNameViews[i][j].setPosition(new Point(
+                            width / 2 - this.levelNameViews[i][j].getWidth() / 2, height * 3 / 4 + height / 40));
+                }
+            }
+            this.lockedLevelNameView = new TextView(String.format("» %1$s «", translator.translate("locked")),
+                    this.ubuntuMedium, Color.darkGray);
+            this.lockedLevelNameView.setPosition(
+                    new Point(width / 2 - this.lockedLevelNameView.getWidth() / 2, height * 3 / 4 + height / 40));
+            this.noneLevelNameView = new TextView(String.format("« %1$s »", translator.translate("none")),
+                    this.ubuntuMedium, Color.darkGray);
+            this.noneLevelNameView.setPosition(
+                    new Point(width / 2 - this.noneLevelNameView.getWidth() / 2, height * 3 / 4 + height / 40));
+
+            this.progress = levelController.getProgress();
+
+            this.createArrowButtons();
+
+            this.createBackButton(game);
+            this.createPlayButton(game);
+
+            packageIndex = 0;
+            int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
+            byte lastAvailableLevel = this.progress.getLastAvailableLevelIndex(this.packageIndex);
+            this.levelIndex = (lastAvailableLevel == packageSize && packageSize > 0) ? lastAvailableLevel - 1
+                    : lastAvailableLevel;
+            setProgressText();
+            setShowingText();
+
+            this.packageNameMouseListener = new ScrollListener(new Scrollable() {
+                @Override
+                public void scrollUp() {
+                    showPrevPackage();
+                }
+
+                @Override
+                public void scrollDown() {
+                    showNextPackage();
+                }
+
+                @Override
+                public Rectangle getOccupiedArea() {
+                    return new Rectangle(packageArrowLeft.getPosition().getX(), packageArrowLeft.getPosition().getY(),
+                            packageArrowRight.getPosition().getX() + packageArrowRight.getWidth()
+                                    - packageArrowLeft.getPosition().getX(),
+                            packageArrowRight.getPosition().getY() + packageArrowRight.getHeight()
+                                    - packageArrowLeft.getPosition().getY());
+                }
+            });
+            this.packageNameMouseListener.setInput(container.getInput());
+            container.getInput().addMouseListener(this.packageNameMouseListener);
+
+            this.levelNameMouseListener = new ScrollListener(new Scrollable() {
+
+                @Override
+                public Rectangle getOccupiedArea() {
+                    return new Rectangle(levelArrowLeft.getPosition().getX(), levelArrowLeft.getPosition().getY(),
+                            levelArrowRight.getPosition().getX() + levelArrowRight.getWidth()
+                                    - levelArrowLeft.getPosition().getX(),
+                            levelArrowRight.getPosition().getY() + levelArrowRight.getHeight()
+                                    - levelArrowLeft.getPosition().getY());
+                }
+
+                @Override
+                public void scrollUp() {
+                    showPrevLevel();
+                }
+
+                @Override
+                public void scrollDown() {
+                    showNextLevel();
+                }
+            });
+            this.levelNameMouseListener.setInput(container.getInput());
+            container.getInput().addMouseListener(this.levelNameMouseListener);
+
+            this.updateArrows();
+        } catch (SlickException e) {
+            throw new RuntimeException(e);
         }
-        this.levelNameViews = new TextView[this.levelPackages.size()][];
-        for (int i = 0; i < this.levelNameViews.length; i++) {
-            this.levelNameViews[i] = new TextView[this.levelPackages.get(i).getLevelNames().size()];
-
-            for (int j = 0; j < this.levelNameViews[i].length; j++) {
-                this.levelNameViews[i][j] = new TextView(this.levelPackages.get(i).getLevelNames().get(j),
-                        this.ubuntuMedium, Color.white);
-
-                this.levelNameViews[i][j].setPosition(
-                        new Point(width / 2 - this.levelNameViews[i][j].getWidth() / 2, height * 3 / 4 + height / 40));
-            }
-        }
-        this.lockedLevelNameView = new TextView(String.format("» %1$s «", translator.translate("locked")),
-                this.ubuntuMedium, Color.darkGray);
-        this.lockedLevelNameView.setPosition(
-                new Point(width / 2 - this.lockedLevelNameView.getWidth() / 2, height * 3 / 4 + height / 40));
-        this.noneLevelNameView = new TextView(String.format("« %1$s »", translator.translate("none")),
-                this.ubuntuMedium, Color.darkGray);
-        this.noneLevelNameView.setPosition(
-                new Point(width / 2 - this.noneLevelNameView.getWidth() / 2, height * 3 / 4 + height / 40));
-
-        this.progress = levelController.getProgress();
-
-        this.createArrowButtons();
-
-        this.createBackButton(game);
-        this.createPlayButton(game);
-
-        packageIndex = 0;
-        int packageSize = levelPackages.get(packageIndex).getLevelNames().size();
-        byte lastAvailableLevel = this.progress.getLastAvailableLevelIndex(this.packageIndex);
-        this.levelIndex = (lastAvailableLevel == packageSize && packageSize > 0) ? lastAvailableLevel - 1
-                : lastAvailableLevel;
-        setProgressText();
-        setShowingText();
-
-        this.packageNameMouseListener = new ScrollListener(new Scrollable() {
-            @Override
-            public void scrollUp() {
-                showPrevPackage();
-            }
-
-            @Override
-            public void scrollDown() {
-                showNextPackage();
-            }
-
-            @Override
-            public Rectangle getOccupiedArea() {
-                return new Rectangle(packageArrowLeft.getPosition().getX(), packageArrowLeft.getPosition().getY(),
-                        packageArrowRight.getPosition().getX() + packageArrowRight.getWidth()
-                                - packageArrowLeft.getPosition().getX(),
-                        packageArrowRight.getPosition().getY() + packageArrowRight.getHeight()
-                                - packageArrowLeft.getPosition().getY());
-            }
-        });
-        this.packageNameMouseListener.setInput(container.getInput());
-        container.getInput().addMouseListener(this.packageNameMouseListener);
-
-        this.levelNameMouseListener = new ScrollListener(new Scrollable() {
-
-            @Override
-            public Rectangle getOccupiedArea() {
-                return new Rectangle(levelArrowLeft.getPosition().getX(), levelArrowLeft.getPosition().getY(),
-                        levelArrowRight.getPosition().getX() + levelArrowRight.getWidth()
-                                - levelArrowLeft.getPosition().getX(),
-                        levelArrowRight.getPosition().getY() + levelArrowRight.getHeight()
-                                - levelArrowLeft.getPosition().getY());
-            }
-
-            @Override
-            public void scrollUp() {
-                showPrevLevel();
-            }
-
-            @Override
-            public void scrollDown() {
-                showNextLevel();
-            }
-        });
-        this.levelNameMouseListener.setInput(container.getInput());
-        container.getInput().addMouseListener(this.levelNameMouseListener);
-
-        this.updateArrows();
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         g.setFont(ubuntuLarge);
         g.setColor(Color.white);
         g.drawString(translator.translate("Packages"), width / 30, height / 10);
@@ -189,7 +194,7 @@ public class MenuForGameState extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+    public void update(GameContainer container, StateBasedGame game, int delta) {
         Input input = container.getInput();
 
         this.packageArrowLeft.update(container, game, delta);
@@ -213,7 +218,7 @@ public class MenuForGameState extends BasicGameState {
         this.playBtn.update(container, game, delta);
         this.backBtn.update(container, game, delta);
 
-        if (input.isKeyPressed(Input.KEY_ENTER)) {
+        if (input.isKeyPressed(USKeyboard.KEY_ENTER)) {
             try {
                 levelController.loadLevel(packageIndex, levelIndex);
             } catch (Exception e) {
@@ -221,7 +226,7 @@ public class MenuForGameState extends BasicGameState {
             }
             game.enterState(Game.GAME_STATE);
         }
-        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+        if (input.isKeyPressed(USKeyboard.KEY_ESCAPE)) {
             game.enterState(Game.MENU_STATE);
         }
     }

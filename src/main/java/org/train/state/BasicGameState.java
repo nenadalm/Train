@@ -11,23 +11,23 @@ abstract public class BasicGameState extends org.newdawn.slick.state.BasicGameSt
     private int stateId;
 
     public BasicGameState(int stateId) {
-	this.stateId = stateId;
+        this.stateId = stateId;
     }
 
     public PicoContainer getContainer() {
-	return container;
+        return container;
     }
 
     public void setContainer(PicoContainer container) {
-	this.container = container;
+        this.container = container;
     }
 
     @Override
     public int getID() {
-	return this.stateId;
+        return this.stateId;
     }
 
     @Override
-    public void init(GameContainer container, StateBasedGame game) throws SlickException {
+    public void init(GameContainer container, StateBasedGame game) {
     }
 }

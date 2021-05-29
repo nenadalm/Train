@@ -24,102 +24,102 @@ public class Entity extends BoxModel {
     private ArrayList<Component> components;
 
     public Entity() {
-	this.components = new ArrayList<Component>();
-	this.position = new Point(0, 0);
-	this.scale = 1;
-	this.rotation = 0;
-	this.direction = new Point(0, 0);
+        this.components = new ArrayList<Component>();
+        this.position = new Point(0, 0);
+        this.scale = 1;
+        this.rotation = 0;
+        this.direction = new Point(0, 0);
     }
 
     public void addComponent(Component component) {
-	if (RenderComponent.class.isInstance(component)) {
-	    this.renderComponent = (RenderComponent) component;
-	}
-	component.setOwnerEntity(this);
-	this.components.add(component);
+        if (RenderComponent.class.isInstance(component)) {
+            this.renderComponent = (RenderComponent) component;
+        }
+        component.setOwnerEntity(this);
+        this.components.add(component);
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta) {
-	for (Component component : this.components) {
-	    component.update(container, game, delta);
-	}
+        for (Component component : this.components) {
+            component.update(container, game, delta);
+        }
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
-	if (this.renderComponent != null) {
-	    this.renderComponent.render(container, game, g);
-	}
+        if (this.renderComponent != null) {
+            this.renderComponent.render(container, game, g);
+        }
     }
 
     public Point getDirection() {
-	return this.direction;
+        return this.direction;
     }
 
     public void setDirection(Point direction) {
-	this.direction = direction;
+        this.direction = direction;
     }
 
     public Point getPosition() {
-	return this.position;
+        return this.position;
     }
 
     public void setPosition(Point position) {
-	this.position = position;
+        this.position = position;
     }
 
     public float getScale() {
-	return this.scale;
+        return this.scale;
     }
 
     public void setScale(float scale) {
-	this.scale = scale;
+        this.scale = scale;
     }
 
     public float getRotation() {
-	return this.rotation;
+        return this.rotation;
     }
 
     public void setRotation(float rotation) {
-	this.rotation = rotation;
+        this.rotation = rotation;
     }
 
     public int getWidth() {
-	return this.width;
+        return this.width;
     }
 
     public void setWidth(int width) {
-	this.width = width;
+        this.width = width;
     }
 
     public int getHeight() {
-	return this.height;
+        return this.height;
     }
 
     public void setHeight(int height) {
-	this.height = height;
+        this.height = height;
     }
 
     public int getCenterX() {
-	return (int) this.position.getX() + this.width / 2;
+        return (int) this.position.getX() + this.width / 2;
     }
 
     public int getCenterY() {
-	return (int) this.position.getY() + this.height / 2;
+        return (int) this.position.getY() + this.height / 2;
     }
 
     public int getMaxX() {
-	return (int) this.getPosition().getX() + this.width;
+        return (int) this.getPosition().getX() + this.width;
     }
 
     public int getMaxY() {
-	return (int) this.getPosition().getY() + this.getHeight();
+        return (int) this.getPosition().getY() + this.getHeight();
     }
 
     public void setBackgroundColor(Color c) {
-	this.backgroundColor = c;
+        this.backgroundColor = c;
     }
 
     public Color getBackgroundColor() {
-	return this.backgroundColor;
+        return this.backgroundColor;
     }
 }

@@ -8,26 +8,26 @@ public class MenuItem {
     private Margin margin = new Margin();
 
     public String getText() {
-	return text;
+        return text;
     }
 
     public void setText(String text) {
-	this.text = text;
+        this.text = text;
     }
 
     public ActionListener getListener() {
-	return listener;
+        return listener;
     }
 
     public void setListener(ActionListener listener) {
-	this.listener = listener;
+        this.listener = listener;
     }
 
     public Margin getMargin() {
-	return margin;
+        return margin;
     }
 
     public void setMargin(Margin margin) {
-	this.margin = margin;
+        this.margin = margin;
     }
 }

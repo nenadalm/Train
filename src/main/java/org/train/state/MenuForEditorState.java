@@ -12,7 +12,8 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.input.Input;
+import org.newdawn.slick.input.sources.keymaps.USKeyboard;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Point;
@@ -60,56 +61,60 @@ public class MenuForEditorState extends BasicGameState {
     }
 
     @Override
-    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-        FontFactory fonts = this.container.getComponent(FontFactory.class);
-        EffectFactory effects = this.container.getComponent(EffectFactory.class);
-        ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
-        Configuration configuration = this.container.getComponent(Configuration.class);
+    public void enter(GameContainer container, StateBasedGame game) {
+        try {
+            FontFactory fonts = this.container.getComponent(FontFactory.class);
+            EffectFactory effects = this.container.getComponent(EffectFactory.class);
+            ColorEffect whiteEffect = effects.getColorEffect(java.awt.Color.WHITE);
+            Configuration configuration = this.container.getComponent(Configuration.class);
 
-        float scale = Float.parseFloat(configuration.get("scale"));
+            float scale = Float.parseFloat(configuration.get("scale"));
 
-        translator = this.container.getComponent(Translator.class);
-        width = container.getWidth();
-        height = container.getHeight();
+            translator = this.container.getComponent(Translator.class);
+            width = container.getWidth();
+            height = container.getHeight();
 
-        action = Action.None;
+            action = Action.None;
 
-        ubuntuSmall = fonts.getFont("ubuntu", width / 36, whiteEffect);
-        ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
+            ubuntuSmall = fonts.getFont("ubuntu", width / 36, whiteEffect);
+            ubuntuMedium = fonts.getFont("ubuntu", width / 20, whiteEffect);
 
-        levelController = this.container.getComponent(LevelController.class);
-        levelPackages = levelController.getLevels();
-        optimalSize = levelController.getOptimalLevelDimension(width, height, scale);
+            levelController = this.container.getComponent(LevelController.class);
+            levelPackages = levelController.getLevels();
+            optimalSize = levelController.getOptimalLevelDimension(width, height, scale);
 
-        this.createArrowButtons();
+            this.createArrowButtons();
 
-        String backText = translator.translate("back");
-        Rectangle rectangle = new Rectangle();
-        rectangle.width = ubuntuSmall.getWidth(backText);
-        rectangle.height = ubuntuSmall.getHeight(backText);
-        rectangle.x = width / 100;
-        rectangle.y = (int) (height - rectangle.height * 1.1f);
-        this.createBackButton(game);
+            String backText = translator.translate("back");
+            Rectangle rectangle = new Rectangle();
+            rectangle.width = ubuntuSmall.getWidth(backText);
+            rectangle.height = ubuntuSmall.getHeight(backText);
+            rectangle.x = width / 100;
+            rectangle.y = (int) (height - rectangle.height * 1.1f);
+            this.createBackButton(game);
 
-        initPackageActions();
-        initLevelActions(game);
+            initPackageActions();
+            initLevelActions(game);
 
-        packageIndex = -1;
-        levelIndex = -1;
+            packageIndex = -1;
+            levelIndex = -1;
 
-        createPackagesMenu();
+            createPackagesMenu();
 
-        textField = new TextField(container, ubuntuSmall, width / 3, height - width / 26, width / 3, width / 30);
-        textField.setBackgroundColor(Color.darkGray);
-        textField.setMaxLength(15);
-        textField.setTextColor(Color.white);
-        textField.setText("");
+            textField = new TextField(container, ubuntuSmall, width / 3, height - width / 26, width / 3, width / 30);
+            textField.setBackgroundColor(Color.darkGray);
+            textField.setMaxLength(15);
+            textField.setTextColor(Color.white);
+            textField.setText("");
 
-        infoText = "";
+            infoText = "";
+        } catch (SlickException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame game, Graphics g) {
         String packagesText = translator.translate("Packages");
         String levelsText = translator.translate("Levels");
         g.setFont(ubuntuMedium);
@@ -175,7 +180,7 @@ public class MenuForEditorState extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+    public void update(GameContainer container, StateBasedGame game, int delta) {
         Input input = container.getInput();
 
         this.backBtn.update(container, game, delta);
@@ -214,7 +219,7 @@ public class MenuForEditorState extends BasicGameState {
 
         this.packagesMenu.update(container, game, delta);
 
-        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+        if (input.isKeyPressed(USKeyboard.KEY_ESCAPE)) {
             if (action != Action.None) {
                 action = Action.None;
                 textField.setText("");
@@ -223,7 +228,7 @@ public class MenuForEditorState extends BasicGameState {
                 game.enterState(Game.MENU_STATE);
             }
         }
-        if (input.isKeyPressed(Input.KEY_ENTER) || input.isKeyPressed(Input.KEY_NUMPADENTER)) {
+        if (input.isKeyPressed(USKeyboard.KEY_ENTER) || input.isKeyPressed(USKeyboard.KEY_NUMPADENTER)) {
             infoText = "";
             if (action == Action.CreatingPackage) {
                 String name = textField.getText();
@@ -400,7 +405,7 @@ public class MenuForEditorState extends BasicGameState {
             }
         }
 
-        if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+        if (input.isMousePressed(0)) {
             infoText = "";
         }
     }

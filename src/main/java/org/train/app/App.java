@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.lang.reflect.Field;
 
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.DisplayMode;
 import org.picocontainer.PicoContainer;
 import org.train.factory.PicoContainerFactory;
 import org.train.other.Display;
@@ -23,7 +24,8 @@ public class App {
         try {
             Dimension displaySize = container.getComponent(Display.class).getOptimalDisplaySize();
             boolean isFullscreen = Boolean.parseBoolean(configuration.get("fullscreen"));
-            gameContainer.setDisplayMode(displaySize.width, displaySize.height, isFullscreen);
+            var mode = isFullscreen ? DisplayMode.Opt.FULLSCREEN : DisplayMode.Opt.WINDOWED;
+            gameContainer.setDisplayMode(displaySize.width, displaySize.height, mode);
             gameContainer.start();
         } catch (Exception e) {
             e.printStackTrace();
