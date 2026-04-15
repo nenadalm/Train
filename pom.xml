@@ -43,8 +43,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -104,6 +104,7 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <phase>site</phase>
                         <goals>
                             <goal>dot</goal>
                         </goals>
@@ -116,9 +117,9 @@
                 <executions>
                     <execution>
                         <id>createThriftDir</id>
-                        <phase>process-resources</phase>
+                        <phase>package</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <delete dir="build" />
 
                                 <mkdir dir="build/Train/content" />
@@ -144,11 +145,16 @@
                                         to="Train.jar" />
                                 </copy>
 
+                                <exec executable="sh">
+                                  <arg value="-c"/>
+                                  <arg line="'cp scripts/* build/Train/'"/>
+                                </exec>
+
                                 <zip destfile="build/Train.zip"
                                     basedir="build/Train" />
                                 <tar destfile="build/Train.tar.bz2"
                                     basedir="build/Train" compression="bzip2" />
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
@@ -171,8 +177,9 @@
     <dependencies>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>dom4j</groupId>
@@ -193,6 +200,12 @@
             <groupId>org.slick2d</groupId>
             <artifactId>slick2d-core</artifactId>
             <version>1.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.jnlp</groupId>
+                    <artifactId>jnlp-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jcraft</groupId>
