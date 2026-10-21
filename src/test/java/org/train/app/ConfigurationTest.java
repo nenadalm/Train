@@ -2,16 +2,23 @@ package org.train.app;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.train.loader.ConfigurationLoader;
 import org.train.storer.ConfigurationStorer;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ConfigurationTest {
 
     @Test
     public void testGetDefaultConfigurationValues() {
-	ConfigurationLoader loader = Mockito.mock(ConfigurationLoader.class);
-	ConfigurationStorer storer = Mockito.mock(ConfigurationStorer.class);
+        ConfigurationLoader loader = new ConfigurationLoader() {
+                public Map<String, ConfigurationProperty> load() {
+                    return new HashMap<String, ConfigurationProperty>();
+                }
+            };
+        ConfigurationStorer storer = new ConfigurationStorer() {
+                public void store(Map<String, ConfigurationProperty> properties) {};
+            };
 	Configuration config = new Configuration(loader, storer);
 
 	Assert.assertEquals("en", config.get("language"));
@@ -28,8 +35,14 @@ public class ConfigurationTest {
 
     @Test(expected = NullPointerException.class)
     public void testGetNonExistingConfigurationValue() {
-	ConfigurationLoader loader = Mockito.mock(ConfigurationLoader.class);
-	ConfigurationStorer storer = Mockito.mock(ConfigurationStorer.class);
+        ConfigurationLoader loader = new ConfigurationLoader() {
+                public Map<String, ConfigurationProperty> load() {
+                    return new HashMap<String, ConfigurationProperty>();
+                }
+            };
+        ConfigurationStorer storer = new ConfigurationStorer() {
+                public void store(Map<String, ConfigurationProperty> properties) {};
+            };
 	Configuration config = new Configuration(loader, storer);
 
 	config.get("non-existing-property");
